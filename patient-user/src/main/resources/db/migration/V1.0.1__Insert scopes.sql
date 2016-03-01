@@ -1,0 +1,14 @@
+insert into scope (scope) values ('phr.hie_read');
+insert into scope (scope) values ('phr.hie_write');
+insert into scope (scope) values ('pcm.provider_read');
+insert into scope (scope) values ('pcm.provider_create');
+insert into scope (scope) values ('pcm.provider_delete');
+insert into scope (scope) values ('pcm.consent_read');
+insert into scope (scope) values ('pcm.consent_create');
+insert into scope (scope) values ('pcm.consent_update');
+insert into scope (scope) values ('pcm.consent_delete');
+insert into scope (scope) values ('pcm.consent_sign');
+insert into scope (scope) values ('pcm.consent_revoke');
+insert into scope (scope) values ('pcm.clinicalDocument_read');
+insert into scope (scope) values ('pcm.clinicalDocument_create');
+insert into scope (scope) values ('pcm.clinicalDocument_delete');

@@ -26,6 +26,7 @@ spring:
     hibernate:
       ddl-auto: none
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    show-sql: true
 security:
   basic:
     enabled: false
