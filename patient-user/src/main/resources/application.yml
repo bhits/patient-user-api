@@ -1,0 +1,54 @@
+server:
+  context-path: /patientuser
+  port: 8450
+  ssl:
+    key-store: C:/ssl_keystore.keystore
+    key-store-password: changeit
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/patient-user?autoReconnect=true
+    username: root
+    password: admin
+    driver-class-name: com.mysql.jdbc.Driver
+    validation-query: select 1
+    test-on-borrow: true
+    test-on-return: true
+    test-while-idle: true
+    time-between-eviction-runs-millis: 1800000
+    num-tests-per-eviction-run: 3
+    min-evictable-idle-time-millis: 1800000
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        hbm2ddl:
+          auto: validate
+    hibernate:
+      ddl-auto: none
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+security:
+  basic:
+    enabled: false
+  oauth2:
+    resource:
+      jwt:
+        keyValue:
+                         -----BEGIN PUBLIC KEY-----
+                         MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0m59l2u9iDnMbrXHfqkO
+                         rn2dVQ3vfBJqcDuFUK03d+1PZGbVlNCqnkpIJ8syFppW8ljnWweP7+LiWpRoz0I7
+                         fYb3d8TjhV86Y997Fl4DBrxgM6KTJOuE/uxnoDhZQ14LgOU2ckXjOzOdTsnGMKQB
+                         LCl0vpcXBtFLMaSbpv1ozi8h7DJyVZ6EnFQZUWGdgTMhDrmqevfx95U/16c5WBDO
+                         kqwIn7Glry9n9Suxygbf8g5AzpWcusZgDLIIZ7JTUldBb8qU2a0Dl4mvLZOn4wPo
+                         jfj9Cw2QICsc5+Pwf21fP+hzf+1WSRHbnYv8uanRO0gZ8ekGaghM/2H6gqJbo2nI
+                         JwIDAQAB
+                         -----END PUBLIC KEY-----
+      user-info-uri: https://localhost:8443/uaa/userinfo
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    protocol: smtp
+    username: consent2share@gmail.com
+    password: fei@columbia
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
