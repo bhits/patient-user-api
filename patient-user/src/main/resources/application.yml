@@ -27,6 +27,15 @@ spring:
       ddl-auto: none
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    protocol: smtp
+    username: consent2share@gmail.com
+    password: fei@columbia
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 security:
   basic:
     enabled: false
@@ -44,12 +53,7 @@ security:
                          JwIDAQAB
                          -----END PUBLIC KEY-----
       user-info-uri: https://localhost:8443/uaa/userinfo
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    protocol: smtp
-    username: consent2share@gmail.com
-    password: fei@columbia
-    properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
+mhc:
+  apis:
+    phr: https://localhost:8445/phr
+    pp-ui: https://localhost:8444/pp-ui
