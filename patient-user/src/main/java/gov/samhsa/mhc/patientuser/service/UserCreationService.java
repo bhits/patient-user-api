@@ -1,6 +1,7 @@
 package gov.samhsa.mhc.patientuser.service;
 
 import gov.samhsa.mhc.patientuser.service.dto.PatientDto;
+import gov.samhsa.mhc.patientuser.service.dto.UserCreationDto;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -8,5 +9,5 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface UserCreationService {
     @Transactional
-    String initiateUserCreation(PatientDto patientDto);
+    UserCreationDto initiateUserCreation(PatientDto patientDto);
 }

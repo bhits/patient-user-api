@@ -2,6 +2,8 @@ package gov.samhsa.mhc.patientuser.service;
 
 import gov.samhsa.mhc.patientuser.domain.*;
 import gov.samhsa.mhc.patientuser.service.dto.PatientDto;
+import gov.samhsa.mhc.patientuser.service.dto.UserCreationDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +14,9 @@ import java.util.Date;
 
 @Service
 public class UserCreationServiceImpl implements UserCreationService {
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     private TokenGenerator tokenGenerator;
@@ -27,7 +32,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 
     @Override
     @Transactional
-    public String initiateUserCreation(PatientDto patientDto) {
+    public UserCreationDto initiateUserCreation(PatientDto patientDto) {
         final UserType userType = userTypeRepository.findOneByType(UserTypeEnum.PATIENT);
         String emailToken = emailTokenGenerator.generateEmailToken();
         final Date emailTokenExpirationDate = Date.from(LocalDateTime.now().plusDays(7).atZone(ZoneId.systemDefault()).toInstant());
@@ -39,7 +44,8 @@ public class UserCreationServiceImpl implements UserCreationService {
         userCreation.setUserType(userType);
         userCreation.setVerified(false);
         userCreation.setVerificationCode(tokenGenerator.generateToken(7));
-        userCreationRepository.save(userCreation);
-        return emailToken;
+        final UserCreation saved = userCreationRepository.save(userCreation);
+        final UserCreationDto response = modelMapper.map(saved, UserCreationDto.class);
+        return response;
     }
 }

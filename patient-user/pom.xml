@@ -23,6 +23,7 @@
 		<java.version>1.8</java.version>
 		<spring.cloud.version>Brixton.M4</spring.cloud.version>
 		<mhc-common-util.version>1.2.0-SNAPSHOT</mhc-common-util.version>
+		<modelmapper.version>0.7.5</modelmapper.version>
 	</properties>
 
 	<dependencies>
@@ -69,6 +70,11 @@
 			<groupId>gov.samhsa.mhc</groupId>
 			<artifactId>oauth2</artifactId>
 			<version>${mhc-common-util.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>${modelmapper.version}</version>
 		</dependency>
 		<!-- Test -->
 		<dependency>

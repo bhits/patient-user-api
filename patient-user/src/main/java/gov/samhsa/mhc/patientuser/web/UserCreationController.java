@@ -4,7 +4,10 @@ import gov.samhsa.mhc.patientuser.service.EmailNotificationService;
 import gov.samhsa.mhc.patientuser.service.PhrService;
 import gov.samhsa.mhc.patientuser.service.UserCreationService;
 import gov.samhsa.mhc.patientuser.service.dto.PatientDto;
+import gov.samhsa.mhc.patientuser.service.dto.UserCreationDto;
 import gov.samhsa.mhc.patientuser.service.dto.UserCreationRequestDto;
+import gov.samhsa.mhc.patientuser.service.dto.UserCreationResponseDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +21,9 @@ import javax.validation.Valid;
 public class UserCreationController {
 
     @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
     private PhrService phrService;
 
     @Autowired
@@ -27,10 +33,12 @@ public class UserCreationController {
     private EmailNotificationService emailNotificationService;
 
     @RequestMapping(value = "/userCreation", method = RequestMethod.POST)
-    public PatientDto initiateUserCreation(OAuth2Authentication authentication, @Valid @RequestBody UserCreationRequestDto userCreationRequest) {
+    public UserCreationResponseDto initiateUserCreation(OAuth2Authentication authentication, @Valid @RequestBody UserCreationRequestDto userCreationRequest) {
         final PatientDto patientProfile = phrService.findPatientProfileById(authentication, userCreationRequest.getPatientId());
-        final String emailToken = userCreationService.initiateUserCreation(patientProfile);
-        emailNotificationService.sendEmailWithVerificationLink(emailToken, patientProfile);
-        return patientProfile;
+        final UserCreationDto userCreationDto = userCreationService.initiateUserCreation(patientProfile);
+        emailNotificationService.sendEmailWithVerificationLink(userCreationDto.getEmailToken(), patientProfile);
+        final UserCreationResponseDto response = modelMapper.map(patientProfile, UserCreationResponseDto.class);
+        response.setVerificationCode(userCreationDto.getVerificationCode());
+        return response;
     }
 }
