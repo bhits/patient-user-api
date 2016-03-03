@@ -1,4 +1,4 @@
-package gov.samhsa.mhc.patientuser.service.dto;
+package gov.samhsa.mhc.patientuser.infrastructure.dto;
 
 
 import org.hibernate.validator.constraints.NotEmpty;

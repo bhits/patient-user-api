@@ -1,12 +1,12 @@
-package gov.samhsa.mhc.patientuser.service;
+package gov.samhsa.mhc.patientuser.infrastructure;
 
-import gov.samhsa.mhc.patientuser.service.dto.PatientDto;
-import gov.samhsa.mhc.patientuser.service.exception.EmailNotificationServiceException;
+import gov.samhsa.mhc.patientuser.infrastructure.exception.EmailSenderException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -14,7 +14,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 @Service
-public class EmailNotificationServiceImpl implements EmailNotificationService {
+public class EmailSenderImpl implements EmailSender {
 
     @Value("${mhc.apis.pp-ui}")
     private String ppUIBaseUri;
@@ -26,20 +26,23 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
     private TemplateEngine templateEngine;
 
     @Override
-    public void sendEmailWithVerificationLink(String emailToken, PatientDto patientDto) {
+    public void sendEmailWithVerificationLink(String email, String emailToken, String recipientFullName) {
+        Assert.hasText(emailToken, "emailToken must have text");
+        Assert.hasText(email, "email must have text");
+        Assert.hasText(recipientFullName, "recipientFullName must have text");
         try {
             Context ctx = new Context();
-            ctx.setVariable("recipientName", patientDto.getFirstName() + " " + patientDto.getLastName());
+            ctx.setVariable("recipientName", recipientFullName);
             ctx.setVariable("linkUrl", ppUIBaseUri + "/fe/verify#emailToken=" + emailToken);
             final MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
             message.setSubject("Set up your My Health Compass account");
-            message.setTo(patientDto.getEmail());
-            final String htmlContent = templateEngine.process("verification-new-accountsignup-template", ctx);
+            message.setTo(email);
+            final String htmlContent = templateEngine.process("email-with-verification-link", ctx);
             message.setText(htmlContent, true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            throw new EmailNotificationServiceException(e);
+            throw new EmailSenderException(e);
         }
     }
 }

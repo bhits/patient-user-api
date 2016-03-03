@@ -1,4 +1,4 @@
-package gov.samhsa.mhc.patientuser.service.exception;
+package gov.samhsa.mhc.patientuser.infrastructure.exception;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

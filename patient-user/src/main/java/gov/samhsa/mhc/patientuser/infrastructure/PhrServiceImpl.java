@@ -1,7 +1,7 @@
-package gov.samhsa.mhc.patientuser.service;
+package gov.samhsa.mhc.patientuser.infrastructure;
 
-import gov.samhsa.mhc.patientuser.service.dto.PatientDto;
-import gov.samhsa.mhc.patientuser.service.exception.PhrPatientNotFoundException;
+import gov.samhsa.mhc.patientuser.infrastructure.dto.PatientDto;
+import gov.samhsa.mhc.patientuser.infrastructure.exception.PhrPatientNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
