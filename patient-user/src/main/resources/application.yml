@@ -40,6 +40,7 @@ security:
   basic:
     enabled: false
   oauth2:
+    client.client-id: patient-user
     resource:
       jwt:
         keyValue:
