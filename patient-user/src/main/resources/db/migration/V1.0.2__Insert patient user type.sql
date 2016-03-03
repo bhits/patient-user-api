@@ -1,1 +1,0 @@
-insert into user_type (type) values ('PATIENT');

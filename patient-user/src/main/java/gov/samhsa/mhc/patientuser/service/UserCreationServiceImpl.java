@@ -33,7 +33,7 @@ public class UserCreationServiceImpl implements UserCreationService {
     @Override
     @Transactional
     public UserCreationDto initiateUserCreation(PatientDto patientDto) {
-        final UserType userType = userTypeRepository.findOneByType(UserTypeEnum.PATIENT);
+        final UserType userType = userTypeRepository.findOneByType(UserTypeEnum.SELF);
         String emailToken = emailTokenGenerator.generateEmailToken();
         final Date emailTokenExpirationDate = Date.from(LocalDateTime.now().plusDays(7).atZone(ZoneId.systemDefault()).toInstant());
         final UserCreation userCreation = userCreationRepository.findOneByPatientIdAsOptional(patientDto.getId())
