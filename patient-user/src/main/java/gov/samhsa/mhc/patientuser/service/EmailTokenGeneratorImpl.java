@@ -6,9 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-
 @Service
 public class EmailTokenGeneratorImpl implements EmailTokenGenerator {
 
@@ -26,6 +23,6 @@ public class EmailTokenGeneratorImpl implements EmailTokenGenerator {
     }
 
     private boolean isUnique(String emailToken) {
-        return userCreationRepository.findOneByEmailToken(emailToken) == null;
+        return !userCreationRepository.findOneByEmailToken(emailToken).isPresent();
     }
 }
