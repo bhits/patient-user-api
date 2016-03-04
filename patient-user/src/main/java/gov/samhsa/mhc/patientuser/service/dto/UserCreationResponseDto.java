@@ -32,6 +32,8 @@ public class UserCreationResponseDto {
     @NotEmpty
     private String verificationCode;
 
+    private Date emailTokenExpiration;
+
     public Long getId() {
         return id;
     }
@@ -86,5 +88,13 @@ public class UserCreationResponseDto {
 
     public void setVerificationCode(String verificationCode) {
         this.verificationCode = verificationCode;
+    }
+
+    public Date getEmailTokenExpiration() {
+        return emailTokenExpiration;
+    }
+
+    public void setEmailTokenExpiration(Date emailTokenExpiration) {
+        this.emailTokenExpiration = emailTokenExpiration;
     }
 }

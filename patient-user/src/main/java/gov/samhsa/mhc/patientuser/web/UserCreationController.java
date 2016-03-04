@@ -4,10 +4,7 @@ import gov.samhsa.mhc.patientuser.service.UserCreationService;
 import gov.samhsa.mhc.patientuser.service.dto.UserCreationRequestDto;
 import gov.samhsa.mhc.patientuser.service.dto.UserCreationResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -21,5 +18,10 @@ public class UserCreationController {
     public UserCreationResponseDto initiateUserCreation(@Valid @RequestBody UserCreationRequestDto userCreationRequest) {
         final UserCreationResponseDto userCreationResponseDto = userCreationService.initiateUserCreation(userCreationRequest);
         return userCreationResponseDto;
+    }
+
+    @RequestMapping(value = "/userCreation/{patientId}", method = RequestMethod.GET)
+    public UserCreationResponseDto getCurrentUserCreationInfo(@PathVariable Long patientId){
+        return userCreationService.findUserCreationInfoByPatientId(patientId);
     }
 }

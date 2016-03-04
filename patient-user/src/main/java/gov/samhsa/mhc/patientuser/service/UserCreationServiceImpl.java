@@ -6,6 +6,7 @@ import gov.samhsa.mhc.patientuser.infrastructure.PhrService;
 import gov.samhsa.mhc.patientuser.infrastructure.dto.PatientDto;
 import gov.samhsa.mhc.patientuser.service.dto.UserCreationRequestDto;
 import gov.samhsa.mhc.patientuser.service.dto.UserCreationResponseDto;
+import gov.samhsa.mhc.patientuser.service.exception.UserCreationNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,11 +62,23 @@ public class UserCreationServiceImpl implements UserCreationService {
         // Prepare response for the patient user creation
         final UserCreationResponseDto response = modelMapper.map(patientDto, UserCreationResponseDto.class);
         response.setVerificationCode(saved.getVerificationCode());
+        response.setEmailTokenExpiration(saved.getEmailTokenExpiration());
         // Send email with verification link
         emailSender.sendEmailWithVerificationLink(
                 patientDto.getEmail(),
                 saved.getEmailToken(),
                 patientDto.getFirstName() + " " + patientDto.getLastName());
+        return response;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserCreationResponseDto findUserCreationInfoByPatientId(Long patientId) {
+        final PatientDto patientDto = phrService.findPatientProfileById(patientId);
+        final UserCreation userCreation = userCreationRepository.findOneByPatientIdAsOptional(patientId).orElseThrow(() -> new UserCreationNotFoundException("No user creation record found for patient id: " + patientId));
+        final UserCreationResponseDto response = modelMapper.map(patientDto, UserCreationResponseDto.class);
+        response.setVerificationCode(userCreation.getVerificationCode());
+        response.setEmailTokenExpiration(userCreation.getEmailTokenExpiration());
         return response;
     }
 }

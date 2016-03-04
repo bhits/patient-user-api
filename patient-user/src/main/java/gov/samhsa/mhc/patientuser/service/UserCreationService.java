@@ -7,4 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface UserCreationService {
     @Transactional
     UserCreationResponseDto initiateUserCreation(UserCreationRequestDto userCreationRequest);
+
+    @Transactional(readOnly = true)
+    UserCreationResponseDto findUserCreationInfoByPatientId(Long patientId);
 }
