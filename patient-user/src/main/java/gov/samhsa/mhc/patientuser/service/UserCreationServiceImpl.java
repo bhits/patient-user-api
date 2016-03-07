@@ -73,7 +73,7 @@ public class UserCreationServiceImpl implements UserCreationService {
         emailSender.sendEmailWithVerificationLink(
                 patientDto.getEmail(),
                 saved.getEmailToken(),
-                patientDto.getFirstName() + " " + patientDto.getLastName());
+                getRecipientFullName(patientDto));
         return response;
     }
 
@@ -107,7 +107,14 @@ public class UserCreationServiceImpl implements UserCreationService {
         // Prepare response
         final UserActivationResponseDto response = modelMapper.map(patientProfile, UserActivationResponseDto.class);
         response.setVerified(userCreation.isVerified());
+        emailSender.sendEmailToConfirmVerification(
+                patientProfile.getEmail(),
+                getRecipientFullName(patientProfile));
         return response;
+    }
+
+    private String getRecipientFullName(PatientDto patientProfile) {
+        return patientProfile.getFirstName() + " " + patientProfile.getLastName();
     }
 
     private void assertBirthDateVerification(UserActivationRequestDto userActivationRequest, PatientDto patientProfile) {

@@ -36,6 +36,8 @@ spring:
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
+  messages:
+    basename: i18n/messages
 security:
   basic:
     enabled: false
