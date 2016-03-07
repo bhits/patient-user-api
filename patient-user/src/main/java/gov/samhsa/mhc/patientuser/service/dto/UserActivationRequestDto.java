@@ -1,8 +1,8 @@
 package gov.samhsa.mhc.patientuser.service.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
@@ -13,7 +13,7 @@ public class UserActivationRequestDto {
     @NotEmpty
     private String verificationCode;
 
-    @JsonDeserialize
+    @Past
     private LocalDate birthDate;
 
     @NotEmpty

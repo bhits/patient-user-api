@@ -17,11 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
 
 @Service
 public class UserCreationServiceImpl implements UserCreationService {
@@ -55,7 +54,7 @@ public class UserCreationServiceImpl implements UserCreationService {
         // Create/Update record for patient user creation
         final UserType userType = userTypeRepository.findOneByType(UserTypeEnum.SELF).get();
         String emailToken = emailTokenGenerator.generateEmailToken();
-        final Date emailTokenExpirationDate = Date.from(LocalDateTime.now().plusDays(7).atZone(ZoneId.systemDefault()).toInstant());
+        final Instant emailTokenExpirationDate = Instant.now().plus(Period.ofDays(7));
         final UserCreation userCreation = userCreationRepository.findOneByPatientId(patientDto.getId())
                 .orElseGet(UserCreation::new);
         userCreation.setEmailTokenExpiration(emailTokenExpirationDate);
@@ -126,7 +125,7 @@ public class UserCreationServiceImpl implements UserCreationService {
     }
 
     private void assertEmailTokenNotExpired(UserCreation userCreation) {
-        if (userCreation.getEmailTokenExpiration().toInstant().isBefore(ZonedDateTime.now().toInstant())) {
+        if (userCreation.getEmailTokenExpiration().isBefore(Instant.now())) {
             throw new EmailTokenExpiredException();
         }
     }

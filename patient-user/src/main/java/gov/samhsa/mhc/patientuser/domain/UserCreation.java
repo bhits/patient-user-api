@@ -6,7 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.Instant;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "patientId"),
@@ -26,7 +26,7 @@ public class UserCreation {
     private String verificationCode;
     @NotNull
     @Future
-    private Date emailTokenExpiration;
+    private Instant emailTokenExpiration;
 
     private boolean verified;
 
@@ -70,11 +70,11 @@ public class UserCreation {
         this.verificationCode = verificationCode;
     }
 
-    public Date getEmailTokenExpiration() {
+    public Instant getEmailTokenExpiration() {
         return emailTokenExpiration;
     }
 
-    public void setEmailTokenExpiration(Date emailTokenExpiration) {
+    public void setEmailTokenExpiration(Instant emailTokenExpiration) {
         this.emailTokenExpiration = emailTokenExpiration;
     }
 

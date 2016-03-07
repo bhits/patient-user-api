@@ -1,12 +1,12 @@
 package gov.samhsa.mhc.patientuser.service.dto;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
 
 public class UserCreationResponseDto {
     @NotNull
@@ -23,8 +23,7 @@ public class UserCreationResponseDto {
     private String email;
 
     @Past
-    @DateTimeFormat(pattern = "MM/dd/yyyy")
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @NotEmpty
     private String genderCode;
@@ -32,7 +31,7 @@ public class UserCreationResponseDto {
     @NotEmpty
     private String verificationCode;
 
-    private Date emailTokenExpiration;
+    private Instant emailTokenExpiration;
 
     public Long getId() {
         return id;
@@ -66,11 +65,11 @@ public class UserCreationResponseDto {
         this.email = email;
     }
 
-    public Date getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -90,11 +89,11 @@ public class UserCreationResponseDto {
         this.verificationCode = verificationCode;
     }
 
-    public Date getEmailTokenExpiration() {
+    public Instant getEmailTokenExpiration() {
         return emailTokenExpiration;
     }
 
-    public void setEmailTokenExpiration(Date emailTokenExpiration) {
+    public void setEmailTokenExpiration(Instant emailTokenExpiration) {
         this.emailTokenExpiration = emailTokenExpiration;
     }
 }
