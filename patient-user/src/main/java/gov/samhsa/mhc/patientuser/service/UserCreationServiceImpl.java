@@ -99,7 +99,7 @@ public class UserCreationServiceImpl implements UserCreationService {
         assertNotAlreadyVerified(userCreation);
         assertEmailTokenNotExpired(userCreation);
         // Find patient profile on PHR
-        final PatientDto patientProfile = phrService.findPatientProfileById(userCreation.getPatientId());
+        final PatientDto patientProfile = phrService.findPatientProfileById(userCreation.getPatientId(), true);
         // Assert birth date verification
         assertBirthDateVerification(userActivationRequest, patientProfile);
         userCreation.setVerified(true);

@@ -42,7 +42,10 @@ security:
   basic:
     enabled: false
   oauth2:
-    client.client-id: patient-user
+    client:
+      client-id: patient-user
+      client-secret: patient-user-secret
+      access-token-uri: https://localhost:8443/uaa/oauth/token
     resource:
       jwt:
         keyValue:
@@ -60,3 +63,6 @@ mhc:
   apis:
     phr: https://localhost:8445/phr
     pp-ui: https://localhost:8444/pp-ui
+logging:
+  level:
+    org.springframework.security: debug
