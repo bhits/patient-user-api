@@ -39,12 +39,11 @@
                 background-color: #fafafa;
                 vertical-align:middle;
                 border:1px #d2d2d2 solid;
-                border-right:0;
+                border-radius: 6px;
                 font-size:18px;
-                line-height:30px;
                 font-weight:600;
                 color:#777777;
-                padding:12px
+                padding:20px;
             }
 
             .header-table {
@@ -70,6 +69,10 @@
                 color:#13aaea;
                 font-size:larger;
             }
+            .mhc-text {
+                float: right;
+                font-weight: 500;
+            }
 
             .btn {
                 background: #3498db;
@@ -83,8 +86,8 @@
                 border-radius: 4px;
                 font-family: Arial;
                 color: #ffffff;
-                font-size: 20px;
-                padding: 10px 20px 10px 20px;
+                font-size: 16px;
+                padding: 8px 20px 8px 20px;
                 text-decoration: none;
             }
 
@@ -100,7 +103,7 @@
             .copy {
                 font-size: 16px;
                 padding-top:20px;
-                padding-bottom:20px;
+                padding-bottom:10px;
             }
 
             .content-table {
@@ -110,10 +113,14 @@
             }
 
             .content-center {
-                font-size: 18px;
-                text-align: center;
+                 font-size: 18px;
+                 text-align: center;
+                 padding-top:20px;
+                 padding-bottom:20px;
+             }
+
+            .content-left {
                 padding-top:20px;
-                padding-bottom:20px;
             }
 
             .addressee {
@@ -124,47 +131,47 @@
 
             .sincerely {
                 padding-top:40px;
-                padding-bottom:20px;
+                padding-bottom:10px;
             }
 
             .signature {
-            font-size: 16px;
-            margin-top: 0px;
+                font-size: 16px;
+                margin-top: 0px;
+                font-style: italic;
             }
 
         </style>
     </head>
-<body>
-<table cellpadding="0" cellspacing="0" border="0" align="center" width="75%" bgcolor="#ffffff" class="header-table">
-	<tr>
-		<td class="header">Create your account.</td>
-		<td class="logo">My Health Compass</td>
-	</tr>
-</table>
+    <body>
+        <table cellpadding="0" cellspacing="0" border="0" align="center" width="75%" bgcolor="#ffffff" class="header-table">
+            <tr>
+                <td class="header">Create your account.<span class="mhc-text">My Health Compass</span></td>
+            </tr>
+        </table>
 
-<table align="center" width="70%" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td>
-			<table class="content-table">
-				<tr>
-					<td class="addressee">Dear <span th:text="${recipientName}">Asample Patientone</span>,</td>
-				</tr>
+        <table align="center" width="70%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td>
+                    <table class="content-table">
+                        <tr>
+                            <td class="addressee">Dear <span th:text="${recipientName}">Asample Patientone</span>,</td>
+                        </tr>
 
-				<tr>
-					<td class="copy">Before you get started, be sure to have your Verification ID provided to you by your health care provider. If you do not have a verification ID, please contact your provider to obtain one. Next, simply click on the "Create Login" button below and follow the instructions carefully.
-					</td>
-	            </tr>
-	            <tr>
-		            <td class="content-center"><a href="../../../webapp/WEB-INF/views/index.html" class="btn" th:href="${linkUrl}"><strong>Create My Login</strong></a> </td>
-	            </tr>
-	            <tr>
-		            <td class="copy sincerely">Sincerely,</td>
-		        </tr>
-		        <tr>
-			        <td class="signature"><strong><em>My Health Compass Team</em></strong></td>
-			    </tr>
-		</table></td>
-	</tr>
-</table>
+                        <tr>
+                            <td class="copy">Before you get started, be sure to have your <strong>Verification ID</strong> provided to you by your health care provider. If you do not have a verification ID, please contact your provider to obtain one. Next, simply click on the "Create Login" button below and follow the instructions carefully.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="content-left"><a href="../../../webapp/WEB-INF/views/index.html" class="btn" th:href="${linkUrl}">Create My Login</a> </td>
+                        </tr>
+                        <tr>
+                            <td class="copy sincerely">Sincerely,</td>
+                        </tr>
+                        <tr>
+                            <td class="signature">My Health Compass Team</td>
+                        </tr>
+                </table></td>
+            </tr>
+        </table>
     </body>
 </html>
