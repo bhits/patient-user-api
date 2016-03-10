@@ -2,7 +2,7 @@ server:
   context-path: /patientuser
   port: 8450
   ssl:
-    key-store: C:/ssl_keystore.keystore
+    key-store: /ssl_keystore.keystore
     key-store-password: changeit
 spring:
   datasource:
@@ -63,6 +63,7 @@ mhc:
   apis:
     phr: https://localhost:8445/phr
     pp-ui: https://localhost:8444/pp-ui
+    scim: https://localhost:8443/uaa
 logging:
   level:
     org.springframework.security: debug
