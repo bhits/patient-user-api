@@ -30,6 +30,8 @@ public class UserCreation {
 
     private boolean verified;
 
+    private String userId;
+
     public Long getId() {
         return id;
     }
@@ -84,5 +86,13 @@ public class UserCreation {
 
     public void setVerified(boolean verified) {
         this.verified = verified;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

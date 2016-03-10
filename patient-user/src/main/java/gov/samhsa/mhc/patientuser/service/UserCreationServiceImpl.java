@@ -3,6 +3,7 @@ package gov.samhsa.mhc.patientuser.service;
 import gov.samhsa.mhc.patientuser.domain.*;
 import gov.samhsa.mhc.patientuser.infrastructure.EmailSender;
 import gov.samhsa.mhc.patientuser.infrastructure.PhrService;
+import gov.samhsa.mhc.patientuser.infrastructure.ScimService;
 import gov.samhsa.mhc.patientuser.infrastructure.dto.PatientDto;
 import gov.samhsa.mhc.patientuser.service.dto.UserActivationRequestDto;
 import gov.samhsa.mhc.patientuser.service.dto.UserActivationResponseDto;
@@ -12,15 +13,18 @@ import gov.samhsa.mhc.patientuser.service.exception.EmailTokenExpiredException;
 import gov.samhsa.mhc.patientuser.service.exception.UserActivationCannotBeVerifiedException;
 import gov.samhsa.mhc.patientuser.service.exception.UserCreationNotFoundException;
 import gov.samhsa.mhc.patientuser.service.exception.UserIsAlreadyVerifiedException;
+import org.cloudfoundry.identity.uaa.scim.ScimUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.Collections;
 
 @Service
 public class UserCreationServiceImpl implements UserCreationService {
@@ -46,6 +50,9 @@ public class UserCreationServiceImpl implements UserCreationService {
     @Autowired
     private PhrService phrService;
 
+    @Autowired
+    private ScimService scimService;
+
     @Override
     @Transactional
     public UserCreationResponseDto initiateUserCreation(UserCreationRequestDto userCreationRequest) {
@@ -57,6 +64,7 @@ public class UserCreationServiceImpl implements UserCreationService {
         final Instant emailTokenExpirationDate = Instant.now().plus(Period.ofDays(7));
         final UserCreation userCreation = userCreationRepository.findOneByPatientId(patientDto.getId())
                 .orElseGet(UserCreation::new);
+        assertNotAlreadyVerified(userCreation);
         userCreation.setEmailTokenExpiration(emailTokenExpirationDate);
         userCreation.setEmailToken(emailToken);
         userCreation.setPatientId(patientDto.getId());
@@ -107,6 +115,22 @@ public class UserCreationServiceImpl implements UserCreationService {
         // Prepare response
         final UserActivationResponseDto response = modelMapper.map(patientProfile, UserActivationResponseDto.class);
         response.setVerified(userCreation.isVerified());
+        // Create user using SCIM
+        ScimUser scimUser = new ScimUser(null, patientProfile.getEmail(), patientProfile.getFirstName(), patientProfile.getLastName());
+        scimUser.setPassword(userActivationRequest.getPassword());
+        ScimUser.Email email = new ScimUser.Email();
+        email.setValue(patientProfile.getEmail());
+        scimUser.setEmails(Collections.singletonList(email));
+        scimUser.setVerified(true);
+        // Save SCIM user
+        final ScimUser savedScimUser = scimService.save(scimUser);
+        final String userId = savedScimUser.getId();
+        Assert.hasText(userId, "SCIM userId must have text");
+        // Save userId in userCreation
+        userCreation.setUserId(userId);
+        userCreationRepository.save(userCreation);
+        // Add user to groups
+        scimService.addUserToGroups(userCreation);
         emailSender.sendEmailToConfirmVerification(
                 patientProfile.getEmail(),
                 getRecipientFullName(patientProfile));

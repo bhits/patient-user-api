@@ -1,11 +1,15 @@
 create table scope (id bigint not null auto_increment, scope varchar(255), primary key (id)) ENGINE=InnoDB;
-create table user_creation (id bigint not null auto_increment, email_token varchar(255) not null, email_token_expiration datetime not null, patient_id bigint not null, verification_code varchar(255) not null, verified bit not null, user_type bigint, primary key (id)) ENGINE=InnoDB;
+create table user_creation (id bigint not null auto_increment, email_token varchar(255) not null, email_token_expiration datetime not null, patient_id bigint not null, user_id varchar(255), verification_code varchar(255) not null, verified bit not null, user_type bigint, primary key (id)) ENGINE=InnoDB;
+create table user_scope_assignment (id bigint not null auto_increment, scope bigint, user_creation bigint, primary key (id)) ENGINE=InnoDB;
 create table user_type (id bigint not null auto_increment, type varchar(255), primary key (id)) ENGINE=InnoDB;
 create table user_type_scopes (user_type bigint not null, scopes bigint not null) ENGINE=InnoDB;
 alter table scope add constraint UK_5pa317tgcvklphqob5d5s4jjg unique (scope);
 alter table user_creation add constraint UK_qv3n630n1hw1gi4lkxd0d3y4l unique (patient_id);
 alter table user_creation add constraint email_token_idx unique (email_token);
+alter table user_scope_assignment add constraint UK_ranw91km63veme73sw6fgbna3 unique (user_creation, scope);
 alter table user_type_scopes add constraint UK_1139xwtbp3pljyj5ym4ssb8yn unique (scopes);
 alter table user_creation add constraint FK_4fmvoaugay178l5lyj9r3givi foreign key (user_type) references user_type (id);
+alter table user_scope_assignment add constraint FK_e9v6r79lemhfpax7g27s17c5r foreign key (scope) references scope (id);
+alter table user_scope_assignment add constraint FK_b3s60ld6pko88nvtjag54optd foreign key (user_creation) references user_creation (id);
 alter table user_type_scopes add constraint FK_1139xwtbp3pljyj5ym4ssb8yn foreign key (scopes) references scope (id);
 alter table user_type_scopes add constraint FK_3mr67pecnjd3oe94yoqi49xvl foreign key (user_type) references user_type (id);
