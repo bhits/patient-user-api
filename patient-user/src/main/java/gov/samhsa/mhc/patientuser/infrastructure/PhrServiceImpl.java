@@ -1,5 +1,6 @@
 package gov.samhsa.mhc.patientuser.infrastructure;
 
+import gov.samhsa.mhc.patientuser.config.ApplicationContextConfig;
 import gov.samhsa.mhc.patientuser.infrastructure.dto.PatientDto;
 import gov.samhsa.mhc.patientuser.infrastructure.exception.PhrPatientNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,11 @@ public class PhrServiceImpl implements PhrService {
     private String phrApiBaseUri;
 
     @Autowired
-    @Qualifier("oauth2RestTemplate")
+    @Qualifier(ApplicationContextConfig.OAUTH2_REST_TEMPLATE)
     private OAuth2RestTemplate restTemplate;
 
     @Autowired
-    @Qualifier("clientCredentialsOAuth2RestTemplate")
+    @Qualifier(ApplicationContextConfig.OAUTH2_REST_TEMPLATE_CLIENT_CREDENTIALS)
     private OAuth2RestTemplate restTemplateWithClientCredentials;
 
     @Override

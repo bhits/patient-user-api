@@ -14,6 +14,9 @@ import org.springframework.security.oauth2.client.token.grant.client.ClientCrede
 @Configuration
 public class ApplicationContextConfig {
 
+    public static final String OAUTH2_REST_TEMPLATE = "oauth2RestTemplate";
+    public static final String OAUTH2_REST_TEMPLATE_CLIENT_CREDENTIALS = "clientCredentialsOAuth2RestTemplate";
+
     @Value("${security.oauth2.client.access-token-uri}")
     private String accessTokenUri;
 
@@ -26,13 +29,13 @@ public class ApplicationContextConfig {
     }
 
     @Bean
-    @Qualifier("clientCredentialsOAuth2RestTemplate")
-    public OAuth2RestTemplate clientCredentialsOAuth2RestTemplate(OAuth2ClientContext oauth2ClientContext){
-        return new OAuth2RestTemplate(clientCredentialsResourceDetails(),oauth2ClientContext);
+    @Qualifier(OAUTH2_REST_TEMPLATE_CLIENT_CREDENTIALS)
+    public OAuth2RestTemplate clientCredentialsOAuth2RestTemplate(OAuth2ClientContext oauth2ClientContext) {
+        return new OAuth2RestTemplate(clientCredentialsResourceDetails(), oauth2ClientContext);
     }
 
     @Bean
-    public ClientCredentialsResourceDetails clientCredentialsResourceDetails(){
+    public ClientCredentialsResourceDetails clientCredentialsResourceDetails() {
         ClientCredentialsResourceDetails clientCredentialsResourceDetails = new ClientCredentialsResourceDetails();
         clientCredentialsResourceDetails.setAccessTokenUri(accessTokenUri);
         clientCredentialsResourceDetails.setClientId(oAuth2ClientProperties.getClientId());
