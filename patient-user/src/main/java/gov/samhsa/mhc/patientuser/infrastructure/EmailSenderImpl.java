@@ -67,6 +67,7 @@ public class EmailSenderImpl implements EmailSender {
 
         final Context ctx = new Context();
         ctx.setVariable(PARAM_RECIPIENT_NAME, recipientFullName);
+        ctx.setVariable(PARAM_LINK_URL, ppUIBaseUri);
         sendEmail(ctx, email,
                 PROP_EMAIL_CONFIRM_VERIFICATION_SUBJECT,
                 TEMPLATE_CONFIRM_VERIFICATION_EMAIL,
