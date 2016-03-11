@@ -57,7 +57,9 @@
         <mhc-common-libraries.version>1.2.0</mhc-common-libraries.version>
         <modelmapper.version>0.7.5</modelmapper.version>
         <cloudfoundry-identity-scim.version>2.7.4</cloudfoundry-identity-scim.version>
+        <!-- Test -->
         <powermock.version>1.6.4</powermock.version>
+        <commons-lang3.version>3.4</commons-lang3.version>
     </properties>
 
     <dependencies>
@@ -149,6 +151,19 @@
             <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>gov.samhsa.mhc</groupId>
+            <artifactId>common-unit</artifactId>
+            <version>${mhc-common-libraries.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
