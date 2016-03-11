@@ -64,6 +64,10 @@ mhc:
     phr: https://localhost:8445/phr
     pp-ui: https://localhost:8444/pp-ui
     scim: https://localhost:8443/uaa
+  patient-user:
+    config:
+      pp-ui-verification-relative-path: "/fe/verify#emailToken="
+      email-token-expiration-in-days: 7
 logging:
   level:
     org.springframework.security: debug

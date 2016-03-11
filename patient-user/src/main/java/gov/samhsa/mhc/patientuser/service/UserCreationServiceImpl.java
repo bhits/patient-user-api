@@ -16,6 +16,7 @@ import gov.samhsa.mhc.patientuser.service.exception.UserIsAlreadyVerifiedExcepti
 import org.cloudfoundry.identity.uaa.scim.ScimUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -53,6 +54,9 @@ public class UserCreationServiceImpl implements UserCreationService {
     @Autowired
     private ScimService scimService;
 
+    @Value("${mhc.patient-user.config.email-token-expiration-in-days}")
+    private int emailTokenExpirationInDays;
+
     @Override
     @Transactional
     public UserCreationResponseDto initiateUserCreation(UserCreationRequestDto userCreationRequest) {
@@ -61,7 +65,7 @@ public class UserCreationServiceImpl implements UserCreationService {
         // Create/Update record for patient user creation
         final UserType userType = userTypeRepository.findOneByType(UserTypeEnum.SELF).get();
         String emailToken = emailTokenGenerator.generateEmailToken();
-        final Instant emailTokenExpirationDate = Instant.now().plus(Period.ofDays(7));
+        final Instant emailTokenExpirationDate = Instant.now().plus(Period.ofDays(emailTokenExpirationInDays));
         final UserCreation userCreation = userCreationRepository.findOneByPatientId(patientDto.getId())
                 .orElseGet(UserCreation::new);
         assertNotAlreadyVerified(userCreation);

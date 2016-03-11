@@ -35,6 +35,9 @@ public class EmailSenderImpl implements EmailSender {
     @Value("${mhc.apis.pp-ui}")
     private String ppUIBaseUri;
 
+    @Value("${mhc.patient-user.config.pp-ui-verification-relative-path}")
+    private String ppUIVerificationRelativePath;
+
     @Autowired
     private JavaMailSender javaMailSender;
 
@@ -50,7 +53,7 @@ public class EmailSenderImpl implements EmailSender {
         Assert.hasText(email, "email must have text");
         Assert.hasText(recipientFullName, "recipientFullName must have text");
 
-        final String verificationUrl = ppUIBaseUri + "/fe/verify#emailToken=" + emailToken;
+        final String verificationUrl = ppUIBaseUri + ppUIVerificationRelativePath + emailToken;
         final Context ctx = new Context();
         ctx.setVariable(PARAM_RECIPIENT_NAME, recipientFullName);
         ctx.setVariable(PARAM_LINK_URL, verificationUrl);
