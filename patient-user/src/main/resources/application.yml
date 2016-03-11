@@ -69,5 +69,6 @@ mhc:
       pp-ui-verification-relative-path: "/fe/verify#emailToken="
       email-token-expiration-in-days: 7
 logging:
+  file: /java/MHC_LOGS/patient-user/patient-user.log
   level:
     org.springframework.security: debug
