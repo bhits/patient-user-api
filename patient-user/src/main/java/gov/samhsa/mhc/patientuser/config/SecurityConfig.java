@@ -3,10 +3,13 @@ package gov.samhsa.mhc.patientuser.config;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+
+import static gov.samhsa.mhc.common.oauth2.OAuth2ScopeUtils.hasScopes;
 
 @Configuration
 public class SecurityConfig {
@@ -27,7 +30,10 @@ public class SecurityConfig {
                     http.requiresChannel().anyRequest().requiresSecure();
                 }
                 http.authorizeRequests()
-                        .anyRequest().permitAll();
+                        .antMatchers(HttpMethod.GET, "/creations/**").access(hasScopes("patientUser.read", "phr.allPatientProfiles_read", "scim.read"))
+                        .antMatchers(HttpMethod.POST, "/creations/**").access(hasScopes("patientUser.write", "phr.allPatientProfiles_read", "scim.write"))
+                        .antMatchers(HttpMethod.POST, "/activations/**").permitAll()
+                        .anyRequest().denyAll();
             }
         };
     }
