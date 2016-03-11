@@ -16,18 +16,18 @@ public class UserCreationController {
     @Autowired
     private UserCreationService userCreationService;
 
-    @RequestMapping(value = "/userCreations", method = RequestMethod.POST)
+    @RequestMapping(value = "/creations", method = RequestMethod.POST)
     public UserCreationResponseDto initiateUserCreation(@Valid @RequestBody UserCreationRequestDto userCreationRequest) {
         final UserCreationResponseDto userCreationResponseDto = userCreationService.initiateUserCreation(userCreationRequest);
         return userCreationResponseDto;
     }
 
-    @RequestMapping(value = "/userCreations", method = RequestMethod.GET)
+    @RequestMapping(value = "/creations", method = RequestMethod.GET)
     public UserCreationResponseDto getCurrentUserCreationInfo(@RequestParam("patientId") Long patientId){
         return userCreationService.findUserCreationInfoByPatientId(patientId);
     }
 
-    @RequestMapping(value = "/userActivations", method = RequestMethod.POST)
+    @RequestMapping(value = "/activations", method = RequestMethod.POST)
     public UserActivationResponseDto activateUser(@Valid @RequestBody UserActivationRequestDto userActivationRequest){
         return userCreationService.activateUser(userActivationRequest);
     }
