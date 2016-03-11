@@ -57,6 +57,7 @@
         <mhc-common-libraries.version>1.2.0</mhc-common-libraries.version>
         <modelmapper.version>0.7.5</modelmapper.version>
         <cloudfoundry-identity-scim.version>2.7.4</cloudfoundry-identity-scim.version>
+        <powermock.version>1.6.4</powermock.version>
     </properties>
 
     <dependencies>
@@ -134,6 +135,18 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
