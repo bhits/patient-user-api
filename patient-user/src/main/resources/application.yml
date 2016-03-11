@@ -1,5 +1,5 @@
 server:
-  context-path: /patientuser
+  context-path: /patientUser
   port: 8452
   ssl:
     key-store: /ssl_keystore.keystore
