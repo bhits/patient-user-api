@@ -1,12 +1,11 @@
 package gov.samhsa.mhc.patientuser.service.dto;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
-import java.util.Date;
+import java.time.LocalDate;
 
 public class UserActivationResponseDto {
     @NotNull
@@ -23,8 +22,7 @@ public class UserActivationResponseDto {
     private String email;
 
     @Past
-    @DateTimeFormat(pattern = "MM/dd/yyyy")
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @NotEmpty
     private String genderCode;
@@ -63,11 +61,11 @@ public class UserActivationResponseDto {
         this.email = email;
     }
 
-    public Date getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
