@@ -1,10 +1,10 @@
 package gov.samhsa.mhc.patientuser.service;
 
-import gov.samhsa.mhc.patientuser.service.dto.UserActivationRequestDto;
-import gov.samhsa.mhc.patientuser.service.dto.UserActivationResponseDto;
-import gov.samhsa.mhc.patientuser.service.dto.UserCreationRequestDto;
-import gov.samhsa.mhc.patientuser.service.dto.UserCreationResponseDto;
+import gov.samhsa.mhc.patientuser.service.dto.*;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.Optional;
 
 public interface UserCreationService {
     @Transactional
@@ -15,4 +15,7 @@ public interface UserCreationService {
 
     @Transactional
     UserActivationResponseDto activateUser(UserActivationRequestDto userActivationRequest);
+
+    @Transactional(readOnly = true)
+    VerificationResponseDto verify(String emailToken, Optional<String> verificationCode, Optional<LocalDate> birthDate);
 }

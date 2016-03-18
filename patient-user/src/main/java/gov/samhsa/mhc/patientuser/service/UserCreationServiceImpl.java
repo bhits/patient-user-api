@@ -1,18 +1,14 @@
 package gov.samhsa.mhc.patientuser.service;
 
+import gov.samhsa.mhc.common.log.Logger;
+import gov.samhsa.mhc.common.log.LoggerFactory;
 import gov.samhsa.mhc.patientuser.domain.*;
 import gov.samhsa.mhc.patientuser.infrastructure.EmailSender;
 import gov.samhsa.mhc.patientuser.infrastructure.PhrService;
 import gov.samhsa.mhc.patientuser.infrastructure.ScimService;
 import gov.samhsa.mhc.patientuser.infrastructure.dto.PatientDto;
-import gov.samhsa.mhc.patientuser.service.dto.UserActivationRequestDto;
-import gov.samhsa.mhc.patientuser.service.dto.UserActivationResponseDto;
-import gov.samhsa.mhc.patientuser.service.dto.UserCreationRequestDto;
-import gov.samhsa.mhc.patientuser.service.dto.UserCreationResponseDto;
-import gov.samhsa.mhc.patientuser.service.exception.EmailTokenExpiredException;
-import gov.samhsa.mhc.patientuser.service.exception.UserActivationCannotBeVerifiedException;
-import gov.samhsa.mhc.patientuser.service.exception.UserCreationNotFoundException;
-import gov.samhsa.mhc.patientuser.service.exception.UserIsAlreadyVerifiedException;
+import gov.samhsa.mhc.patientuser.service.dto.*;
+import gov.samhsa.mhc.patientuser.service.exception.*;
 import org.cloudfoundry.identity.uaa.scim.ScimUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +16,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.Collections;
+import java.util.Date;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class UserCreationServiceImpl implements UserCreationService {
+
+    private Logger logger = LoggerFactory.getLogger(this);
 
     @Autowired
     private ModelMapper modelMapper;
@@ -139,6 +138,51 @@ public class UserCreationServiceImpl implements UserCreationService {
                 patientProfile.getEmail(),
                 getRecipientFullName(patientProfile));
         return response;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public VerificationResponseDto verify(String emailToken, Optional<String> verificationCode, Optional<LocalDate> birthDate) {
+        try {
+            Assert.hasText(emailToken, "emailToken must have text");
+            final Instant now = Instant.now();
+            // Only emailToken is available
+            if (!verificationCode.isPresent() && !birthDate.isPresent()) {
+                final Optional<UserCreation> userCreationOptional = userCreationRepository.findOneByEmailToken(emailToken);
+                if (userCreationOptional.filter(uc -> uc.isVerified() == true).isPresent()) {
+                    throw new UserIsAlreadyVerifiedException();
+                }
+                final Boolean verified = userCreationRepository.findOneByEmailToken(emailToken)
+                        .map(UserCreation::getEmailTokenExpiration)
+                        .map(expiration -> expiration.isAfter(now))
+                        .filter(Boolean.TRUE::equals)
+                        .orElseThrow(VerificationFailedException::new);
+                return new VerificationResponseDto(verified);
+            } else {
+                // All arguments must be available
+                final String verificationCodeNullSafe = verificationCode.filter(StringUtils::hasText).orElseThrow(VerificationFailedException::new);
+                final LocalDate birthDateNullSafe = birthDate.filter(Objects::nonNull).orElseThrow(VerificationFailedException::new);
+                final Long patientId = userCreationRepository
+                        .findOneByEmailTokenAndVerificationCode(emailToken, verificationCodeNullSafe)
+                        .filter(uc -> uc.getEmailTokenExpiration().isAfter(now))
+                        .map(UserCreation::getPatientId)
+                        .orElseThrow(VerificationFailedException::new);
+                final PatientDto patientDto = phrService.findPatientProfileById(patientId, true);
+                final boolean verified = Optional.of(patientDto)
+                        .map(PatientDto::getBirthDate)
+                        .map(Date::toInstant)
+                        .map(i -> i.atZone(ZoneId.systemDefault()))
+                        .map(ZonedDateTime::toLocalDate)
+                        .map(birthDateNullSafe::equals)
+                        .filter(Boolean.TRUE::equals)
+                        .orElseThrow(VerificationFailedException::new);
+                return new VerificationResponseDto(verified);
+            }
+        } catch (Exception e) {
+            logger.info(() -> "Verification failed: " + e.getMessage());
+            logger.debug(() -> e.getMessage(), e);
+            throw new VerificationFailedException();
+        }
     }
 
     private String getRecipientFullName(PatientDto patientProfile) {

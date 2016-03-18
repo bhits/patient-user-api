@@ -33,6 +33,7 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.GET, "/creations/**").access(hasScopes("patientUser.read", "phr.allPatientProfiles_read", "scim.read"))
                         .antMatchers(HttpMethod.POST, "/creations/**").access(hasScopes("patientUser.write", "phr.allPatientProfiles_read", "scim.write"))
                         .antMatchers(HttpMethod.POST, "/activations/**").permitAll()
+                        .antMatchers(HttpMethod.GET, "/verifications/**").permitAll()
                         .anyRequest().denyAll();
             }
         };
