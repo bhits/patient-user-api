@@ -118,6 +118,11 @@
             <version>${mhc-common-libraries.version}</version>
         </dependency>
         <dependency>
+            <groupId>gov.samhsa.mhc</groupId>
+            <artifactId>logger-wrapper</artifactId>
+            <version>${mhc-common-libraries.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
             <version>${modelmapper.version}</version>
