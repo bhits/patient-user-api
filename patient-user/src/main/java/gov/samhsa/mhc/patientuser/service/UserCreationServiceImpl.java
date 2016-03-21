@@ -101,6 +101,8 @@ public class UserCreationServiceImpl implements UserCreationService {
 
     @Override
     public UserActivationResponseDto activateUser(UserActivationRequestDto userActivationRequest) {
+        // Verify password
+        assertPasswordAndConfirmPassword(userActivationRequest);
         // Find user creation process with emailToken and verificationCode
         final UserCreation userCreation = userCreationRepository.findOneByEmailTokenAndVerificationCode(
                 userActivationRequest.getEmailToken(),
@@ -209,6 +211,12 @@ public class UserCreationServiceImpl implements UserCreationService {
     private void assertEmailTokenNotExpired(UserCreation userCreation) {
         if (userCreation.getEmailTokenExpiration().isBefore(Instant.now())) {
             throw new EmailTokenExpiredException();
+        }
+    }
+
+    private void assertPasswordAndConfirmPassword(UserActivationRequestDto userActivationRequest) {
+        if(!userActivationRequest.getPassword().equals(userActivationRequest.getConfirmPassword())){
+            throw new PasswordConfirmationFailedException();
         }
     }
 }

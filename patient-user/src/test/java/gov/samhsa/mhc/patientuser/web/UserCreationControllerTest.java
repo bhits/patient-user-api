@@ -7,10 +7,7 @@ import gov.samhsa.mhc.patientuser.service.UserCreationService;
 import gov.samhsa.mhc.patientuser.service.dto.UserActivationResponseDto;
 import gov.samhsa.mhc.patientuser.service.dto.UserCreationRequestDto;
 import gov.samhsa.mhc.patientuser.service.dto.UserCreationResponseDto;
-import gov.samhsa.mhc.patientuser.service.exception.EmailTokenExpiredException;
-import gov.samhsa.mhc.patientuser.service.exception.UserActivationCannotBeVerifiedException;
-import gov.samhsa.mhc.patientuser.service.exception.UserCreationNotFoundException;
-import gov.samhsa.mhc.patientuser.service.exception.UserIsAlreadyVerifiedException;
+import gov.samhsa.mhc.patientuser.service.exception.*;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -469,6 +466,7 @@ public class UserCreationControllerTest {
         final String genderCode = "genderCode ";
         final String emailToken = "emailToken";
         final String password = "Paaaaaaaaaaaasword#1";
+        final String confirmPassword = "Paaaaaaaaaaaasword#1";
         final boolean verified = true;
         response.setEmail(email);
         response.setBirthDate(birthDate);
@@ -483,6 +481,7 @@ public class UserCreationControllerTest {
         request.setBirthDate(Arrays.asList(year, month, day));
         request.setEmailToken(emailToken);
         request.setPassword(password);
+        request.setConfirmPassword(confirmPassword);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
@@ -523,6 +522,7 @@ public class UserCreationControllerTest {
         final String genderCode = "genderCode ";
         final String emailToken = "emailToken";
         final String password = "Pwrd#1";
+        final String confirmPassword = "Pwrd#1";
         final boolean verified = true;
         response.setEmail(email);
         response.setBirthDate(birthDate);
@@ -537,6 +537,7 @@ public class UserCreationControllerTest {
         request.setBirthDate(Arrays.asList(year, month, day));
         request.setEmailToken(emailToken);
         request.setPassword(password);
+        request.setConfirmPassword(confirmPassword);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
@@ -560,6 +561,53 @@ public class UserCreationControllerTest {
                 .andExpect(jsonPath("$.verified", is(Boolean.TRUE)));
     }
 
+    @Test
+    public void testActivateUser_Throws_PasswordConfirmationFailedException() throws Exception {
+        // Arrange
+        final Long patientId = 10L;
+        final UserActivationRequestDtoForTest request = new UserActivationRequestDtoForTest();
+        final UserActivationResponseDto response = new UserActivationResponseDto();
+        final String email = "email";
+        final String verificationCode = "verificationCode";
+        final int year = 2010;
+        final int month = 2;
+        final int day = 3;
+        final LocalDate birthDate = LocalDate.of(year, month, day);
+        final String firstName = "firstName";
+        final String lastName = "lastName";
+        final String genderCode = "genderCode ";
+        final String emailToken = "emailToken";
+        final String password = "Pwrd#1";
+        final String confirmPassword = "Pwrd#1Different";
+        final boolean verified = true;
+        response.setEmail(email);
+        response.setBirthDate(birthDate);
+        response.setFirstName(firstName);
+        response.setLastName(lastName);
+        response.setId(patientId);
+        response.setGenderCode(genderCode);
+        response.setBirthDate(birthDate);
+        response.setGenderCode(genderCode);
+        response.setVerified(verified);
+        request.setVerificationCode(verificationCode);
+        request.setBirthDate(Arrays.asList(year, month, day));
+        request.setEmailToken(emailToken);
+        request.setPassword(password);
+        request.setConfirmPassword(confirmPassword);
+        when(userCreationService.activateUser(argThat(matching(
+                req -> req.getBirthDate().equals(birthDate) &&
+                        req.getVerificationCode().equals(verificationCode) &&
+                        req.getEmailToken().equals(emailToken) &&
+                        req.getPassword().equals(password) &&
+                        req.getConfirmPassword().equals(confirmPassword)
+        )))).thenThrow(PasswordConfirmationFailedException.class);
+
+        // Act and Assert
+        mvc.perform(post("/activations")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsBytes(request)))
+                .andExpect(status().isPreconditionFailed());
+    }
 
     @Test
     public void testActivateUser_Weak_Password_No_Upper_Case() throws Exception {
@@ -803,6 +851,7 @@ public class UserCreationControllerTest {
         final String genderCode = "genderCode ";
         final String emailToken = "emailToken";
         final String password = "Password#1";
+        final String confirmPassword = "Password#1";
         final boolean verified = true;
         response.setEmail(email);
         response.setBirthDate(birthDate);
@@ -817,6 +866,7 @@ public class UserCreationControllerTest {
         request.setBirthDate(Arrays.asList(year, month, day));
         request.setEmailToken(emailToken);
         request.setPassword(password);
+        request.setConfirmPassword(confirmPassword);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
@@ -848,6 +898,7 @@ public class UserCreationControllerTest {
         final String genderCode = "genderCode ";
         final String emailToken = "emailToken";
         final String password = "Password#1";
+        final String confirmPassword = "Password#1";
         final boolean verified = true;
         response.setEmail(email);
         response.setBirthDate(birthDate);
@@ -862,6 +913,7 @@ public class UserCreationControllerTest {
         request.setBirthDate(Arrays.asList(year, month, day));
         request.setEmailToken(emailToken);
         request.setPassword(password);
+        request.setConfirmPassword(confirmPassword);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
@@ -893,6 +945,7 @@ public class UserCreationControllerTest {
         final String genderCode = "genderCode ";
         final String emailToken = "emailToken";
         final String password = "Password#1";
+        final String confirmPassword = "Password#1";
         final boolean verified = true;
         response.setEmail(email);
         response.setBirthDate(birthDate);
@@ -907,6 +960,7 @@ public class UserCreationControllerTest {
         request.setBirthDate(Arrays.asList(year, month, day));
         request.setEmailToken(emailToken);
         request.setPassword(password);
+        request.setConfirmPassword(confirmPassword);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
@@ -938,6 +992,7 @@ public class UserCreationControllerTest {
         final String genderCode = "genderCode ";
         final String emailToken = "emailToken";
         final String password = "Password#1";
+        final String confirmPassword = "Password#1";
         final boolean verified = true;
         response.setEmail(email);
         response.setBirthDate(birthDate);
@@ -952,6 +1007,7 @@ public class UserCreationControllerTest {
         request.setBirthDate(Arrays.asList(year, month, day));
         request.setEmailToken(emailToken);
         request.setPassword(password);
+        request.setConfirmPassword(confirmPassword);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
@@ -984,6 +1040,7 @@ public class UserCreationControllerTest {
         final String genderCode = "genderCode ";
         final String emailToken = "emailToken";
         final String password = "Password#1";
+        final String confirmPassword = "Password#1";
         final boolean verified = true;
         response.setEmail(email);
         response.setBirthDate(birthDate);
@@ -998,6 +1055,7 @@ public class UserCreationControllerTest {
         request.setBirthDate(Arrays.asList(year, month, day));
         request.setEmailToken(emailToken);
         request.setPassword(password);
+        request.setConfirmPassword(confirmPassword);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
@@ -1030,6 +1088,7 @@ public class UserCreationControllerTest {
         final String genderCode = "genderCode ";
         final String emailToken = "emailToken";
         final String password = "Password#1";
+        final String confirmPassword = "Password#1";
         final boolean verified = true;
         response.setEmail(email);
         response.setBirthDate(birthDate);
@@ -1044,6 +1103,7 @@ public class UserCreationControllerTest {
         request.setBirthDate(Arrays.asList(year, month, day));
         request.setEmailToken(emailToken);
         request.setPassword(password);
+        request.setConfirmPassword(confirmPassword);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
@@ -1076,6 +1136,7 @@ public class UserCreationControllerTest {
         final String genderCode = "genderCode ";
         final String emailToken = "emailToken";
         final String password = "Password#1";
+        final String confirmPassword = "Password#1";
         final boolean verified = true;
         response.setEmail(email);
         response.setBirthDate(birthDate);
@@ -1090,6 +1151,7 @@ public class UserCreationControllerTest {
         request.setBirthDate(Arrays.asList(year, month, day));
         request.setEmailToken(emailToken);
         request.setPassword(password);
+        request.setConfirmPassword(confirmPassword);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
