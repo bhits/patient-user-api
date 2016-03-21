@@ -176,7 +176,10 @@ public class UserCreationServiceImpl implements UserCreationService {
                         .map(birthDateNullSafe::equals)
                         .filter(Boolean.TRUE::equals)
                         .orElseThrow(VerificationFailedException::new);
-                return new VerificationResponseDto(verified);
+                final String username = Optional.of(patientDto)
+                        .map(PatientDto::getEmail)
+                        .orElseThrow(VerificationFailedException::new);
+                return new VerificationResponseDto(verified, username);
             }
         } catch (Exception e) {
             logger.info(() -> "Verification failed: " + e.getMessage());
