@@ -456,6 +456,7 @@ public class UserCreationControllerTest {
         final UserActivationRequestDtoForTest request = new UserActivationRequestDtoForTest();
         final UserActivationResponseDto response = new UserActivationResponseDto();
         final String email = "email";
+        final String username = "email";
         final String verificationCode = "verificationCode";
         final int year = 2010;
         final int month = 2;
@@ -482,6 +483,7 @@ public class UserCreationControllerTest {
         request.setEmailToken(emailToken);
         request.setPassword(password);
         request.setConfirmPassword(confirmPassword);
+        request.setUsername(username);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
@@ -512,6 +514,7 @@ public class UserCreationControllerTest {
         final UserActivationRequestDtoForTest request = new UserActivationRequestDtoForTest();
         final UserActivationResponseDto response = new UserActivationResponseDto();
         final String email = "email";
+        final String username = "email";
         final String verificationCode = "verificationCode";
         final int year = 2010;
         final int month = 2;
@@ -538,6 +541,7 @@ public class UserCreationControllerTest {
         request.setEmailToken(emailToken);
         request.setPassword(password);
         request.setConfirmPassword(confirmPassword);
+        request.setUsername(username);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
@@ -568,6 +572,7 @@ public class UserCreationControllerTest {
         final UserActivationRequestDtoForTest request = new UserActivationRequestDtoForTest();
         final UserActivationResponseDto response = new UserActivationResponseDto();
         final String email = "email";
+        final String username = "email";
         final String verificationCode = "verificationCode";
         final int year = 2010;
         final int month = 2;
@@ -594,6 +599,7 @@ public class UserCreationControllerTest {
         request.setEmailToken(emailToken);
         request.setPassword(password);
         request.setConfirmPassword(confirmPassword);
+        request.setUsername(username);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
@@ -841,6 +847,7 @@ public class UserCreationControllerTest {
         final UserActivationRequestDtoForTest request = new UserActivationRequestDtoForTest();
         final UserActivationResponseDto response = new UserActivationResponseDto();
         final String email = "email";
+        final String username = "email";
         final String verificationCode = "verificationCode";
         final int year = 2010;
         final int month = 2;
@@ -867,6 +874,7 @@ public class UserCreationControllerTest {
         request.setEmailToken(emailToken);
         request.setPassword(password);
         request.setConfirmPassword(confirmPassword);
+        request.setUsername(username);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
@@ -888,6 +896,7 @@ public class UserCreationControllerTest {
         final UserActivationRequestDtoForTest request = new UserActivationRequestDtoForTest();
         final UserActivationResponseDto response = new UserActivationResponseDto();
         final String email = "email";
+        final String username = "email";
         final String verificationCode = "verificationCode";
         final int year = 2010;
         final int month = 2;
@@ -914,6 +923,7 @@ public class UserCreationControllerTest {
         request.setEmailToken(emailToken);
         request.setPassword(password);
         request.setConfirmPassword(confirmPassword);
+        request.setUsername(username);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
@@ -935,6 +945,7 @@ public class UserCreationControllerTest {
         final UserActivationRequestDtoForTest request = new UserActivationRequestDtoForTest();
         final UserActivationResponseDto response = new UserActivationResponseDto();
         final String email = "email";
+        final String username = "email";
         final String verificationCode = "verificationCode";
         final int year = 2010;
         final int month = 2;
@@ -961,6 +972,7 @@ public class UserCreationControllerTest {
         request.setEmailToken(emailToken);
         request.setPassword(password);
         request.setConfirmPassword(confirmPassword);
+        request.setUsername(username);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
@@ -982,6 +994,7 @@ public class UserCreationControllerTest {
         final UserActivationRequestDtoForTest request = new UserActivationRequestDtoForTest();
         final UserActivationResponseDto response = new UserActivationResponseDto();
         final String email = "email";
+        final String username = "email";
         final String verificationCode = "verificationCode";
         final int year = 2010;
         final int month = 2;
@@ -1008,6 +1021,7 @@ public class UserCreationControllerTest {
         request.setEmailToken(emailToken);
         request.setPassword(password);
         request.setConfirmPassword(confirmPassword);
+        request.setUsername(username);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
@@ -1030,6 +1044,7 @@ public class UserCreationControllerTest {
         final UserActivationRequestDtoForTest request = new UserActivationRequestDtoForTest();
         final UserActivationResponseDto response = new UserActivationResponseDto();
         final String email = "email";
+        final String username = "email";
         final String verificationCode = "verificationCode";
         final int year = 2010;
         final int month = 2;
@@ -1056,6 +1071,7 @@ public class UserCreationControllerTest {
         request.setEmailToken(emailToken);
         request.setPassword(password);
         request.setConfirmPassword(confirmPassword);
+        request.setUsername(username);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
@@ -1078,6 +1094,7 @@ public class UserCreationControllerTest {
         final UserActivationRequestDtoForTest request = new UserActivationRequestDtoForTest();
         final UserActivationResponseDto response = new UserActivationResponseDto();
         final String email = "email";
+        final String username = "email";
         final String verificationCode = "verificationCode";
         final int year = 2010;
         final int month = 2;
@@ -1104,6 +1121,7 @@ public class UserCreationControllerTest {
         request.setEmailToken(emailToken);
         request.setPassword(password);
         request.setConfirmPassword(confirmPassword);
+        request.setUsername(username);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&
@@ -1126,6 +1144,7 @@ public class UserCreationControllerTest {
         final UserActivationRequestDtoForTest request = new UserActivationRequestDtoForTest();
         final UserActivationResponseDto response = new UserActivationResponseDto();
         final String email = "email";
+        final String username  = "email";
         final String verificationCode = "verificationCode";
         final int year = 2010;
         final int month = 2;
@@ -1152,6 +1171,7 @@ public class UserCreationControllerTest {
         request.setEmailToken(emailToken);
         request.setPassword(password);
         request.setConfirmPassword(confirmPassword);
+        request.setUsername(username);
         when(userCreationService.activateUser(argThat(matching(
                 req -> req.getBirthDate().equals(birthDate) &&
                         req.getVerificationCode().equals(verificationCode) &&

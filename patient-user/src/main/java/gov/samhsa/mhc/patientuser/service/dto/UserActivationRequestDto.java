@@ -24,6 +24,9 @@ public class UserActivationRequestDto {
     @Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})")
     private String confirmPassword;
 
+    @NotEmpty
+    private String username;
+
     public String getEmailToken() {
         return emailToken;
     }
@@ -62,5 +65,13 @@ public class UserActivationRequestDto {
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

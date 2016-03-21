@@ -113,6 +113,8 @@ public class UserCreationServiceImpl implements UserCreationService {
         assertEmailTokenNotExpired(userCreation);
         // Find patient profile on PHR
         final PatientDto patientProfile = phrService.findPatientProfileById(userCreation.getPatientId(), true);
+        // Assert username and patient email match
+        assertUsernameAndPatientEmailMatch(userActivationRequest, patientProfile);
         // Assert birth date verification
         assertBirthDateVerification(userActivationRequest, patientProfile);
         userCreation.setVerified(true);
@@ -194,6 +196,14 @@ public class UserCreationServiceImpl implements UserCreationService {
         return patientProfile.getFirstName() + " " + patientProfile.getLastName();
     }
 
+    private void assertUsernameAndPatientEmailMatch(UserActivationRequestDto userActivationRequest, PatientDto patientProfile) {
+        final String usernameInRequest = Optional.of(userActivationRequest).map(UserActivationRequestDto::getUsername).filter(StringUtils::hasText).orElseThrow(UserActivationCannotBeVerifiedException::new);
+        final String emailInPhr = Optional.of(patientProfile).map(PatientDto::getEmail).filter(StringUtils::hasText).orElseThrow(UserActivationCannotBeVerifiedException::new);
+        if (!emailInPhr.equals(usernameInRequest)) {
+            throw new UserActivationCannotBeVerifiedException();
+        }
+    }
+
     private void assertBirthDateVerification(UserActivationRequestDto userActivationRequest, PatientDto patientProfile) {
         final LocalDate birthDayInRequest = userActivationRequest.getBirthDate();
         final LocalDate birthDayInPhr = LocalDate.from(patientProfile.getBirthDate().toInstant().atZone(ZoneId.systemDefault()));
@@ -215,7 +225,7 @@ public class UserCreationServiceImpl implements UserCreationService {
     }
 
     private void assertPasswordAndConfirmPassword(UserActivationRequestDto userActivationRequest) {
-        if(!userActivationRequest.getPassword().equals(userActivationRequest.getConfirmPassword())){
+        if (!userActivationRequest.getPassword().equals(userActivationRequest.getConfirmPassword())) {
             throw new PasswordConfirmationFailedException();
         }
     }

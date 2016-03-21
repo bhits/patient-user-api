@@ -264,6 +264,7 @@ public class UserCreationServiceImplTest {
         final String firstName = "firstName";
         final String lastName = "lastName";
         final String email = "email";
+        final String username = "email";
         final String password = "password";
         final String confirmPassword = "password";
         final String userId = "userId";
@@ -275,6 +276,76 @@ public class UserCreationServiceImplTest {
         when(userActivationRequest.getBirthDate()).thenReturn(birthDateInRequest);
         when(userActivationRequest.getPassword()).thenReturn(password);
         when(userActivationRequest.getConfirmPassword()).thenReturn(confirmPassword);
+        when(userActivationRequest.getUsername()).thenReturn(username);
+        final UserCreation userCreation = mock(UserCreation.class);
+        when(userCreation.isVerified()).thenReturn(initialVerified).thenReturn(verified);
+        when(userCreation.getEmailTokenExpiration()).thenReturn(emailTokenExpiration);
+        when(userCreation.getPatientId()).thenReturn(patientId);
+        when(userCreationRepository.findOneByEmailTokenAndVerificationCode(emailToken, verificationCode)).thenReturn(Optional.of(userCreation));
+        final PatientDto patientDto = mock(PatientDto.class);
+        when(patientDto.getBirthDate()).thenReturn(birthDateInPhr);
+        when(patientDto.getFirstName()).thenReturn(firstName);
+        when(patientDto.getLastName()).thenReturn(lastName);
+        when(patientDto.getEmail()).thenReturn(email);
+        when(phrService.findPatientProfileById(patientId, true)).thenReturn(patientDto);
+        final UserActivationResponseDto userActivationResponse = mock(UserActivationResponseDto.class);
+        when(modelMapper.map(patientDto, UserActivationResponseDto.class)).thenReturn(userActivationResponse);
+        final ScimUser savedScimUser = new ScimUser();
+        savedScimUser.setId(userId);
+        when(scimService.save(argThat(matching(
+                user -> user.getEmails().get(0).getValue().equals(email) &&
+                        user.getUserName().equals(email) &&
+                        user.isVerified() == verified &&
+                        user.getFamilyName().equals(lastName) &&
+                        user.getGivenName().equals(firstName)
+        )))).thenReturn(savedScimUser);
+
+        // Act
+        final UserActivationResponseDto response = sut.activateUser(userActivationRequest);
+
+        // Assert
+        assertEquals(userActivationResponse, response);
+        verify(userCreation, times(1)).setVerified(verified);
+        verify(userCreation, times(1)).setUserId(userId);
+        verify(userActivationResponse, times(1)).setVerified(verified);
+        verify(userCreationRepository, times(2)).save(userCreation);
+        verify(scimService, times(1)).save(argThat(matching(
+                user -> user.getEmails().get(0).getValue().equals(email) &&
+                        user.getUserName().equals(email) &&
+                        user.isVerified() == true &&
+                        user.getFamilyName().equals(lastName) &&
+                        user.getGivenName().equals(firstName)
+        )));
+        verify(scimService, times(1)).addUserToGroups(userCreation);
+        verify(emailSender, times(1)).sendEmailToConfirmVerification(eq(email), argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
+    }
+
+    @Test
+    public void testActivateUser_Throws_UserActivationCannotBeVerifiedException_When_Username_Does_Not_Match_Email_In_PHR() throws Exception {
+        // Arrange
+        thrown.expect(UserActivationCannotBeVerifiedException.class);
+        final Long patientId = 10L;
+        final Boolean initialVerified = false;
+        final Boolean verified = true;
+        final Instant emailTokenExpiration = Instant.now().plus(Period.ofDays(7));
+        final String verificationCode = "verificationCode";
+        final String emailToken = "emailToken";
+        final String firstName = "firstName";
+        final String lastName = "lastName";
+        final String email = "email";
+        final String username = "emailDifferent";
+        final String password = "password";
+        final String confirmPassword = "password";
+        final String userId = "userId";
+        final LocalDate birthDateInRequest = LocalDate.of(1980, 1, 1);
+        final Date birthDateInPhr = Date.from(birthDateInRequest.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        UserActivationRequestDto userActivationRequest = mock(UserActivationRequestDto.class);
+        when(userActivationRequest.getVerificationCode()).thenReturn(verificationCode);
+        when(userActivationRequest.getEmailToken()).thenReturn(emailToken);
+        when(userActivationRequest.getBirthDate()).thenReturn(birthDateInRequest);
+        when(userActivationRequest.getPassword()).thenReturn(password);
+        when(userActivationRequest.getConfirmPassword()).thenReturn(confirmPassword);
+        when(userActivationRequest.getUsername()).thenReturn(username);
         final UserCreation userCreation = mock(UserCreation.class);
         when(userCreation.isVerified()).thenReturn(initialVerified).thenReturn(verified);
         when(userCreation.getEmailTokenExpiration()).thenReturn(emailTokenExpiration);
