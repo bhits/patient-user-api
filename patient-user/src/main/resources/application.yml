@@ -45,7 +45,7 @@ mhc:
     scim: https://localhost:8443/uaa
   patient-user:
     config:
-      pp-ui-verification-relative-path: "/fe/verify#emailToken="
+      pp-ui-verification-relative-path: "/fe/account/activation#emailToken="
       email-token-expiration-in-days: 7
 logging:
   file: /java/MHC_LOGS/patient-user/patient-user.log
