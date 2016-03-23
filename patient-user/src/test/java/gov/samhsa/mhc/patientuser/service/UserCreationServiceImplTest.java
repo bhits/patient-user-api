@@ -83,11 +83,16 @@ public class UserCreationServiceImplTest {
         final String lastName = "lastName";
         final String emailToken = "emailToken";
         final String verificationCode = "verificationCode";
+        final int year = 2010;
+        final int month = 2;
+        final int day = 3;
+        final Date birthDate = new Date(year, month, day);
         final UserCreationRequestDto userCreationRequestDto = mock(UserCreationRequestDto.class);
         when(userCreationRequestDto.getPatientId()).thenReturn(patientId);
         final PatientDto patientDto = mock(PatientDto.class);
         when(phrService.findPatientProfileById(patientId)).thenReturn(patientDto);
         when(patientDto.getEmail()).thenReturn(email);
+        when(patientDto.getBirthDate()).thenReturn(birthDate);
         when(patientDto.getFirstName()).thenReturn(firstName);
         when(patientDto.getLastName()).thenReturn(lastName);
         when(patientDto.getId()).thenReturn(patientId);
@@ -168,11 +173,16 @@ public class UserCreationServiceImplTest {
         final String lastName = "lastName";
         final String emailToken = "emailToken";
         final String verificationCode = "verificationCode";
+        final int year = 2010;
+        final int month = 2;
+        final int day = 3;
+        final Date birthDate = new Date(year, month, day);
         final UserCreationRequestDto userCreationRequestDto = mock(UserCreationRequestDto.class);
         when(userCreationRequestDto.getPatientId()).thenReturn(patientId);
         final PatientDto patientDto = mock(PatientDto.class);
         when(phrService.findPatientProfileById(patientId)).thenReturn(patientDto);
         when(patientDto.getEmail()).thenReturn(email);
+        when(patientDto.getBirthDate()).thenReturn(birthDate);
         when(patientDto.getFirstName()).thenReturn(firstName);
         when(patientDto.getLastName()).thenReturn(lastName);
         when(patientDto.getId()).thenReturn(patientId);
@@ -217,9 +227,14 @@ public class UserCreationServiceImplTest {
         // Arrange
         final Long patientId = 10L;
         final String verificationCode = "verificationCode";
+        final int year = 2010;
+        final int month = 2;
+        final int day = 3;
+        final Date birthDate = new Date(year, month, day);
         final Instant emailTokenExpiration = Instant.now();
         final PatientDto patientDto = mock(PatientDto.class);
         when(phrService.findPatientProfileById(patientId)).thenReturn(patientDto);
+        when(patientDto.getBirthDate()).thenReturn(birthDate);
         final UserCreation userCreation = mock(UserCreation.class);
         when(userCreationRepository.findOneByPatientId(patientId)).thenReturn(Optional.of(userCreation));
         when(userCreation.getVerificationCode()).thenReturn(verificationCode);
