@@ -5,7 +5,7 @@ server:
     key-store: /ssl_keystore.keystore
     key-store-password: changeit
 spring:
-  profiles.active: mysql
+  profiles.active: mysql,docker
   mail:
     host: smtp.gmail.com
     port: 587
@@ -92,3 +92,25 @@ spring:
       ddl-auto: none
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     show-sql: true
+
+---
+spring:
+  profiles: docker
+server:
+  ssl:
+    key-store: /java/keystore/mhc.keystore
+    key-store-password: changeit
+security:
+  oauth2:
+    client:
+      access-token-uri: https://uaa.mhc:8443/uaa/oauth/token
+    resource:
+      user-info-uri: https://uaa.mhc:8443/uaa/userinfo
+mhc:
+  apis:
+    phr: https://phr.mhc:8445/phr
+    pp-ui: https://pp-ui.mhc:8444/pp-ui
+    scim: https://uaa.mhc:8443/uaa
+spring:
+  datasource:
+    url: jdbc:mysql://patient-user-database:3306/patient-user?autoReconnect=true

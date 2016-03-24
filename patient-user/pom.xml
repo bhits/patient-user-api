@@ -61,6 +61,7 @@
         <powermock.version>1.6.4</powermock.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <jsonpath.version>2.2.0</jsonpath.version>
+        <docker.maven.version>0.4.3</docker.maven.version>
     </properties>
 
     <dependencies>
@@ -211,6 +212,22 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>${docker.maven.version}</version>
+                <configuration>
+                    <imageName>${project.artifactId}</imageName>
+                    <dockerDirectory>src/main/docker</dockerDirectory>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
             </plugin>
         </plugins>
     </build>
