@@ -1,9 +1,12 @@
 package gov.samhsa.mhc.patientuser.domain;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Audited
 public class UserType {
     @Id
     @GeneratedValue

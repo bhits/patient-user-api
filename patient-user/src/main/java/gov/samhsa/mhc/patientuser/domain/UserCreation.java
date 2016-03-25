@@ -1,16 +1,20 @@
 package gov.samhsa.mhc.patientuser.domain;
 
+import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.persistence.*;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.Date;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "patientId"),
         indexes = @Index(columnList = "emailToken", name = "email_token_idx", unique = true))
+@Audited
 public class UserCreation {
     @Id
     @GeneratedValue
@@ -24,9 +28,12 @@ public class UserCreation {
     private String emailToken;
     @NotEmpty
     private String verificationCode;
-    @NotNull
-    @Future
+
+    @Transient
     private Instant emailTokenExpiration;
+
+    @NotEmpty
+    private Date dateEmailTokenExpiration;
 
     private boolean verified;
 
@@ -77,7 +84,17 @@ public class UserCreation {
     }
 
     public void setEmailTokenExpiration(Instant emailTokenExpiration) {
+        this.dateEmailTokenExpiration = (new Jsr310JpaConverters.InstantConverter()).convertToDatabaseColumn(emailTokenExpiration);
         this.emailTokenExpiration = emailTokenExpiration;
+    }
+
+    public Date getDateEmailTokenExpiration() {
+        return dateEmailTokenExpiration;
+    }
+
+    public void setDateEmailTokenExpiration(Date dateEmailTokenExpiration) {
+        this.emailTokenExpiration = (new Jsr310JpaConverters.InstantConverter()).convertToEntityAttribute(dateEmailTokenExpiration);
+        this.dateEmailTokenExpiration = dateEmailTokenExpiration;
     }
 
     public boolean isVerified() {

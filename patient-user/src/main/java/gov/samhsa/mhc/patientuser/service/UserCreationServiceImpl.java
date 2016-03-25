@@ -142,6 +142,7 @@ public class UserCreationServiceImpl implements UserCreationService {
                 patientProfile.getEmail(),
                 getRecipientFullName(patientProfile));
         return response;
+
     }
 
     @Override
