@@ -33,6 +33,8 @@ public class UserCreationResponseDto {
 
     private Instant emailTokenExpiration;
 
+    private boolean verified;
+
     public Long getId() {
         return id;
     }
@@ -95,5 +97,13 @@ public class UserCreationResponseDto {
 
     public void setEmailTokenExpiration(Instant emailTokenExpiration) {
         this.emailTokenExpiration = emailTokenExpiration;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 }

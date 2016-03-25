@@ -80,6 +80,7 @@ public class UserCreationServiceImpl implements UserCreationService {
         final UserCreationResponseDto response = modelMapper.map(patientDto, UserCreationResponseDto.class);
         response.setVerificationCode(saved.getVerificationCode());
         response.setEmailTokenExpiration(saved.getEmailTokenExpiration());
+        response.setVerified(saved.isVerified());
         // Send email with verification link
         emailSender.sendEmailWithVerificationLink(
                 patientDto.getEmail(),
@@ -96,6 +97,7 @@ public class UserCreationServiceImpl implements UserCreationService {
         final UserCreationResponseDto response = modelMapper.map(patientDto, UserCreationResponseDto.class);
         response.setVerificationCode(userCreation.getVerificationCode());
         response.setEmailTokenExpiration(userCreation.getEmailTokenExpiration());
+        response.setVerified(userCreation.isVerified());
         return response;
     }
 
