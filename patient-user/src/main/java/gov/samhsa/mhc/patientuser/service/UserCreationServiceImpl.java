@@ -171,6 +171,8 @@ public class UserCreationServiceImpl implements UserCreationService {
                 // All arguments must be available
                 final String verificationCodeNullSafe = verificationCode.filter(StringUtils::hasText).orElseThrow(VerificationFailedException::new);
                 final LocalDate birthDateNullSafe = birthDate.filter(Objects::nonNull).orElseThrow(VerificationFailedException::new);
+                // Assert user creation email token
+                assertEmailTokenNotExpired(userCreationRepository.findOneByEmailToken(emailToken).get());
                 final Long patientId = userCreationRepository
                         .findOneByEmailTokenAndVerificationCode(emailToken, verificationCodeNullSafe)
                         .filter(uc -> uc.getEmailTokenExpiration().isAfter(now))
@@ -190,6 +192,10 @@ public class UserCreationServiceImpl implements UserCreationService {
                         .orElseThrow(VerificationFailedException::new);
                 return new VerificationResponseDto(verified, username);
             }
+        } catch (EmailTokenExpiredException e) {
+            logger.info(() -> "EmailToken expired: " + e.getMessage());
+            logger.debug(() -> e.getMessage(), e);
+            throw e;
         } catch (Exception e) {
             logger.info(() -> "Verification failed: " + e.getMessage());
             logger.debug(() -> e.getMessage(), e);
