@@ -5,7 +5,7 @@ server:
     key-store: /ssl_keystore.keystore
     key-store-password: changeit
 spring:
-  profiles.active: mysql,docker
+  profiles.active: mysql
   mail:
     host: smtp.gmail.com
     port: 587
