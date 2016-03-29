@@ -1,9 +1,12 @@
 package gov.samhsa.mhc.patientuser.domain;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.*;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"user_creation", "scope"}))
+@Audited
 public class UserScopeAssignment {
     @Id
     @GeneratedValue
