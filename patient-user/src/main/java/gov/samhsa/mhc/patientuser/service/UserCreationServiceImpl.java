@@ -78,8 +78,10 @@ public class UserCreationServiceImpl implements UserCreationService {
         final UserCreation saved = userCreationRepository.save(userCreation);
         // Prepare response for the patient user creation
         final UserCreationResponseDto response = modelMapper.map(patientDto, UserCreationResponseDto.class);
+        response.setBirthDate(patientDto.getBirthDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         response.setVerificationCode(saved.getVerificationCode());
         response.setEmailTokenExpiration(saved.getEmailTokenExpiration());
+        response.setVerified(saved.isVerified());
         // Send email with verification link
         emailSender.sendEmailWithVerificationLink(
                 patientDto.getEmail(),
@@ -94,8 +96,10 @@ public class UserCreationServiceImpl implements UserCreationService {
         final PatientDto patientDto = phrService.findPatientProfileById(patientId);
         final UserCreation userCreation = userCreationRepository.findOneByPatientId(patientId).orElseThrow(() -> new UserCreationNotFoundException("No user creation record found for patient id: " + patientId));
         final UserCreationResponseDto response = modelMapper.map(patientDto, UserCreationResponseDto.class);
+        response.setBirthDate(patientDto.getBirthDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         response.setVerificationCode(userCreation.getVerificationCode());
         response.setEmailTokenExpiration(userCreation.getEmailTokenExpiration());
+        response.setVerified(userCreation.isVerified());
         return response;
     }
 
@@ -121,6 +125,7 @@ public class UserCreationServiceImpl implements UserCreationService {
         userCreationRepository.save(userCreation);
         // Prepare response
         final UserActivationResponseDto response = modelMapper.map(patientProfile, UserActivationResponseDto.class);
+        response.setBirthDate(patientProfile.getBirthDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         response.setVerified(userCreation.isVerified());
         // Create user using SCIM
         ScimUser scimUser = new ScimUser(null, patientProfile.getEmail(), patientProfile.getFirstName(), patientProfile.getLastName());
