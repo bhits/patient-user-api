@@ -101,7 +101,7 @@ public class UserCreationServiceImplTest {
         final UserCreation savedUserCreation = mock(UserCreation.class);
         when(savedUserCreation.getVerificationCode()).thenReturn(verificationCode);
         final Instant emailTokenExpiration = Instant.now().plus(Period.ofDays(emailTokenExpirationInDays));
-        when(savedUserCreation.getEmailTokenExpiration()).thenReturn(emailTokenExpiration);
+        when(savedUserCreation.getEmailTokenExpirationAsInstant()).thenReturn(emailTokenExpiration);
         when(savedUserCreation.getEmailToken()).thenReturn(emailToken);
         when(userCreationRepository.save(any(UserCreation.class))).thenReturn(savedUserCreation);
 
@@ -114,7 +114,7 @@ public class UserCreationServiceImplTest {
                 (UserCreation uc) -> uc.getPatientId().equals(patientId) &&
                         uc.getUserType().equals(userType) &&
                         uc.getEmailToken().equals(emailToken) &&
-                        uc.getEmailTokenExpiration().isAfter(Instant.now()) &&
+                        uc.getEmailTokenExpirationAsInstant().isAfter(Instant.now()) &&
                         uc.getUserId() == null &&
                         uc.getVerificationCode().equals(verificationCode))
         ));
@@ -188,7 +188,7 @@ public class UserCreationServiceImplTest {
         final UserCreation savedUserCreation = mock(UserCreation.class);
         when(savedUserCreation.getVerificationCode()).thenReturn(verificationCode);
         final Instant emailTokenExpiration = Instant.now().plus(Period.ofDays(emailTokenExpirationInDays));
-        when(savedUserCreation.getEmailTokenExpiration()).thenReturn(emailTokenExpiration);
+        when(savedUserCreation.getEmailTokenExpirationAsInstant()).thenReturn(emailTokenExpiration);
         when(savedUserCreation.getEmailToken()).thenReturn(emailToken);
         when(userCreationRepository.save(any(UserCreation.class))).thenReturn(savedUserCreation);
 
@@ -204,7 +204,7 @@ public class UserCreationServiceImplTest {
                 eq(email),
                 eq(emailToken),
                 argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
-        verify(existingUserCreation, times(1)).setEmailTokenExpiration(argThat(matching(instant -> instant.isAfter(Instant.now()))));
+        verify(existingUserCreation, times(1)).setEmailTokenExpirationAsInstant(argThat(matching(instant -> instant.isAfter(Instant.now()))));
         verify(existingUserCreation, times(1)).setEmailToken(emailToken);
         verify(existingUserCreation, times(1)).setPatientId(patientId);
         verify(existingUserCreation, times(1)).setUserType(userType);
@@ -223,7 +223,7 @@ public class UserCreationServiceImplTest {
         final UserCreation userCreation = mock(UserCreation.class);
         when(userCreationRepository.findOneByPatientId(patientId)).thenReturn(Optional.of(userCreation));
         when(userCreation.getVerificationCode()).thenReturn(verificationCode);
-        when(userCreation.getEmailTokenExpiration()).thenReturn(emailTokenExpiration);
+        when(userCreation.getEmailTokenExpirationAsInstant()).thenReturn(emailTokenExpiration);
         final UserCreationResponseDto userCreationResponseDto = mock(UserCreationResponseDto.class);
         when(modelMapper.map(patientDto, UserCreationResponseDto.class)).thenReturn(userCreationResponseDto);
 
@@ -279,7 +279,7 @@ public class UserCreationServiceImplTest {
         when(userActivationRequest.getUsername()).thenReturn(username);
         final UserCreation userCreation = mock(UserCreation.class);
         when(userCreation.isVerified()).thenReturn(initialVerified).thenReturn(verified);
-        when(userCreation.getEmailTokenExpiration()).thenReturn(emailTokenExpiration);
+        when(userCreation.getEmailTokenExpirationAsInstant()).thenReturn(emailTokenExpiration);
         when(userCreation.getPatientId()).thenReturn(patientId);
         when(userCreationRepository.findOneByEmailTokenAndVerificationCode(emailToken, verificationCode)).thenReturn(Optional.of(userCreation));
         final PatientDto patientDto = mock(PatientDto.class);
@@ -348,7 +348,7 @@ public class UserCreationServiceImplTest {
         when(userActivationRequest.getUsername()).thenReturn(username);
         final UserCreation userCreation = mock(UserCreation.class);
         when(userCreation.isVerified()).thenReturn(initialVerified).thenReturn(verified);
-        when(userCreation.getEmailTokenExpiration()).thenReturn(emailTokenExpiration);
+        when(userCreation.getEmailTokenExpirationAsInstant()).thenReturn(emailTokenExpiration);
         when(userCreation.getPatientId()).thenReturn(patientId);
         when(userCreationRepository.findOneByEmailTokenAndVerificationCode(emailToken, verificationCode)).thenReturn(Optional.of(userCreation));
         final PatientDto patientDto = mock(PatientDto.class);
@@ -415,7 +415,7 @@ public class UserCreationServiceImplTest {
         when(userActivationRequest.getConfirmPassword()).thenReturn(confirmPassword);
         final UserCreation userCreation = mock(UserCreation.class);
         when(userCreation.isVerified()).thenReturn(initialVerified).thenReturn(verified);
-        when(userCreation.getEmailTokenExpiration()).thenReturn(emailTokenExpiration);
+        when(userCreation.getEmailTokenExpirationAsInstant()).thenReturn(emailTokenExpiration);
         when(userCreation.getPatientId()).thenReturn(patientId);
         when(userCreationRepository.findOneByEmailTokenAndVerificationCode(emailToken, verificationCode)).thenReturn(Optional.of(userCreation));
         final PatientDto patientDto = mock(PatientDto.class);
@@ -482,7 +482,7 @@ public class UserCreationServiceImplTest {
         when(userActivationRequest.getConfirmPassword()).thenReturn(confirmPassword);
         final UserCreation userCreation = mock(UserCreation.class);
         when(userCreation.isVerified()).thenReturn(initialVerified).thenReturn(verified);
-        when(userCreation.getEmailTokenExpiration()).thenReturn(emailTokenExpiration);
+        when(userCreation.getEmailTokenExpirationAsInstant()).thenReturn(emailTokenExpiration);
         when(userCreation.getPatientId()).thenReturn(patientId);
         when(userCreationRepository.findOneByEmailTokenAndVerificationCode(emailToken, verificationCode)).thenReturn(Optional.empty());
         final PatientDto patientDto = mock(PatientDto.class);
@@ -549,7 +549,7 @@ public class UserCreationServiceImplTest {
         when(userActivationRequest.getConfirmPassword()).thenReturn(confirmPassword);
         final UserCreation userCreation = mock(UserCreation.class);
         when(userCreation.isVerified()).thenReturn(initialVerified).thenReturn(verified);
-        when(userCreation.getEmailTokenExpiration()).thenReturn(emailTokenExpiration);
+        when(userCreation.getEmailTokenExpirationAsInstant()).thenReturn(emailTokenExpiration);
         when(userCreation.getPatientId()).thenReturn(patientId);
         when(userCreationRepository.findOneByEmailTokenAndVerificationCode(emailToken, verificationCode)).thenReturn(Optional.of(userCreation));
         final PatientDto patientDto = mock(PatientDto.class);
@@ -616,7 +616,7 @@ public class UserCreationServiceImplTest {
         when(userActivationRequest.getConfirmPassword()).thenReturn(confirmPassword);
         final UserCreation userCreation = mock(UserCreation.class);
         when(userCreation.isVerified()).thenReturn(initialVerified).thenReturn(verified);
-        when(userCreation.getEmailTokenExpiration()).thenReturn(emailTokenExpiration);
+        when(userCreation.getEmailTokenExpirationAsInstant()).thenReturn(emailTokenExpiration);
         when(userCreation.getPatientId()).thenReturn(patientId);
         when(userCreationRepository.findOneByEmailTokenAndVerificationCode(emailToken, verificationCode)).thenReturn(Optional.of(userCreation));
         final PatientDto patientDto = mock(PatientDto.class);
@@ -683,7 +683,7 @@ public class UserCreationServiceImplTest {
         when(userActivationRequest.getConfirmPassword()).thenReturn(confirmPassword);
         final UserCreation userCreation = mock(UserCreation.class);
         when(userCreation.isVerified()).thenReturn(initialVerified).thenReturn(verified);
-        when(userCreation.getEmailTokenExpiration()).thenReturn(emailTokenExpiration);
+        when(userCreation.getEmailTokenExpirationAsInstant()).thenReturn(emailTokenExpiration);
         when(userCreation.getPatientId()).thenReturn(patientId);
         when(userCreationRepository.findOneByEmailTokenAndVerificationCode(emailToken, verificationCode)).thenReturn(Optional.of(userCreation));
         final PatientDto patientDto = mock(PatientDto.class);

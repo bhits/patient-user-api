@@ -29,11 +29,12 @@ public class UserCreation {
     @NotEmpty
     private String verificationCode;
 
-    @Transient
-    private Instant emailTokenExpiration;
-
     @NotEmpty
-    private Date dateEmailTokenExpiration;
+    private Date emailTokenExpiration;
+
+    @Transient
+    @Future
+    private Instant emailTokenExpirationAsInstant;
 
     private boolean verified;
 
@@ -79,22 +80,22 @@ public class UserCreation {
         this.verificationCode = verificationCode;
     }
 
-    public Instant getEmailTokenExpiration() {
+        public Date getEmailTokenExpiration() {
         return emailTokenExpiration;
     }
 
-    public void setEmailTokenExpiration(Instant emailTokenExpiration) {
-        this.dateEmailTokenExpiration = (new Jsr310JpaConverters.InstantConverter()).convertToDatabaseColumn(emailTokenExpiration);
-        this.emailTokenExpiration = emailTokenExpiration;
+    public void setEmailTokenExpiration(Date emailTokenExpirationAsInstant) {
+        this.emailTokenExpirationAsInstant = (new Jsr310JpaConverters.InstantConverter()).convertToEntityAttribute(emailTokenExpirationAsInstant);
+        this.emailTokenExpiration = emailTokenExpirationAsInstant;
     }
 
-    public Date getDateEmailTokenExpiration() {
-        return dateEmailTokenExpiration;
+    public Instant getEmailTokenExpirationAsInstant() {
+        return emailTokenExpirationAsInstant;
     }
 
-    public void setDateEmailTokenExpiration(Date dateEmailTokenExpiration) {
-        this.emailTokenExpiration = (new Jsr310JpaConverters.InstantConverter()).convertToEntityAttribute(dateEmailTokenExpiration);
-        this.dateEmailTokenExpiration = dateEmailTokenExpiration;
+    public void setEmailTokenExpirationAsInstant(Instant emailTokenExpirationAsInstant) {
+        this.emailTokenExpiration = (new Jsr310JpaConverters.InstantConverter()).convertToDatabaseColumn(emailTokenExpirationAsInstant);
+        this.emailTokenExpirationAsInstant = emailTokenExpirationAsInstant;
     }
 
     public boolean isVerified() {

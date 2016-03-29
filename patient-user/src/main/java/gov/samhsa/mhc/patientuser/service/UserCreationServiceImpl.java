@@ -68,7 +68,7 @@ public class UserCreationServiceImpl implements UserCreationService {
         final UserCreation userCreation = userCreationRepository.findOneByPatientId(patientDto.getId())
                 .orElseGet(UserCreation::new);
         assertNotAlreadyVerified(userCreation);
-        userCreation.setEmailTokenExpiration(emailTokenExpirationDate);
+        userCreation.setEmailTokenExpirationAsInstant(emailTokenExpirationDate);
         userCreation.setEmailToken(emailToken);
         userCreation.setPatientId(patientDto.getId());
         userCreation.setUserType(userType);
@@ -79,7 +79,7 @@ public class UserCreationServiceImpl implements UserCreationService {
         // Prepare response for the patient user creation
         final UserCreationResponseDto response = modelMapper.map(patientDto, UserCreationResponseDto.class);
         response.setVerificationCode(saved.getVerificationCode());
-        response.setEmailTokenExpiration(saved.getEmailTokenExpiration());
+        response.setEmailTokenExpiration(saved.getEmailTokenExpirationAsInstant());
         // Send email with verification link
         emailSender.sendEmailWithVerificationLink(
                 patientDto.getEmail(),
@@ -95,7 +95,7 @@ public class UserCreationServiceImpl implements UserCreationService {
         final UserCreation userCreation = userCreationRepository.findOneByPatientId(patientId).orElseThrow(() -> new UserCreationNotFoundException("No user creation record found for patient id: " + patientId));
         final UserCreationResponseDto response = modelMapper.map(patientDto, UserCreationResponseDto.class);
         response.setVerificationCode(userCreation.getVerificationCode());
-        response.setEmailTokenExpiration(userCreation.getEmailTokenExpiration());
+        response.setEmailTokenExpiration(userCreation.getEmailTokenExpirationAsInstant());
         return response;
     }
 
@@ -158,7 +158,7 @@ public class UserCreationServiceImpl implements UserCreationService {
                     throw new UserIsAlreadyVerifiedException();
                 }
                 final Boolean verified = userCreationRepository.findOneByEmailToken(emailToken)
-                        .map(UserCreation::getEmailTokenExpiration)
+                        .map(UserCreation::getEmailTokenExpirationAsInstant)
                         .map(expiration -> expiration.isAfter(now))
                         .filter(Boolean.TRUE::equals)
                         .orElseThrow(VerificationFailedException::new);
@@ -169,7 +169,7 @@ public class UserCreationServiceImpl implements UserCreationService {
                 final LocalDate birthDateNullSafe = birthDate.filter(Objects::nonNull).orElseThrow(VerificationFailedException::new);
                 final Long patientId = userCreationRepository
                         .findOneByEmailTokenAndVerificationCode(emailToken, verificationCodeNullSafe)
-                        .filter(uc -> uc.getEmailTokenExpiration().isAfter(now))
+                        .filter(uc -> uc.getEmailTokenExpirationAsInstant().isAfter(now))
                         .map(UserCreation::getPatientId)
                         .orElseThrow(VerificationFailedException::new);
                 final PatientDto patientDto = phrService.findPatientProfileById(patientId, true);
@@ -220,7 +220,7 @@ public class UserCreationServiceImpl implements UserCreationService {
     }
 
     private void assertEmailTokenNotExpired(UserCreation userCreation) {
-        if (userCreation.getEmailTokenExpiration().isBefore(Instant.now())) {
+        if (userCreation.getEmailTokenExpirationAsInstant().isBefore(Instant.now())) {
             throw new EmailTokenExpiredException();
         }
     }
