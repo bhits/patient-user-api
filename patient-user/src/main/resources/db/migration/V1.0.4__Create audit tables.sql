@@ -1,10 +1,9 @@
-/*CREATE TABLE `patient-user`.revinfo (id INT AUTO_INCREMENT NOT NULL, timestamp BIGINT NOT NULL, username VARCHAR(255) NULL, CONSTRAINT PK_REVINFO PRIMARY KEY (id));
+CREATE TABLE `patient-user`.revinfo (id INT AUTO_INCREMENT NOT NULL, timestamp BIGINT NOT NULL, username VARCHAR(255) NULL, CONSTRAINT PK_REVINFO PRIMARY KEY (id));
 CREATE TABLE `patient-user`.scope_aud (id BIGINT NOT NULL, rev INT NOT NULL, revtype TINYINT NULL, scope VARCHAR(255) NULL);
-CREATE TABLE `patient-user`.user_creation_aud (id BIGINT NOT NULL, rev INT NOT NULL, revtype TINYINT NULL, date_email_token_expiration datetime(6) NULL, email_token VARCHAR(255) NULL, patient_id BIGINT NULL, user_id VARCHAR(255) NULL, verification_code VARCHAR(255) NULL, verified BIT(1) NULL, user_type BIGINT NULL);
+CREATE TABLE `patient-user`.user_creation_aud (id BIGINT NOT NULL, rev INT NOT NULL, revtype TINYINT NULL, email_token VARCHAR(255) NULL, email_token_expiration datetime(6) NULL, patient_id BIGINT NULL, user_id VARCHAR(255) NULL, verification_code VARCHAR(255) NULL, verified BIT(1) NULL, user_type BIGINT NULL);
 CREATE TABLE `patient-user`.user_scope_assignment_aud (id BIGINT NOT NULL, rev INT NOT NULL, revtype TINYINT NULL, scope BIGINT NULL, user_creation BIGINT NULL);
 CREATE TABLE `patient-user`.user_type_aud (id BIGINT NOT NULL, rev INT NOT NULL, revtype TINYINT NULL, type VARCHAR(255) NULL);
 CREATE TABLE `patient-user`.user_type_scopes_aud (rev INT NOT NULL, user_type BIGINT NOT NULL, scopes BIGINT NOT NULL, revtype TINYINT NULL);
-ALTER TABLE `patient-user`.user_creation ADD date_email_token_expiration datetime(6) NULL;
 ALTER TABLE `patient-user`.scope_aud ADD PRIMARY KEY (id, rev);
 ALTER TABLE `patient-user`.user_creation_aud ADD PRIMARY KEY (id, rev);
 ALTER TABLE `patient-user`.user_scope_assignment_aud ADD PRIMARY KEY (id, rev);
@@ -19,5 +18,3 @@ ALTER TABLE `patient-user`.user_scope_assignment_aud ADD CONSTRAINT FK_cae2sagas
 ALTER TABLE `patient-user`.scope_aud ADD CONSTRAINT FK_jyp5bsp3ufik7uducv6rryovs FOREIGN KEY (rev) REFERENCES `patient-user`.revinfo (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
 ALTER TABLE `patient-user`.user_type_aud ADD CONSTRAINT FK_ml3u7cqc2duc9h640w0shpi7h FOREIGN KEY (rev) REFERENCES `patient-user`.revinfo (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
 ALTER TABLE `patient-user`.user_type_scopes_aud ADD CONSTRAINT FK_pkgqwve51bevjrpqy7ios240q FOREIGN KEY (rev) REFERENCES `patient-user`.revinfo (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `patient-user`.user_creation DROP COLUMN email_token_expiration;
-*/
