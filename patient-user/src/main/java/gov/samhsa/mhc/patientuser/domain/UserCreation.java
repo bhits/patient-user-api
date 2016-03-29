@@ -29,7 +29,7 @@ public class UserCreation {
     @NotEmpty
     private String verificationCode;
 
-    @NotEmpty
+    @NotNull
     private Date emailTokenExpiration;
 
     @Transient
