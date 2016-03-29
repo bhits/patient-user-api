@@ -108,6 +108,7 @@ public class UserCreationServiceImpl implements UserCreationService {
                 userActivationRequest.getEmailToken(),
                 userActivationRequest.getVerificationCode())
                 .orElseThrow(UserActivationCannotBeVerifiedException::new);
+
         // Assert user creation process preconditions
         assertNotAlreadyVerified(userCreation);
         assertEmailTokenNotExpired(userCreation);

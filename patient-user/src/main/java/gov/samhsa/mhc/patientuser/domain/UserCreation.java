@@ -10,6 +10,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "patientId"),
@@ -30,10 +31,10 @@ public class UserCreation {
     private String verificationCode;
 
     @NotNull
+    @Future
     private Date emailTokenExpiration;
 
     @Transient
-    @Future
     private Instant emailTokenExpirationAsInstant;
 
     private boolean verified;
@@ -84,18 +85,20 @@ public class UserCreation {
         return emailTokenExpiration;
     }
 
-    public void setEmailTokenExpiration(Date emailTokenExpirationAsInstant) {
-        this.emailTokenExpirationAsInstant = (new Jsr310JpaConverters.InstantConverter()).convertToEntityAttribute(emailTokenExpirationAsInstant);
-        this.emailTokenExpiration = emailTokenExpirationAsInstant;
+    public void setEmailTokenExpiration(Date emailTokenExpiration) {
+        this.emailTokenExpirationAsInstant = (new Jsr310JpaConverters.InstantConverter()).convertToEntityAttribute(emailTokenExpiration);
+        this.emailTokenExpiration = emailTokenExpiration;
     }
 
     public Instant getEmailTokenExpirationAsInstant() {
-        return emailTokenExpirationAsInstant;
+        if(Objects.nonNull(emailTokenExpiration)){
+            return (new Jsr310JpaConverters.InstantConverter()).convertToEntityAttribute(emailTokenExpiration);
+        }
+        return null;
     }
 
     public void setEmailTokenExpirationAsInstant(Instant emailTokenExpirationAsInstant) {
         this.emailTokenExpiration = (new Jsr310JpaConverters.InstantConverter()).convertToDatabaseColumn(emailTokenExpirationAsInstant);
-        this.emailTokenExpirationAsInstant = emailTokenExpirationAsInstant;
     }
 
     public boolean isVerified() {
