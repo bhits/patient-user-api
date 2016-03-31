@@ -97,7 +97,7 @@ spring:
 spring:
   profiles: docker
   datasource:
-      url: jdbc:mysql://patient-user-database:3306/patient-user?autoReconnect=true
+      url: jdbc:mysql://patient-user-db.mhc:3306/patient-user?autoReconnect=true
 server:
   ssl:
     key-store: /java/keystore/mhc.keystore
