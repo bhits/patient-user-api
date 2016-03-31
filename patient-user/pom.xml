@@ -56,7 +56,7 @@
         <spring.cloud.version>Brixton.M4</spring.cloud.version>
         <mhc-common-libraries.version>1.2.0</mhc-common-libraries.version>
         <modelmapper.version>0.7.5</modelmapper.version>
-        <cloudfoundry-identity-scim.version>3.2.1</cloudfoundry-identity-scim.version>
+        <cloudfoundry-identity-model.version>3.2.1</cloudfoundry-identity-model.version>
         <!-- Test -->
         <powermock.version>1.6.4</powermock.version>
         <commons-lang3.version>3.4</commons-lang3.version>
@@ -65,10 +65,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-oauth2</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -89,12 +85,27 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-ribbon</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-feign</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
-
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -129,11 +140,10 @@
             <artifactId>modelmapper</artifactId>
             <version>${modelmapper.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.cloudfoundry.identity</groupId>
             <artifactId>cloudfoundry-identity-model</artifactId>
-            <version>${cloudfoundry-identity-scim.version}</version>
+            <version>${cloudfoundry-identity-model.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>

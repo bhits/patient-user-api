@@ -1,9 +1,19 @@
 server:
-  context-path: /patientUser
-  port: 8452
-  ssl:
-    key-store: /ssl_keystore.keystore
-    key-store-password: changeit
+  port: 0
+info:
+  component: Patient User API
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+    secure-port-enabled: false
+    non-secure-port-enabled: true
+  client:
+    healthcheck:
+      enabled: true
+    service-url:
+      defaultZone: https://localhost:8761/eureka/
+# TODO: enable feign hystrix back when PHR API is refactored to a service that can be called by this API without OAuth2 token
+feign.hystrix.enabled: false
 spring:
   profiles.active: mysql
   mail:
@@ -40,8 +50,7 @@ security:
       user-info-uri: https://localhost:8443/uaa/userinfo
 mhc:
   apis:
-    phr: https://localhost:8445/phr
-    pp-ui: https://localhost:8444/pp-ui
+    pp-ui: https://localhost/pp-ui
     scim: https://localhost:8443/uaa
   patient-user:
     config:
@@ -110,6 +119,24 @@ security:
       user-info-uri: https://uaa.mhc:8443/uaa/userinfo
 mhc:
   apis:
-    phr: https://phr.mhc:8445/phr
-    pp-ui: https://pp-ui.mhc:8444/pp-ui
+    pp-ui: https://pp-ui.mhc/pp-ui
     scim: https://uaa.mhc:8443/uaa
+---
+spring.profiles: ssl
+server:
+  port: 8452
+  ssl:
+    key-store: /ssl_keystore.keystore
+    key-store-password: changeit
+eureka:
+  instance:
+    secure-port: ${server.port}
+    secure-port-enabled: true
+    non-secure-port-enabled: false
+---
+spring.profiles: standalone-ssl
+spring:
+  profiles:
+    include: ssl
+server:
+  context-path: /patientUser
