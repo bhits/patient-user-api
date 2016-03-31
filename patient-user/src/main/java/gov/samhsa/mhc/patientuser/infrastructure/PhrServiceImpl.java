@@ -1,30 +1,23 @@
 package gov.samhsa.mhc.patientuser.infrastructure;
 
-import gov.samhsa.mhc.patientuser.config.ApplicationContextConfig;
+import feign.FeignException;
 import gov.samhsa.mhc.patientuser.infrastructure.dto.PatientDto;
 import gov.samhsa.mhc.patientuser.infrastructure.exception.PhrPatientNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.util.Assert;
+
+import java.util.function.Function;
 
 @Service
 public class PhrServiceImpl implements PhrService {
 
-    @Value("${mhc.apis.phr}")
-    private String phrApiBaseUri;
+    @Autowired
+    private PhrServiceDefault phrServiceDefault;
 
     @Autowired
-    @Qualifier(ApplicationContextConfig.OAUTH2_REST_TEMPLATE)
-    private OAuth2RestTemplate restTemplate;
-
-    @Autowired
-    @Qualifier(ApplicationContextConfig.OAUTH2_REST_TEMPLATE_CLIENT_CREDENTIALS)
-    private OAuth2RestTemplate restTemplateWithClientCredentials;
+    private PhrServiceClientCredentials phrServiceClientCredentials;
 
     @Override
     public PatientDto findPatientProfileById(Long patientId) {
@@ -33,20 +26,16 @@ public class PhrServiceImpl implements PhrService {
 
     @Override
     public PatientDto findPatientProfileById(Long patientId, boolean useClientCredentials) {
-        final String url = toPatientProfileUri(patientId);
+        Assert.notNull(patientId, "patientId cannot be null");
         try {
-            final RestTemplate selectedRestTemplate = useClientCredentials ? restTemplateWithClientCredentials : restTemplate;
-            final PatientDto patientDto = selectedRestTemplate.getForObject(url, PatientDto.class);
+            final Function<Long, PatientDto> selectedClient = useClientCredentials ? phrServiceClientCredentials::findPatientProfileById : phrServiceDefault::findPatientProfileById;
+            final PatientDto patientDto = selectedClient.apply(patientId);
             return patientDto;
-        } catch (HttpClientErrorException e) {
-            if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-                e = new PhrPatientNotFoundException(e.getStatusCode(), e.getStatusText(), e.getResponseHeaders(), e.getResponseBodyAsByteArray(), null);
+        } catch (FeignException e) {
+            if (e.status() == (HttpStatus.NOT_FOUND.value())) {
+                throw new PhrPatientNotFoundException(HttpStatus.NOT_FOUND, e.getMessage());
             }
             throw e;
         }
-    }
-
-    private final String toPatientProfileUri(Long patientId) {
-        return phrApiBaseUri + "/patients/" + patientId + "/profile";
     }
 }

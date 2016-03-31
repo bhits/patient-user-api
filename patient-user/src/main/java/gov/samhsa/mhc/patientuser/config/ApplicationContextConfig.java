@@ -7,16 +7,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.OAuth2ClientProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
 
 @Configuration
-@EnableJpaAuditing
 public class ApplicationContextConfig {
 
-    public static final String OAUTH2_REST_TEMPLATE = "oauth2RestTemplate";
     public static final String OAUTH2_REST_TEMPLATE_CLIENT_CREDENTIALS = "clientCredentialsOAuth2RestTemplate";
 
     @Value("${security.oauth2.client.access-token-uri}")

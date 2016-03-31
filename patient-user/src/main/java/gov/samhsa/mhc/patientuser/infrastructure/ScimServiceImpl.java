@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestOperations;
 
 import java.util.Objects;
 
@@ -37,7 +37,7 @@ public class ScimServiceImpl implements ScimService {
 
     @Autowired
     @Qualifier(ApplicationContextConfig.OAUTH2_REST_TEMPLATE_CLIENT_CREDENTIALS)
-    private RestTemplate restTemplate;
+    private RestOperations restTemplate;
 
     @Autowired
     public ScimServiceImpl(@Value("${mhc.apis.scim}") String uaaBaseUrl) {
