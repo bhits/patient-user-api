@@ -1,9 +1,12 @@
 package gov.samhsa.mhc.patientuser.domain;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.*;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"scope"}))
+@Audited
 public class Scope {
     @Id
     @GeneratedValue
