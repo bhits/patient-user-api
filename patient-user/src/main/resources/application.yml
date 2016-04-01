@@ -106,21 +106,23 @@ spring:
 spring:
   profiles: docker
   datasource:
-      url: jdbc:mysql://patient-user-db.mhc:3306/patient-user?autoReconnect=true
-server:
-  ssl:
-    key-store: /java/keystore/mhc.keystore
-    key-store-password: changeit
+      url: jdbc:mysql://patient-user-db.mhc.com:3306/patient-user?autoReconnect=true
 security:
   oauth2:
     client:
-      access-token-uri: https://uaa.mhc:8443/uaa/oauth/token
+      access-token-uri: https://uaa.mhc.com:8443/uaa/oauth/token
     resource:
-      user-info-uri: https://uaa.mhc:8443/uaa/userinfo
+      user-info-uri: https://uaa.mhc.com:8443/uaa/userinfo
 mhc:
   apis:
-    pp-ui: https://pp-ui.mhc/pp-ui
-    scim: https://uaa.mhc:8443/uaa
+    pp-ui: https://pp-ui.mhc.com/pp-ui
+    scim: https://uaa.mhc.com:8443/uaa
+eureka:
+  client:
+    service-url:
+      defaultZone: https://discovery-server.mhc.com:8761/eureka/
+  instance:
+    prefer-ip-address: true
 ---
 spring.profiles: ssl
 server:
