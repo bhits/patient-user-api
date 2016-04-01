@@ -1,6 +1,10 @@
 package gov.samhsa.mhc.patientuser.infrastructure.dto;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import gov.samhsa.mhc.patientuser.infrastructure.util.CustomJsonDateDeserializer;
+import gov.samhsa.mhc.patientuser.infrastructure.util.CustomJsonDateSerializer;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -26,6 +30,8 @@ public class PatientDto {
 
     @Past
     @DateTimeFormat(pattern = "MM/dd/yyyy")
+    @JsonDeserialize(using = CustomJsonDateDeserializer.class)
+    @JsonSerialize(using = CustomJsonDateSerializer.class)
     private Date birthDate;
 
     @NotEmpty
