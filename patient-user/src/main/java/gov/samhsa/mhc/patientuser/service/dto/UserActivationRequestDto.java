@@ -17,11 +17,11 @@ public class UserActivationRequestDto {
     private LocalDate birthDate;
 
     @NotEmpty
-    @Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})")
+    @Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$% !\"&'()*+,-./:;<=>?\\\\\\[\\]^_`{|}~]).{6,20})")
     private String password;
 
     @NotEmpty
-    @Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})")
+    @Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$% !\"&'()*+,-./:;<=>?\\\\\\[\\]^_`{|}~]).{6,20})")
     private String confirmPassword;
 
     @NotEmpty
