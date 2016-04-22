@@ -15,6 +15,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 import static org.mockito.Mockito.*;
@@ -28,6 +29,8 @@ public class EmailSenderImplTest {
     private static final String ppUIVerificationRelativePath = "ppUIVerificationRelativePath";
     private static final String subject = "subject";
     private static final String htmlContent = "htmlContent";
+    private static final String fromAddress = "fromAddress";
+    private static final String fromPersonal = "fromPersonal";
     @Mock
     private JavaMailSender javaMailSenderMock;
     private TemplateEngine templateEngineMock;
@@ -47,6 +50,8 @@ public class EmailSenderImplTest {
         when(javaMailSenderMock.createMimeMessage()).thenReturn(mimeMessageMock);
         when(messageSourceMock.getMessage(eq(ReflectionTestUtils.getField(sut, "PROP_EMAIL_VERIFICATION_LINK_SUBJECT").toString()), eq(null), any(Locale.class))).thenReturn(subject);
         when(messageSourceMock.getMessage(eq(ReflectionTestUtils.getField(sut, "PROP_EMAIL_CONFIRM_VERIFICATION_SUBJECT").toString()), eq(null), any(Locale.class))).thenReturn(subject);
+        when(messageSourceMock.getMessage(eq(ReflectionTestUtils.getField(sut, "PROP_EMAIL_FROM_ADDRESS").toString()), eq(null), any(Locale.class))).thenReturn(fromAddress);
+        when(messageSourceMock.getMessage(eq(ReflectionTestUtils.getField(sut, "PROP_EMAIL_FROM_PERSONAL").toString()), eq(null), any(Locale.class))).thenReturn(fromPersonal);
     }
 
     @Test

@@ -1,5 +1,5 @@
 server:
-  port: 0
+  port: 8452
 info:
   component: Patient User API
 eureka:
@@ -17,14 +17,18 @@ feign.hystrix.enabled: false
 spring:
   profiles.active: mysql
   mail:
-    host: smtp.gmail.com
-    port: 587
+    host: mail.feisystems.com
+    port: 25
     protocol: smtp
-    username: consent2share@gmail.com
-    password: fei@columbia
+    username: bhits.mail
+    password: M@il4Bhit$
     properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
+      smtp:
+       auth: true
+       starttls:
+        enable: true
+       ssl:
+        trust: mail.feisystems.com
   messages:
     basename: i18n/messages
 security:
@@ -115,8 +119,8 @@ security:
       user-info-uri: https://uaa.mhc.com:8443/uaa/userinfo
 mhc:
   apis:
-    pp-ui: https://pp-ui.mhc.com/pp-ui
-    scim: https://uaa.mhc.com:8443/uaa
+    pp-ui: https://dockerhost/pp-ui
+    scim: https://dockerhost:8443/uaa
 eureka:
   client:
     service-url:

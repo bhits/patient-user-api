@@ -13,6 +13,7 @@ import org.thymeleaf.context.Context;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
@@ -26,6 +27,10 @@ public class EmailSenderImpl implements EmailSender {
     // Confirm verification
     private static final String PROP_EMAIL_CONFIRM_VERIFICATION_SUBJECT = "email.confirmVerification.subject";
     private static final String TEMPLATE_CONFIRM_VERIFICATION_EMAIL = "confirm-verification-email";
+    private static final String PROP_EMAIL_FROM_ADDRESS = "email.from.address";
+    private static final String PROP_EMAIL_FROM_PERSONAL = "email.from.personal";
+
+
 
     private static final String ENCODING = StandardCharsets.UTF_8.toString();
 
@@ -60,6 +65,8 @@ public class EmailSenderImpl implements EmailSender {
         sendEmail(ctx, email,
                 PROP_EMAIL_VERIFICATION_LINK_SUBJECT,
                 TEMPLATE_VERIFICATION_LINK_EMAIL,
+                PROP_EMAIL_FROM_ADDRESS,
+                PROP_EMAIL_FROM_PERSONAL,
                 Locale.getDefault());
     }
 
@@ -74,19 +81,23 @@ public class EmailSenderImpl implements EmailSender {
         sendEmail(ctx, email,
                 PROP_EMAIL_CONFIRM_VERIFICATION_SUBJECT,
                 TEMPLATE_CONFIRM_VERIFICATION_EMAIL,
+                PROP_EMAIL_FROM_ADDRESS,
+                PROP_EMAIL_FROM_PERSONAL,
                 Locale.getDefault());
     }
 
-    private void sendEmail(Context ctx, String email, String subjectPropKey, String templateName, Locale locale) {
+    private void sendEmail(Context ctx, String email, String subjectPropKey, String templateName,String fromAddressPropKey,String fromPersonalPropKey, Locale locale) {
         try {
             final MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage, ENCODING);
             message.setSubject(messageSource.getMessage(subjectPropKey, null, locale));
             message.setTo(email);
+            //message.setFrom("noreply@mhc.com", "MHC");
+            message.setFrom(messageSource.getMessage(fromAddressPropKey, null, locale), messageSource.getMessage(fromPersonalPropKey, null, locale));
             final String htmlContent = templateEngine.process(templateName, ctx);
             message.setText(htmlContent, true);
             javaMailSender.send(mimeMessage);
-        } catch (MessagingException e) {
+        } catch (MessagingException | UnsupportedEncodingException e) {
             throw new EmailSenderException(e);
         }
     }
