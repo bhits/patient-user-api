@@ -120,7 +120,7 @@ security:
 mhc:
   apis:
     pp-ui: https://dockerhost/pp-ui
-    scim: https://dockerhost:8443/uaa
+    scim: https://uaa.mhc.com:8443/uaa
 eureka:
   client:
     service-url:
