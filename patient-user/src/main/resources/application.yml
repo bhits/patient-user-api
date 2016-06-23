@@ -37,7 +37,7 @@ security:
   oauth2:
     client:
       client-id: patient-user
-      client-secret: patient-user-secret
+      client-secret: changeit
       access-token-uri: https://localhost:8443/uaa/oauth/token
     resource:
       jwt:
