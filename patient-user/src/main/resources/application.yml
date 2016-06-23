@@ -37,7 +37,7 @@ security:
   oauth2:
     client:
       client-id: patient-user
-      client-secret: patient-user-secret
+      client-secret: changeit
       access-token-uri: https://localhost:8443/uaa/oauth/token
     resource:
       jwt:
@@ -60,6 +60,7 @@ mhc:
     config:
       pp-ui-verification-relative-path: "/fe/account/verification#emailToken="
       email-token-expiration-in-days: 7
+  brand: Consent2Share
 logging:
   file: /java/MHC_LOGS/patient-user/patient-user.log
   level:

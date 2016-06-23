@@ -37,6 +37,11 @@ public class EmailSenderImpl implements EmailSender {
     private static final String PARAM_RECIPIENT_NAME = "recipientName";
     private static final String PARAM_LINK_URL = "linkUrl";
 
+    private static final String PARAM_BRAND = "brand";
+
+    @Value("${mhc.brand}")
+    private String brand;
+
     @Value("${mhc.apis.pp-ui}")
     private String ppUIBaseUri;
 
@@ -62,6 +67,7 @@ public class EmailSenderImpl implements EmailSender {
         final Context ctx = new Context();
         ctx.setVariable(PARAM_RECIPIENT_NAME, recipientFullName);
         ctx.setVariable(PARAM_LINK_URL, verificationUrl);
+        ctx.setVariable(PARAM_BRAND, brand);
         sendEmail(ctx, email,
                 PROP_EMAIL_VERIFICATION_LINK_SUBJECT,
                 TEMPLATE_VERIFICATION_LINK_EMAIL,
@@ -78,6 +84,7 @@ public class EmailSenderImpl implements EmailSender {
         final Context ctx = new Context();
         ctx.setVariable(PARAM_RECIPIENT_NAME, recipientFullName);
         ctx.setVariable(PARAM_LINK_URL, ppUIBaseUri);
+        ctx.setVariable(PARAM_BRAND, brand);
         sendEmail(ctx, email,
                 PROP_EMAIL_CONFIRM_VERIFICATION_SUBJECT,
                 TEMPLATE_CONFIRM_VERIFICATION_EMAIL,
