@@ -242,4 +242,8 @@ public class UserCreationServiceImpl implements UserCreationService {
             throw new PasswordConfirmationFailedException();
         }
     }
+
+    public ScopeAssignmentResponseDto assignScopeToUser(ScopeAssignmentRequestDto scopeAssignmentRequestDto){
+        return null;
+    }
 }

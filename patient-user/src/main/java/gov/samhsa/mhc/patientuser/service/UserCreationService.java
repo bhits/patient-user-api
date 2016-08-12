@@ -18,4 +18,6 @@ public interface UserCreationService {
 
     @Transactional(readOnly = true)
     VerificationResponseDto verify(String emailToken, Optional<String> verificationCode, Optional<LocalDate> birthDate);
+
+    ScopeAssignmentResponseDto assignScopeToUser(ScopeAssignmentRequestDto scopeAssignmentRequestDto);
 }
