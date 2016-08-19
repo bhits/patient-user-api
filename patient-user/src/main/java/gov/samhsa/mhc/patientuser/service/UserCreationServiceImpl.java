@@ -53,8 +53,14 @@ public class UserCreationServiceImpl implements UserCreationService {
     @Autowired
     private ScimService scimService;
 
+    @Autowired
+    private ScopeRepository scopeRepository;
+
     @Value("${mhc.patient-user.config.email-token-expiration-in-days}")
     private int emailTokenExpirationInDays;
+
+    @Autowired
+    private UserScopeAssignmentRepository userScopeAssignmentRepository;
 
     @Override
     @Transactional
@@ -244,6 +250,22 @@ public class UserCreationServiceImpl implements UserCreationService {
     }
 
     public ScopeAssignmentResponseDto assignScopeToUser(ScopeAssignmentRequestDto scopeAssignmentRequestDto){
+            scopeAssignmentRequestDto.getScopes().stream()
+                .forEach(scope -> {
+                    Scope foundScope = Optional.ofNullable(scopeRepository.findByScope(scope)).orElseThrow(ScopeDoesNotExistInDBException::new);
+                    assignNewScopesToUsers(foundScope);
+                });
         return null;
+    }
+
+    private void assignNewScopesToUsers(Scope scope){
+        userCreationRepository.findAll().stream()
+                .forEach(userCreation -> {
+                    UserScopeAssignment userScopeAssignment =  new UserScopeAssignment();
+                    userScopeAssignment.setScope(scope);
+                    userScopeAssignment.setUserCreation(userCreation);
+                    userScopeAssignmentRepository.save(userScopeAssignment);
+                    scimService.updateUserWithNewGroup(userCreation, scope);
+                });
     }
 }

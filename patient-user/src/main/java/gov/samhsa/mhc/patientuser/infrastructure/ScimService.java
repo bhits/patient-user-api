@@ -15,4 +15,6 @@ public interface ScimService {
     ScimGroupMember addUserToGroup(UserCreation userCreation, Scope scope, String groupId);
 
     void addUserToGroups(UserCreation userCreation);
+
+     void updateUserWithNewGroup(UserCreation userCreation, Scope scope);
 }

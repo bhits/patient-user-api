@@ -1,10 +1,7 @@
 package gov.samhsa.mhc.patientuser.infrastructure;
 
 import gov.samhsa.mhc.patientuser.config.ApplicationContextConfig;
-import gov.samhsa.mhc.patientuser.domain.Scope;
-import gov.samhsa.mhc.patientuser.domain.UserCreation;
-import gov.samhsa.mhc.patientuser.domain.UserScopeAssignment;
-import gov.samhsa.mhc.patientuser.domain.UserScopeAssignmentRepository;
+import gov.samhsa.mhc.patientuser.domain.*;
 import gov.samhsa.mhc.patientuser.infrastructure.dto.IdentifierDto;
 import gov.samhsa.mhc.patientuser.infrastructure.dto.SearchResultsWrapperWithId;
 import gov.samhsa.mhc.patientuser.infrastructure.exception.IdCannotBeFoundException;
@@ -72,8 +69,8 @@ public class ScimServiceImpl implements ScimService {
         userScopeAssignment.setUserCreation(userCreation);
         userScopeAssignment.setScope(userCreation.getUserType().getScopes().stream().filter(scope::equals).findAny().get());
         ScimGroupMember scimGroupMember = new ScimGroupMember(userCreation.getUserId());
-        userScopeAssignmentRepository.save(userScopeAssignment);
         final ScimGroupMember scimGroupMemberResponse = restTemplate.postForObject(groupsEndpoint + "/{groupId}/members", scimGroupMember, ScimGroupMember.class, groupId);
+        userScopeAssignmentRepository.save(userScopeAssignment);
         return scimGroupMemberResponse;
     }
 
@@ -89,5 +86,11 @@ public class ScimServiceImpl implements ScimService {
                 .map(IdentifierDto::getId)
                 .filter(StringUtils::hasText)
                 .findAny().orElseThrow(() -> new IdCannotBeFoundException());
+    }
+    @Override
+    public void updateUserWithNewGroup(UserCreation userCreation, Scope scope){
+        ScimGroupMember scimGroupMember = new ScimGroupMember(userCreation.getUserId());
+        String groupId = findGroupIdByDisplayName(scope.getScope());
+        final ScimGroupMember scimGroupMemberResponse = restTemplate.postForObject(groupsEndpoint + "/{groupId}/members", scimGroupMember, ScimGroupMember.class, groupId);
     }
 }
