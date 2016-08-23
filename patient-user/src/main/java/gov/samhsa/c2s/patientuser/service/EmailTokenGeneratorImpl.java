@@ -1,7 +1,7 @@
 package gov.samhsa.c2s.patientuser.service;
 
 import gov.samhsa.c2s.patientuser.domain.UserCreationRepository;
-import gov.samhsa.mhc.common.util.UniqueValueGenerator;
+import gov.samhsa.c2s.common.util.UniqueValueGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

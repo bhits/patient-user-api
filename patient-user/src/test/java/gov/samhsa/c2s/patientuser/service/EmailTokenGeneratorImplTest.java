@@ -1,7 +1,7 @@
 package gov.samhsa.c2s.patientuser.service;
 
 import gov.samhsa.c2s.patientuser.domain.UserCreationRepository;
-import gov.samhsa.mhc.common.util.UniqueValueGeneratorException;
+import gov.samhsa.c2s.common.util.UniqueValueGeneratorException;
 import gov.samhsa.c2s.patientuser.domain.UserCreation;
 import org.junit.Rule;
 import org.junit.Test;
