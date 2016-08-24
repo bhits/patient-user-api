@@ -66,11 +66,20 @@ public class ScimServiceImpl implements ScimService {
     @Transactional
     public ScimGroupMember addUserToGroup(UserCreation userCreation, Scope scope, String groupId) {
         UserScopeAssignment userScopeAssignment = new UserScopeAssignment();
-        userScopeAssignment.setUserCreation(userCreation);
-        userScopeAssignment.setScope(userCreation.getUserType().getScopes().stream().filter(scope::equals).findAny().get());
-        ScimGroupMember scimGroupMember = new ScimGroupMember(userCreation.getUserId());
-        final ScimGroupMember scimGroupMemberResponse = restTemplate.postForObject(groupsEndpoint + "/{groupId}/members", scimGroupMember, ScimGroupMember.class, groupId);
-        userScopeAssignmentRepository.save(userScopeAssignment);
+        ScimGroupMember scimGroupMemberResponse = null;
+        try{
+            userScopeAssignment.setUserCreation(userCreation);
+            userScopeAssignment.setScope(userCreation.getUserType().getScopes().stream().filter(scope::equals).findAny().get());
+            ScimGroupMember scimGroupMember = new ScimGroupMember(userCreation.getUserId());
+            userScopeAssignment.setAssigned(true);
+            userScopeAssignmentRepository.save(userScopeAssignment);
+            scimGroupMemberResponse = restTemplate.postForObject(groupsEndpoint + "/{groupId}/members", scimGroupMember, ScimGroupMember.class, groupId);
+        }catch(Exception e){
+            logger.error("Error in assigning scope ot user in UAA.");
+            userScopeAssignment.setAssigned(false);
+            userScopeAssignmentRepository.save(userScopeAssignment);
+        }
+
         return scimGroupMemberResponse;
     }
 

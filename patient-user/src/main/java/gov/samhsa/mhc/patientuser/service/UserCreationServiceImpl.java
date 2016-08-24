@@ -264,8 +264,15 @@ public class UserCreationServiceImpl implements UserCreationService {
                     UserScopeAssignment userScopeAssignment =  new UserScopeAssignment();
                     userScopeAssignment.setScope(scope);
                     userScopeAssignment.setUserCreation(userCreation);
-                    userScopeAssignmentRepository.save(userScopeAssignment);
-                    scimService.updateUserWithNewGroup(userCreation, scope);
+                    try {
+                        userScopeAssignment.setAssigned(true);
+                        userScopeAssignmentRepository.save(userScopeAssignment);
+                        scimService.updateUserWithNewGroup(userCreation, scope);
+                    }catch(Exception e){
+                        logger.error("Error in assigning scope ot user in UAA.");
+                        userScopeAssignment.setAssigned(false);
+                        userScopeAssignmentRepository.save(userScopeAssignment);
+                    }
                 });
     }
 }
