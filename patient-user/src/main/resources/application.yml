@@ -52,7 +52,7 @@ security:
                          JwIDAQAB
                          -----END PUBLIC KEY-----
       user-info-uri: https://localhost:8443/uaa/userinfo
-mhc:
+c2s:
   apis:
     pp-ui: https://localhost/pp-ui
     scim: https://localhost:8443/uaa
@@ -62,7 +62,7 @@ mhc:
       email-token-expiration-in-days: 7
   brand: Consent2Share
 logging:
-  file: /java/MHC_LOGS/patient-user/patient-user.log
+  file: /java/C2S_LOGS/patient-user/patient-user.log
   level:
     org.springframework.security: debug
 ---
@@ -111,21 +111,21 @@ spring:
 spring:
   profiles: docker
   datasource:
-      url: jdbc:mysql://patient-user-db.mhc.com:3306/patient-user?autoReconnect=true
+      url: jdbc:mysql://patient-user-db.c2s.com:3306/patient-user?autoReconnect=true
 security:
   oauth2:
     client:
-      access-token-uri: https://uaa.mhc.com:8443/uaa/oauth/token
+      access-token-uri: https://uaa.c2s.com:8443/uaa/oauth/token
     resource:
-      user-info-uri: https://uaa.mhc.com:8443/uaa/userinfo
-mhc:
+      user-info-uri: https://uaa.c2s.com:8443/uaa/userinfo
+c2s:
   apis:
     pp-ui: https://dockerhost/pp-ui
-    scim: https://uaa.mhc.com:8443/uaa
+    scim: https://uaa.c2s.com:8443/uaa
 eureka:
   client:
     service-url:
-      defaultZone: https://discovery-server.mhc.com:8761/eureka/
+      defaultZone: https://discovery-server.c2s.com:8761/eureka/
   instance:
     prefer-ip-address: true
 ---

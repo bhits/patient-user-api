@@ -54,7 +54,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <spring.cloud.version>Brixton.M4</spring.cloud.version>
-        <mhc-common-libraries.version>1.2.0</mhc-common-libraries.version>
+        <c2s-common-libraries.version>1.5.0</c2s-common-libraries.version>
         <modelmapper.version>0.7.5</modelmapper.version>
         <cloudfoundry-identity-model.version>3.2.1</cloudfoundry-identity-model.version>
         <!-- Test -->
@@ -116,24 +116,24 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
         <dependency>
-            <groupId>gov.samhsa.mhc</groupId>
+            <groupId>gov.samhsa.c2s</groupId>
             <artifactId>common-util</artifactId>
-            <version>${mhc-common-libraries.version}</version>
+            <version>${c2s-common-libraries.version}</version>
         </dependency>
         <dependency>
-            <groupId>gov.samhsa.mhc</groupId>
+            <groupId>gov.samhsa.c2s</groupId>
             <artifactId>oauth2</artifactId>
-            <version>${mhc-common-libraries.version}</version>
+            <version>${c2s-common-libraries.version}</version>
         </dependency>
         <dependency>
-            <groupId>gov.samhsa.mhc</groupId>
+            <groupId>gov.samhsa.c2s</groupId>
             <artifactId>validator-extension</artifactId>
-            <version>${mhc-common-libraries.version}</version>
+            <version>${c2s-common-libraries.version}</version>
         </dependency>
         <dependency>
-            <groupId>gov.samhsa.mhc</groupId>
+            <groupId>gov.samhsa.c2s</groupId>
             <artifactId>logger-wrapper</artifactId>
-            <version>${mhc-common-libraries.version}</version>
+            <version>${c2s-common-libraries.version}</version>
         </dependency>
         <dependency>
             <groupId>org.modelmapper</groupId>
@@ -187,9 +187,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>gov.samhsa.mhc</groupId>
+            <groupId>gov.samhsa.c2s</groupId>
             <artifactId>common-unit</artifactId>
-            <version>${mhc-common-libraries.version}</version>
+            <version>${c2s-common-libraries.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
