@@ -15,6 +15,10 @@ public class UserScopeAssignment {
     private UserCreation userCreation;
     @ManyToOne
     private Scope scope;
+    /**
+     *  Verify if scope is assign in UAA.
+     */
+    private boolean assigned = false;
 
     public Long getId() {
         return id;
@@ -38,5 +42,13 @@ public class UserScopeAssignment {
 
     public void setScope(Scope scope) {
         this.scope = scope;
+    }
+
+    public boolean isAssigned() {
+        return assigned;
+    }
+
+    public void setAssigned(boolean assigned) {
+        this.assigned = assigned;
     }
 }

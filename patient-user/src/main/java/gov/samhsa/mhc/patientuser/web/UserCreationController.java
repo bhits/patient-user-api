@@ -38,4 +38,9 @@ public class UserCreationController {
                                           @RequestParam("birthDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> birthDate) {
         return userCreationService.verify(emailToken, verificationCode, birthDate);
     }
+
+    @RequestMapping(value = "/scopeAssignments", method = RequestMethod.POST)
+    public ScopeAssignmentResponseDto assignScope(@Valid @RequestBody ScopeAssignmentRequestDto scopeAssignmentRequestDto) {
+        return userCreationService.assignScopeToUser(scopeAssignmentRequestDto);
+    }
 }
