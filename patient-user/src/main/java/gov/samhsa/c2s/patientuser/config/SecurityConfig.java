@@ -32,6 +32,7 @@ public class SecurityConfig {
                 http.authorizeRequests()
                         .antMatchers(HttpMethod.GET, "/creations/**").access(hasScopes("patientUser.read", "phr.allPatientProfiles_read", "scim.read"))
                         .antMatchers(HttpMethod.POST, "/creations/**").access(hasScopes("patientUser.write", "phr.allPatientProfiles_read", "scim.write"))
+                        .antMatchers(HttpMethod.POST, "/scopeAssignments").access(hasScopes("patientUser.scope_assign"))
                         .antMatchers(HttpMethod.POST, "/activations/**").permitAll()
                         .antMatchers(HttpMethod.GET, "/verifications/**").permitAll()
                         .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()

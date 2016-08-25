@@ -1,6 +1,8 @@
 package gov.samhsa.c2s.patientuser.service;
 
 import gov.samhsa.c2s.patientuser.service.dto.*;
+import gov.samhsa.c2s.patientuser.service.dto.ScopeAssignmentRequestDto;
+import gov.samhsa.c2s.patientuser.service.dto.ScopeAssignmentResponseDto;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -18,4 +20,6 @@ public interface UserCreationService {
 
     @Transactional(readOnly = true)
     VerificationResponseDto verify(String emailToken, Optional<String> verificationCode, Optional<LocalDate> birthDate);
+
+    ScopeAssignmentResponseDto assignScopeToUser(ScopeAssignmentRequestDto scopeAssignmentRequestDto);
 }

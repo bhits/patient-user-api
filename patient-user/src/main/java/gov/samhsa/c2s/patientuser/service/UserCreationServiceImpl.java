@@ -9,6 +9,9 @@ import gov.samhsa.c2s.common.log.LoggerFactory;
 import gov.samhsa.c2s.patientuser.infrastructure.PhrService;
 import gov.samhsa.c2s.patientuser.infrastructure.ScimService;
 import gov.samhsa.c2s.patientuser.infrastructure.dto.PatientDto;
+import gov.samhsa.c2s.patientuser.service.dto.ScopeAssignmentRequestDto;
+import gov.samhsa.c2s.patientuser.service.dto.ScopeAssignmentResponseDto;
+import gov.samhsa.c2s.patientuser.service.exception.ScopeDoesNotExistInDBException;
 import org.cloudfoundry.identity.uaa.scim.ScimUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,8 +56,14 @@ public class UserCreationServiceImpl implements UserCreationService {
     @Autowired
     private ScimService scimService;
 
+    @Autowired
+    private ScopeRepository scopeRepository;
+
     @Value("${c2s.patient-user.config.email-token-expiration-in-days}")
     private int emailTokenExpirationInDays;
+
+    @Autowired
+    private UserScopeAssignmentRepository userScopeAssignmentRepository;
 
     @Override
     @Transactional
@@ -241,5 +250,32 @@ public class UserCreationServiceImpl implements UserCreationService {
         if (!userActivationRequest.getPassword().equals(userActivationRequest.getConfirmPassword())) {
             throw new PasswordConfirmationFailedException();
         }
+    }
+
+    public ScopeAssignmentResponseDto assignScopeToUser(ScopeAssignmentRequestDto scopeAssignmentRequestDto){
+            scopeAssignmentRequestDto.getScopes().stream()
+                .forEach(scope -> {
+                    Scope foundScope = Optional.ofNullable(scopeRepository.findByScope(scope)).orElseThrow(ScopeDoesNotExistInDBException::new);
+                    assignNewScopesToUsers(foundScope);
+                });
+        return null;
+    }
+
+    private void assignNewScopesToUsers(Scope scope){
+        userCreationRepository.findAll().stream()
+                .forEach(userCreation -> {
+                    UserScopeAssignment userScopeAssignment =  new UserScopeAssignment();
+                    userScopeAssignment.setScope(scope);
+                    userScopeAssignment.setUserCreation(userCreation);
+                    try {
+                        userScopeAssignment.setAssigned(true);
+                        userScopeAssignmentRepository.save(userScopeAssignment);
+                        scimService.updateUserWithNewGroup(userCreation, scope);
+                    }catch(Exception e){
+                        logger.error("Error in assigning scope to user in UAA.");
+                        userScopeAssignment.setAssigned(false);
+                        userScopeAssignmentRepository.save(userScopeAssignment);
+                    }
+                });
     }
 }

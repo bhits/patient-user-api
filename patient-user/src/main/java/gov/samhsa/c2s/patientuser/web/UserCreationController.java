@@ -2,6 +2,8 @@ package gov.samhsa.c2s.patientuser.web;
 
 import gov.samhsa.c2s.patientuser.service.UserCreationService;
 import gov.samhsa.c2s.patientuser.service.dto.*;
+import gov.samhsa.c2s.patientuser.service.dto.ScopeAssignmentRequestDto;
+import gov.samhsa.c2s.patientuser.service.dto.ScopeAssignmentResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -37,5 +39,10 @@ public class UserCreationController {
                                           @RequestParam("verificationCode") Optional<String> verificationCode,
                                           @RequestParam("birthDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> birthDate) {
         return userCreationService.verify(emailToken, verificationCode, birthDate);
+    }
+
+    @RequestMapping(value = "/scopeAssignments", method = RequestMethod.POST)
+    public ScopeAssignmentResponseDto assignScope(@Valid @RequestBody ScopeAssignmentRequestDto scopeAssignmentRequestDto) {
+        return userCreationService.assignScopeToUser(scopeAssignmentRequestDto);
     }
 }

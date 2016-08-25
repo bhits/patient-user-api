@@ -69,11 +69,20 @@ public class ScimServiceImpl implements ScimService {
     @Transactional
     public ScimGroupMember addUserToGroup(UserCreation userCreation, Scope scope, String groupId) {
         UserScopeAssignment userScopeAssignment = new UserScopeAssignment();
-        userScopeAssignment.setUserCreation(userCreation);
-        userScopeAssignment.setScope(userCreation.getUserType().getScopes().stream().filter(scope::equals).findAny().get());
-        ScimGroupMember scimGroupMember = new ScimGroupMember(userCreation.getUserId());
-        userScopeAssignmentRepository.save(userScopeAssignment);
-        final ScimGroupMember scimGroupMemberResponse = restTemplate.postForObject(groupsEndpoint + "/{groupId}/members", scimGroupMember, ScimGroupMember.class, groupId);
+        ScimGroupMember scimGroupMemberResponse = null;
+        try{
+            userScopeAssignment.setUserCreation(userCreation);
+            userScopeAssignment.setScope(userCreation.getUserType().getScopes().stream().filter(scope::equals).findAny().get());
+            ScimGroupMember scimGroupMember = new ScimGroupMember(userCreation.getUserId());
+            userScopeAssignment.setAssigned(true);
+            userScopeAssignmentRepository.save(userScopeAssignment);
+            scimGroupMemberResponse = restTemplate.postForObject(groupsEndpoint + "/{groupId}/members", scimGroupMember, ScimGroupMember.class, groupId);
+        }catch(Exception e){
+            logger.error("Error in assigning scope to user in UAA.");
+            userScopeAssignment.setAssigned(false);
+            userScopeAssignmentRepository.save(userScopeAssignment);
+        }
+
         return scimGroupMemberResponse;
     }
 
@@ -89,5 +98,11 @@ public class ScimServiceImpl implements ScimService {
                 .map(IdentifierDto::getId)
                 .filter(StringUtils::hasText)
                 .findAny().orElseThrow(() -> new IdCannotBeFoundException());
+    }
+    @Override
+    public void updateUserWithNewGroup(UserCreation userCreation, Scope scope){
+        ScimGroupMember scimGroupMember = new ScimGroupMember(userCreation.getUserId());
+        String groupId = findGroupIdByDisplayName(scope.getScope());
+        final ScimGroupMember scimGroupMemberResponse = restTemplate.postForObject(groupsEndpoint + "/{groupId}/members", scimGroupMember, ScimGroupMember.class, groupId);
     }
 }
