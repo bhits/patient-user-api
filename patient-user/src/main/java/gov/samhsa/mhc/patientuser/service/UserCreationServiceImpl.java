@@ -269,7 +269,7 @@ public class UserCreationServiceImpl implements UserCreationService {
                         userScopeAssignmentRepository.save(userScopeAssignment);
                         scimService.updateUserWithNewGroup(userCreation, scope);
                     }catch(Exception e){
-                        logger.error("Error in assigning scope ot user in UAA.");
+                        logger.error("Error in assigning scope to user in UAA.");
                         userScopeAssignment.setAssigned(false);
                         userScopeAssignmentRepository.save(userScopeAssignment);
                     }

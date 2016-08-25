@@ -75,7 +75,7 @@ public class ScimServiceImpl implements ScimService {
             userScopeAssignmentRepository.save(userScopeAssignment);
             scimGroupMemberResponse = restTemplate.postForObject(groupsEndpoint + "/{groupId}/members", scimGroupMember, ScimGroupMember.class, groupId);
         }catch(Exception e){
-            logger.error("Error in assigning scope ot user in UAA.");
+            logger.error("Error in assigning scope to user in UAA.");
             userScopeAssignment.setAssigned(false);
             userScopeAssignmentRepository.save(userScopeAssignment);
         }
