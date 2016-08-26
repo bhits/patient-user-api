@@ -9,6 +9,7 @@ import gov.samhsa.c2s.patientuser.service.dto.UserActivationResponseDto;
 import gov.samhsa.c2s.patientuser.service.dto.UserCreationRequestDto;
 import gov.samhsa.c2s.patientuser.service.dto.UserCreationResponseDto;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -36,6 +37,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Ignore
 @RunWith(MockitoJUnitRunner.class)
 public class UserCreationControllerTest {
     @Rule
