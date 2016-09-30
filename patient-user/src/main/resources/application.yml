@@ -11,7 +11,8 @@ eureka:
     healthcheck:
       enabled: true
     service-url:
-      defaultZone: https://localhost:8761/eureka/
+      # endpoint for discovery-server, pass '--eureka.client.protocol=https' if discovery-server is running on https
+      defaultZone: ${eureka.client.protocol:http}://localhost:8761/eureka/
 # TODO: enable feign hystrix back when PHR API is refactored to a service that can be called by this API without OAuth2 token
 feign.hystrix.enabled: false
 spring:
@@ -38,7 +39,7 @@ security:
     client:
       client-id: patient-user
       client-secret: changeit
-      access-token-uri: https://localhost:8443/uaa/oauth/token
+      access-token-uri: http://localhost:8080/uaa/oauth/token
     resource:
       jwt:
         keyValue:
@@ -51,11 +52,11 @@ security:
                          jfj9Cw2QICsc5+Pwf21fP+hzf+1WSRHbnYv8uanRO0gZ8ekGaghM/2H6gqJbo2nI
                          JwIDAQAB
                          -----END PUBLIC KEY-----
-      user-info-uri: https://localhost:8443/uaa/userinfo
+      user-info-uri: http://localhost:8080/uaa/userinfo
 c2s:
   apis:
-    pp-ui: https://localhost/pp-ui
-    scim: https://localhost:8443/uaa
+    pp-ui: http://localhost/pp-ui
+    scim: http://localhost:8080/uaa
   patient-user:
     config:
       pp-ui-verification-relative-path: "/fe/account/verification#emailToken="
@@ -120,12 +121,12 @@ security:
       user-info-uri: http://uaa.c2s.com:8080/uaa/userinfo
 c2s:
   apis:
-    pp-ui: https://dockerhost/pp-ui
+    pp-ui: http://dockerhost/pp-ui
     scim: http://uaa.c2s.com:8080/uaa
 eureka:
   client:
     service-url:
-      defaultZone: https://discovery-server.c2s.com:8761/eureka/
+      defaultZone: ${eureka.client.protocol:http}://discovery-server.c2s.com:8761/eureka/
   instance:
     prefer-ip-address: true
 ---
