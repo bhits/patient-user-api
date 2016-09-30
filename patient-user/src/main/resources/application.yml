@@ -115,13 +115,13 @@ spring:
 security:
   oauth2:
     client:
-      access-token-uri: https://uaa.c2s.com:8443/uaa/oauth/token
+      access-token-uri: http://uaa.c2s.com:8080/uaa/oauth/token
     resource:
-      user-info-uri: https://uaa.c2s.com:8443/uaa/userinfo
+      user-info-uri: http://uaa.c2s.com:8080/uaa/userinfo
 c2s:
   apis:
     pp-ui: https://dockerhost/pp-ui
-    scim: https://uaa.c2s.com:8443/uaa
+    scim: http://uaa.c2s.com:8080/uaa
 eureka:
   client:
     service-url:
