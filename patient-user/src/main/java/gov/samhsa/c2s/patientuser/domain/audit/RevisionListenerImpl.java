@@ -5,9 +5,6 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-/**
- * Created by tomson.ngassa on 3/22/2016.
- */
 public class RevisionListenerImpl implements RevisionListener {
 
     @Override
