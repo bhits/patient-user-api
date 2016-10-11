@@ -7,6 +7,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class RevisionListenerImpl implements RevisionListener {
 
+    private static final String DEFAULT_CURRENT_USER_NAME = "ANONYMOUS";
+
     @Override
     public void newRevision(Object revisionEntity) {
         RevisionInfoEntity revisionInfoEntity = (RevisionInfoEntity) revisionEntity;
@@ -14,7 +16,7 @@ public class RevisionListenerImpl implements RevisionListener {
     }
 
     private String getCurrentUserName(){
-        String currentUserName = "ANONYMOUS";
+        String currentUserName = DEFAULT_CURRENT_USER_NAME;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
