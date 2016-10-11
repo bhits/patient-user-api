@@ -99,7 +99,6 @@ public class EmailSenderImpl implements EmailSender {
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage, ENCODING);
             message.setSubject(messageSource.getMessage(subjectPropKey, null, locale));
             message.setTo(email);
-            //message.setFrom("noreply@mhc.com", "C2S");
             message.setFrom(messageSource.getMessage(fromAddressPropKey, null, locale), messageSource.getMessage(fromPersonalPropKey, null, locale));
             final String htmlContent = templateEngine.process(templateName, ctx);
             message.setText(htmlContent, true);
