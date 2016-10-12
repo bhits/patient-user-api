@@ -1,6 +1,6 @@
 # Patient User API
 
-Patient User API is responsible for managing user account including user creation/activation, user scope management, Email token generation, extracting existing user profile from Patient Health Record API (PHR).
+Patient User API is responsible for managing user account including user creation/activation, user scope management, email token generation and extracting existing user profile from Patient Health Record API (PHR).
 
 ## Build
 
