@@ -1,10 +1,12 @@
 package gov.samhsa.c2s.patientuser.domain;
 
+import lombok.Data;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.List;
 
+@Data
 @Entity
 @Audited
 public class UserType {
@@ -15,28 +17,4 @@ public class UserType {
     private UserTypeEnum type;
     @OneToMany
     private List<Scope> scopes;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public UserTypeEnum getType() {
-        return type;
-    }
-
-    public void setType(UserTypeEnum type) {
-        this.type = type;
-    }
-
-    public List<Scope> getScopes() {
-        return scopes;
-    }
-
-    public void setScopes(List<Scope> scopes) {
-        this.scopes = scopes;
-    }
 }

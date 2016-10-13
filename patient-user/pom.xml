@@ -118,7 +118,6 @@
             <artifactId>spring-cloud-starter-feign</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>

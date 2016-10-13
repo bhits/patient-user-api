@@ -1,5 +1,8 @@
 package gov.samhsa.c2s.patientuser.service.dto;
 
+import lombok.Data;
+
+@Data
 public class VerificationResponseDto {
     private final boolean verified;
     private final String username;
@@ -12,13 +15,5 @@ public class VerificationResponseDto {
     public VerificationResponseDto(boolean verified, String username) {
         this.verified = verified;
         this.username = username;
-    }
-
-    public boolean isVerified() {
-        return verified;
-    }
-
-    public String getUsername() {
-        return username;
     }
 }

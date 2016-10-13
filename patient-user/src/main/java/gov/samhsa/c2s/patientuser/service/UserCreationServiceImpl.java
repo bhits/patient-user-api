@@ -205,11 +205,11 @@ public class UserCreationServiceImpl implements UserCreationService {
             }
         } catch (EmailTokenExpiredException e) {
             logger.info(() -> "EmailToken expired: " + e.getMessage());
-            logger.debug(() -> e.getMessage(), e);
+            logger.debug(e::getMessage, e);
             throw e;
         } catch (Exception e) {
             logger.info(() -> "Verification failed: " + e.getMessage());
-            logger.debug(() -> e.getMessage(), e);
+            logger.debug(e::getMessage, e);
             throw new VerificationFailedException();
         }
     }
