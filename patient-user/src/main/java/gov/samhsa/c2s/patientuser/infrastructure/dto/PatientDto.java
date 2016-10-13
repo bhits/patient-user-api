@@ -1,6 +1,5 @@
 package gov.samhsa.c2s.patientuser.infrastructure.dto;
 
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import gov.samhsa.c2s.patientuser.infrastructure.util.CustomJsonDateDeserializer;

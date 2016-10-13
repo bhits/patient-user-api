@@ -29,8 +29,7 @@ public class PhrServiceImpl implements PhrService {
         Assert.notNull(patientId, "patientId cannot be null");
         try {
             final Function<Long, PatientDto> selectedClient = useClientCredentials ? phrServiceClientCredentials::findPatientProfileById : phrServiceDefault::findPatientProfileById;
-            final PatientDto patientDto = selectedClient.apply(patientId);
-            return patientDto;
+            return selectedClient.apply(patientId);
         } catch (FeignException e) {
             if (e.status() == (HttpStatus.NOT_FOUND.value())) {
                 throw new PhrPatientNotFoundException(HttpStatus.NOT_FOUND, e.getMessage());

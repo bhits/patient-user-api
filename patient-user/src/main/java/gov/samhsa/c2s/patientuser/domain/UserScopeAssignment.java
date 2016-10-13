@@ -16,7 +16,7 @@ public class UserScopeAssignment {
     @ManyToOne
     private Scope scope;
     /**
-     *  Verify if scope is assign in UAA.
+     * Verify if scope is assign in UAA.
      */
     private boolean assigned = false;
 

@@ -70,6 +70,8 @@
         <c2s-common-libraries.version>1.7.0</c2s-common-libraries.version>
         <modelmapper.version>0.7.5</modelmapper.version>
         <cloudfoundry-identity-model.version>3.2.1</cloudfoundry-identity-model.version>
+        <hibernate.envers.version>4.3.11.Final</hibernate.envers.version>
+        <lombok.version>1.16.8</lombok.version>
 
         <!-- Test -->
         <powermock.version>1.6.4</powermock.version>
@@ -171,7 +173,13 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-envers</artifactId>
-            <version>4.3.11.Final</version>
+            <version>${hibernate.envers.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
         </dependency>
 
         <!-- Test -->
@@ -249,5 +257,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

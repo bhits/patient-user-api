@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Open Behavioral Health Information Technology Architecture (OBHITA.org)
- *   
+ *
  *   Redistribution and use in source and binary forms, with or without
  *   modification, are permitted provided that the following conditions are met:
  *       * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *       * Neither the name of the <organization> nor the
  *         names of its contributors may be used to endorse or promote products
  *         derived from this software without specific prior written permission.
- *   
+ *
  *   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  *   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  *   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -37,16 +37,14 @@ import java.util.Date;
 /**
  * The Class CustomJsonDateDeserializer.
  */
-public class CustomJsonDateSerializer extends JsonSerializer<Date>
-{
-    
+public class CustomJsonDateSerializer extends JsonSerializer<Date> {
+
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-    
+
     @Override
     public void serialize(Date date, JsonGenerator gen, SerializerProvider provider)
-    throws IOException, JsonProcessingException {
-    String formattedDate = dateFormat.format(date);
-    gen.writeString(formattedDate);
+            throws IOException, JsonProcessingException {
+        String formattedDate = dateFormat.format(date);
+        gen.writeString(formattedDate);
     }
-
 }

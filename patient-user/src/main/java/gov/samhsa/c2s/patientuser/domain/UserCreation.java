@@ -81,7 +81,7 @@ public class UserCreation {
         this.verificationCode = verificationCode;
     }
 
-        public Date getEmailTokenExpiration() {
+    public Date getEmailTokenExpiration() {
         return emailTokenExpiration;
     }
 
@@ -91,7 +91,7 @@ public class UserCreation {
     }
 
     public Instant getEmailTokenExpirationAsInstant() {
-        if(Objects.nonNull(emailTokenExpiration)){
+        if (Objects.nonNull(emailTokenExpiration)) {
             return (new Jsr310JpaConverters.InstantConverter()).convertToEntityAttribute(emailTokenExpiration);
         }
         return null;

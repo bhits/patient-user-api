@@ -30,8 +30,6 @@ public class EmailSenderImpl implements EmailSender {
     private static final String PROP_EMAIL_FROM_ADDRESS = "email.from.address";
     private static final String PROP_EMAIL_FROM_PERSONAL = "email.from.personal";
 
-
-
     private static final String ENCODING = StandardCharsets.UTF_8.toString();
 
     private static final String PARAM_RECIPIENT_NAME = "recipientName";
@@ -93,7 +91,7 @@ public class EmailSenderImpl implements EmailSender {
                 Locale.getDefault());
     }
 
-    private void sendEmail(Context ctx, String email, String subjectPropKey, String templateName,String fromAddressPropKey,String fromPersonalPropKey, Locale locale) {
+    private void sendEmail(Context ctx, String email, String subjectPropKey, String templateName, String fromAddressPropKey, String fromPersonalPropKey, Locale locale) {
         try {
             final MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage, ENCODING);
