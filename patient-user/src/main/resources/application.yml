@@ -111,8 +111,9 @@ spring:
 ---
 spring:
   profiles: docker
+spring:
   datasource:
-      url: jdbc:mysql://patient-user-db.c2s.com:3306/patient-user?autoReconnect=true
+      url: jdbc:mysql://${C2S_DB_HOST:patient-user-db.c2s.com}:${C2S_DB_PORT:3306}/patient-user?autoReconnect=true
 security:
   oauth2:
     client:
