@@ -1,6 +1,6 @@
 # Patient User API
 
-Patient User API is responsible for managing user account including user creation/activation, user scope management, email token generation and extracting existing user profile from Patient Health Record API (PHR).
+The Patient User API is responsible for managing the patient user account, including user creation and activation, user scope management, email token generation, and extracting existing user profile from the patient health record API (PHR).
 
 ## Build
 
@@ -13,7 +13,7 @@ Patient User API is responsible for managing user account including user creatio
 
 This is a Maven project and requires [Apache Maven](https://maven.apache.org/) 3.3.3 or greater to build it. It is recommended to use the *Maven Wrapper* scripts provided with this project. *Maven Wrapper* requires an internet connection to download Maven and project dependencies for the very first build.
 
-To build the project, navigate to the folder that contains `pom.xml` file using terminal/command line.
+To build the project, navigate to the folder that contains the `pom.xml` file using the terminal/command line.
 
 + To build a JAR:
     + For Windows, run `mvnw.cmd clean install`
@@ -26,7 +26,7 @@ To build the project, navigate to the folder that contains `pom.xml` file using 
 
 ### Prerequisites
 
-This API uses *[MySQL](https://www.mysql.com/)* for persistence and *[Flyway](https://flywaydb.org/)* for database migration. It requires having a database user account with Object and DDL Rights to a schema with default name `patient-user`. Please see [Configure](#configure) section for details of configuring the data source.
+This API uses *[MySQL](https://www.mysql.com/)* for persistence and *[Flyway](https://flywaydb.org/)* for database migration. It requires having a database user account with Object and DDL Rights to a schema with default name `patient-user`. Please see the [Configure](#configure) section for details about configuring the data source.
 
 ### Commands
 
@@ -34,13 +34,13 @@ This is a [Spring Boot](https://projects.spring.io/spring-boot/) project and ser
 + Run as a JAR file: `java -jar patient-user-x.x.x-SNAPSHOT.jar <additional program arguments>`
 + Run as a Docker Container: `docker run -d bhits/patient-user:latest <additional program arguments>`
 
-*NOTE: In order for this API to fully function as a microservice in C2S Application, it is also required to setup the dependency microservices and support level infrastructure. Please refer to the C2S Deployment Guide for instructions to setup the C2S infrastructure.*
+*NOTE: In order for this API to fully function as a microservice in the Consent2Share (C2S) application, it is also required to setup the dependency microservices and support level infrastructure. Please refer to the C2S Deployment Guide for instructions to setup the C2S infrastructure.*
 
 ## Configure
 
-This API runs with some default configuration that is primarily targeted for development environment. However, [Spring Boot](https://projects.spring.io/spring-boot/) supports several methods to override the default configuration to configure the API for a certain deployment environment.
+This API runs witha default configuration that is primarily targeted for the development environment. However, [Spring Boot](https://projects.spring.io/spring-boot/) supports several methods to override the default configuration to configure the API for a certain deployment environment.
 
-Please see the [default configuration](patient-user/src/main/resources/application.yml) for this API as a guidance and override the specific configuration per environment as needed. Also, please refer to [Spring Boot Externalized Configuration](http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html) documentation to see how Spring Boot applies the order to load the properties and [Spring Boot Common Properties](http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html) documentation to see the common properties used by Spring Boot.
+Please see the [default configuration](patient-user/src/main/resources/application.yml) for this API as a guidance and override the specific configuration per the environment as needed. Also, please refer to [Spring Boot Externalized Configuration](http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html) documentation to see how Spring Boot applies the order to load the properties and [Spring Boot Common Properties](http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html) documentation to see the common properties used by Spring Boot.
 
 
 ### Examples for Overriding a Configuration in Spring Boot
@@ -96,7 +96,7 @@ services:
 
 Java has a default CA Certificates Store that allows it to trust well-known certificate authorities. For development and testing purposes, one might want to trust additional self-signed certificates. In order to override the default Java CA Certificates Store in a Docker container, one can mount a custom `cacerts` file over the default one in the Docker image as `docker run -d -v "/path/on/dockerhost/to/custom/cacerts:/etc/ssl/certs/java/cacerts" bhits/patient-user:latest`
 
-*NOTE: The `cacerts` references given in the both sides of volume mapping above are files, not directories.*
+*NOTE: The `cacerts` references regarding volume mapping above are files, not directories.*
 
 [//]: # (## API Documentation)
 
