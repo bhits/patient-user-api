@@ -1,3 +1,19 @@
+# SSL is disabled by default for the Patient User to make development environment setup easier.
+# YOU MUST ENABLE SSL IN AN ACTUAL DEPLOYMENT ENVIRONMENT!
+#
+# To enable SSL for the Patient User:
+#   1) Activate the 'ssl' spring profile by passing in the following program argument:
+#          a) --spring.profiles.active=ssl
+#   2) Set the appropriate values for the 'server.ssl.key-store' and 'server.ssl.key-store-password' properties.
+#          a) You can override/set these properties by setting them in an externalzied application.yml file.
+#               EXAMPLE:
+#                  server:
+#                     ssl:
+#                        key-store: /ssl_keystore.keystore
+#                        key-store-password: changeit
+#          b) Alternatively, you can pass the properties in using the following program arguments:
+#                 i) --server.ssl.key-store=path-to-file/filename
+#                ii) --server.ssl.key-store-password=your-keystore-password
 server:
   port: 8452
 logging:
@@ -77,6 +93,7 @@ security:
     resource:
       jwt:
         # public key to validate the token signed by authorization server
+        # Default token signing key. You MUST provide a unique key IN AN ACTUAL DEPLOYMENT ENVIRONMENT!
         keyValue:
                          -----BEGIN PUBLIC KEY-----
                          MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0m59l2u9iDnMbrXHfqkO
@@ -89,11 +106,13 @@ security:
                          -----END PUBLIC KEY-----
       user-info-uri: http://localhost:8080/uaa/userinfo
 ---
-# enables ssl in this service when activated
+# If the ssl spring profile below is enabled, you must follow the instructions at
+# the top of this file to set your environemtn key-store and key-store-password properties as well.
 spring.profiles: ssl
 server:
   # configure keystore and keystore password for ssl per environment
   ssl:
+    # Default key-store and key-store-password
     key-store: /ssl_keystore.keystore
     key-store-password: changeit
 eureka:
