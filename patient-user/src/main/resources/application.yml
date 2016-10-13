@@ -1,5 +1,7 @@
 server:
   port: 8452
+logging:
+  file: /java/C2S_LOGS/patient-user/patient-user.log
 info:
   component: Patient User API
 eureka:
@@ -16,60 +18,8 @@ eureka:
 # TODO: enable feign hystrix back when PHR API is refactored to a service that can be called by this API without OAuth2 token
 feign.hystrix.enabled: false
 spring:
-  profiles.active: mysql
-  mail:
-    host: mail.feisystems.com
-    port: 25
-    protocol: smtp
-    username: bhits.mail
-    password: M@il4Bhit$
-    properties:
-      smtp:
-       auth: true
-       starttls:
-        enable: true
-       ssl:
-        trust: mail.feisystems.com
-  messages:
-    basename: i18n/messages
-security:
-  basic:
-    enabled: false
-  oauth2:
-    client:
-      client-id: patient-user
-      client-secret: changeit
-      access-token-uri: http://localhost:8080/uaa/oauth/token
-    resource:
-      jwt:
-        keyValue:
-                         -----BEGIN PUBLIC KEY-----
-                         MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0m59l2u9iDnMbrXHfqkO
-                         rn2dVQ3vfBJqcDuFUK03d+1PZGbVlNCqnkpIJ8syFppW8ljnWweP7+LiWpRoz0I7
-                         fYb3d8TjhV86Y997Fl4DBrxgM6KTJOuE/uxnoDhZQ14LgOU2ckXjOzOdTsnGMKQB
-                         LCl0vpcXBtFLMaSbpv1ozi8h7DJyVZ6EnFQZUWGdgTMhDrmqevfx95U/16c5WBDO
-                         kqwIn7Glry9n9Suxygbf8g5AzpWcusZgDLIIZ7JTUldBb8qU2a0Dl4mvLZOn4wPo
-                         jfj9Cw2QICsc5+Pwf21fP+hzf+1WSRHbnYv8uanRO0gZ8ekGaghM/2H6gqJbo2nI
-                         JwIDAQAB
-                         -----END PUBLIC KEY-----
-      user-info-uri: http://localhost:8080/uaa/userinfo
-c2s:
-  apis:
-    pp-ui: http://localhost/pp-ui
-    scim: http://localhost:8080/uaa
-  patient-user:
-    config:
-      pp-ui-verification-relative-path: "/fe/account/verification#emailToken="
-      email-token-expiration-in-days: 7
-  brand: Consent2Share
-logging:
-  file: /java/C2S_LOGS/patient-user/patient-user.log
-  level:
-    org.springframework.security: debug
----
-spring.profiles: mysql
-spring:
   datasource:
+    # configure url, username and password per environment
     url: jdbc:mysql://localhost:3306/patient-user?autoReconnect=true
     username: root
     password: admin
@@ -91,24 +41,76 @@ spring:
       ddl-auto: none
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     show-sql: true
----
-spring.profiles: h2
-spring:
-  datasource:
-    username: sa
-    password:
-  jpa:
+  mail:
+    host: mail.feisystems.com
+    port: 25
+    protocol: smtp
+    username: bhits.mail
+    password: M@il4Bhit$
     properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
-        hbm2ddl:
-          auto: validate
-    hibernate:
-      ddl-auto: none
-      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
-    show-sql: true
-
+      smtp:
+       auth: true
+       starttls:
+        enable: true
+       ssl:
+        trust: mail.feisystems.com
+  messages:
+    basename: i18n/messages
+c2s:
+  apis:
+    # Patient portal UI endpoint
+    pp-ui: http://localhost/pp-ui
+    scim: http://localhost:8080/uaa
+  patient-user:
+    config:
+      pp-ui-verification-relative-path: "/fe/account/verification#emailToken="
+      email-token-expiration-in-days: 7
+  brand: Consent2Share
+security:
+  basic:
+    enabled: false
+  oauth2:
+    client:
+      client-id: patient-user
+      client-secret: changeit
+      access-token-uri: http://localhost:8080/uaa/oauth/token
+    resource:
+      jwt:
+        # public key to validate the token signed by authorization server
+        keyValue:
+                         -----BEGIN PUBLIC KEY-----
+                         MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0m59l2u9iDnMbrXHfqkO
+                         rn2dVQ3vfBJqcDuFUK03d+1PZGbVlNCqnkpIJ8syFppW8ljnWweP7+LiWpRoz0I7
+                         fYb3d8TjhV86Y997Fl4DBrxgM6KTJOuE/uxnoDhZQ14LgOU2ckXjOzOdTsnGMKQB
+                         LCl0vpcXBtFLMaSbpv1ozi8h7DJyVZ6EnFQZUWGdgTMhDrmqevfx95U/16c5WBDO
+                         kqwIn7Glry9n9Suxygbf8g5AzpWcusZgDLIIZ7JTUldBb8qU2a0Dl4mvLZOn4wPo
+                         jfj9Cw2QICsc5+Pwf21fP+hzf+1WSRHbnYv8uanRO0gZ8ekGaghM/2H6gqJbo2nI
+                         JwIDAQAB
+                         -----END PUBLIC KEY-----
+      user-info-uri: http://localhost:8080/uaa/userinfo
 ---
+# enables ssl in this service when activated
+spring.profiles: ssl
+server:
+  # configure keystore and keystore password for ssl per environment
+  ssl:
+    key-store: /ssl_keystore.keystore
+    key-store-password: changeit
+eureka:
+  instance:
+    secure-port: ${server.port}
+    secure-port-enabled: true
+    non-secure-port-enabled: false
+---
+# enables ssl and adds /patientUser context path when activated
+spring.profiles: standalone-ssl
+spring:
+  profiles:
+    include: ssl
+server:
+  context-path: /patientUser
+---
+# updates configuration for docker environment
 spring:
   profiles: docker
   datasource:
@@ -129,22 +131,3 @@ eureka:
       defaultZone: ${eureka.client.protocol:http}://discovery-server.c2s.com:8761/eureka/
   instance:
     prefer-ip-address: true
----
-spring.profiles: ssl
-server:
-  port: 8452
-  ssl:
-    key-store: /ssl_keystore.keystore
-    key-store-password: changeit
-eureka:
-  instance:
-    secure-port: ${server.port}
-    secure-port-enabled: true
-    non-secure-port-enabled: false
----
-spring.profiles: standalone-ssl
-spring:
-  profiles:
-    include: ssl
-server:
-  context-path: /patientUser
