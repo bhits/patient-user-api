@@ -106,34 +106,11 @@ security:
                          -----END PUBLIC KEY-----
       user-info-uri: http://localhost:8080/uaa/userinfo
 ---
-# If the ssl spring profile below is enabled, you must follow the instructions at
-# the top of this file to set your environemtn key-store and key-store-password properties as well.
-spring.profiles: ssl
-server:
-  # configure keystore and keystore password for ssl per environment
-  ssl:
-    # Default key-store and key-store-password
-    key-store: /ssl_keystore.keystore
-    key-store-password: changeit
-eureka:
-  instance:
-    secure-port: ${server.port}
-    secure-port-enabled: true
-    non-secure-port-enabled: false
----
-# enables ssl and adds /patientUser context path when activated
-spring.profiles: standalone-ssl
-spring:
-  profiles:
-    include: ssl
-server:
-  context-path: /patientUser
----
 # updates configuration for docker environment
 spring:
   profiles: docker
   datasource:
-      url: jdbc:mysql://patient-user-db.c2s.com:3306/patient-user?autoReconnect=true
+      url: jdbc:mysql://${C2S_DB_HOST:patient-user-db.c2s.com}:${C2S_DB_PORT:3306}/patient-user?autoReconnect=true
 security:
   oauth2:
     client:
@@ -150,3 +127,30 @@ eureka:
       defaultZone: ${eureka.client.protocol:http}://discovery-server.c2s.com:8761/eureka/
   instance:
     prefer-ip-address: true
+logging:
+  file: /java/C2S_LOGS/patient-user/patient-user.log
+  path: /java/C2S_LOGS/patient-user
+
+---
+# If the ssl spring profile below is enabled, you must follow the instructions at
+# the top of this file to set your environemtn key-store and key-store-password properties as well.
+spring.profiles: ssl
+server:
+  port: 8452
+  # configure keystore and keystore password for ssl per environment
+  ssl:
+    # Default key-store and key-store-password
+    key-store: /ssl_keystore.keystore
+    key-store-password: changeit
+eureka:
+  instance:
+    secure-port: ${server.port}
+    secure-port-enabled: true
+    non-secure-port-enabled: false
+---
+spring.profiles: standalone-ssl
+spring:
+  profiles:
+    include: ssl
+server:
+  context-path: /patientUser
