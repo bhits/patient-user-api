@@ -111,7 +111,6 @@ spring:
 ---
 spring:
   profiles: docker
-spring:
   datasource:
       url: jdbc:mysql://${C2S_DB_HOST:patient-user-db.c2s.com}:${C2S_DB_PORT:3306}/patient-user?autoReconnect=true
 security:
@@ -130,6 +129,10 @@ eureka:
       defaultZone: ${eureka.client.protocol:http}://discovery-server.c2s.com:8761/eureka/
   instance:
     prefer-ip-address: true
+logging:
+  file: /java/C2S_LOGS/patient-user/patient-user.log
+  path: /java/C2S_LOGS/patient-user
+
 ---
 spring.profiles: ssl
 server:
