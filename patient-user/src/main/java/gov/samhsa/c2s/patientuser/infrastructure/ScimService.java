@@ -16,5 +16,5 @@ public interface ScimService {
 
     void addUserToGroups(UserCreation userCreation);
 
-     void updateUserWithNewGroup(UserCreation userCreation, Scope scope);
+    void updateUserWithNewGroup(UserCreation userCreation, Scope scope);
 }
