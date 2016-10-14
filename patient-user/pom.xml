@@ -10,25 +10,38 @@
 
     <name>Patient User API</name>
     <description>Patient User API</description>
+    <url>${project.scm.url}</url>
 
-    <scm>
-        <url>https://github.com/FEISystems/patient-user-api.git</url>
-        <connection>scm:git:https://github.com/FEISystems/patient-user-api.git</connection>
-        <developerConnection>scm:git:https://github.com/FEISystems/patient-user-api.git</developerConnection>
-    </scm>
+    <organization>
+        <name>SAMHSA</name>
+        <url>http://www.samhsa.gov/</url>
+    </organization>
 
     <developers>
         <developer>
-            <id>Bhits.Java</id>
-            <name>Bhits Java</name>
-            <email>Bhits.Java@feisystems.com</email>
+            <id>BHITS Team</id>
+            <name>BHITS Team</name>
             <organization>FEi Systems</organization>
-            <roles>
-                <role>developer</role>
-            </roles>
-            <timezone>-5</timezone>
         </developer>
     </developers>
+
+    <licenses>
+        <license>
+            <name>See license in LICENSE.md</name>
+            <url>${project.scm.url}/blob/master/LICENSE.md</url>
+        </license>
+    </licenses>
+
+    <ciManagement>
+        <system>CI</system>
+        <url>http://BhitsBuild03/</url>
+    </ciManagement>
+
+    <scm>
+        <url>https://github.com/bhits/patient-user-api</url>
+        <connection>scm:git:${project.scm.url}.git</connection>
+        <developerConnection>scm:git:${project.scm.url}.git</developerConnection>
+    </scm>
 
     <distributionManagement>
         <repository>
@@ -54,15 +67,30 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <spring.cloud.version>Brixton.M4</spring.cloud.version>
-        <c2s-common-libraries.version>1.6.0</c2s-common-libraries.version>
+        <c2s-common-libraries.version>1.7.0</c2s-common-libraries.version>
         <modelmapper.version>0.7.5</modelmapper.version>
         <cloudfoundry-identity-model.version>3.2.1</cloudfoundry-identity-model.version>
+        <hibernate.envers.version>4.3.11.Final</hibernate.envers.version>
+        <lombok.version>1.16.8</lombok.version>
+
         <!-- Test -->
         <powermock.version>1.6.4</powermock.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <jsonpath.version>2.2.0</jsonpath.version>
         <docker.maven.version>0.4.3</docker.maven.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-parent</artifactId>
+                <version>${spring.cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -75,15 +103,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -95,10 +115,6 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-ribbon</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-feign</artifactId>
         </dependency>
 
@@ -106,6 +122,7 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -115,6 +132,7 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
+
         <dependency>
             <groupId>gov.samhsa.c2s</groupId>
             <artifactId>common-util</artifactId>
@@ -135,6 +153,7 @@
             <artifactId>logger-wrapper</artifactId>
             <version>${c2s-common-libraries.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
@@ -159,7 +178,13 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-envers</artifactId>
-            <version>4.3.11.Final</version>
+            <version>${hibernate.envers.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
         </dependency>
 
         <!-- Test -->
@@ -192,12 +217,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
             <version>${jsonpath.version}</version>
@@ -214,20 +233,7 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-parent</artifactId>
-                <version>${spring.cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <build>
         <plugins>
@@ -256,5 +262,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

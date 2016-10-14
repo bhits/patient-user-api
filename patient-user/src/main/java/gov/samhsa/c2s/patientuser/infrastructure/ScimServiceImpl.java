@@ -70,14 +70,14 @@ public class ScimServiceImpl implements ScimService {
     public ScimGroupMember addUserToGroup(UserCreation userCreation, Scope scope, String groupId) {
         UserScopeAssignment userScopeAssignment = new UserScopeAssignment();
         ScimGroupMember scimGroupMemberResponse = null;
-        try{
+        try {
             userScopeAssignment.setUserCreation(userCreation);
             userScopeAssignment.setScope(userCreation.getUserType().getScopes().stream().filter(scope::equals).findAny().get());
             ScimGroupMember scimGroupMember = new ScimGroupMember(userCreation.getUserId());
             userScopeAssignment.setAssigned(true);
             userScopeAssignmentRepository.save(userScopeAssignment);
             scimGroupMemberResponse = restTemplate.postForObject(groupsEndpoint + "/{groupId}/members", scimGroupMember, ScimGroupMember.class, groupId);
-        }catch(Exception e){
+        } catch (Exception e) {
             logger.error("Error in assigning scope to user in UAA.");
             userScopeAssignment.setAssigned(false);
             userScopeAssignmentRepository.save(userScopeAssignment);
@@ -88,8 +88,7 @@ public class ScimServiceImpl implements ScimService {
 
     @Override
     public void addUserToGroups(UserCreation userCreation) {
-        userCreation.getUserType().getScopes().stream()
-                .forEach(scope -> addUserToGroup(userCreation, scope, findGroupIdByDisplayName(scope.getScope())));
+        userCreation.getUserType().getScopes().forEach(scope -> addUserToGroup(userCreation, scope, findGroupIdByDisplayName(scope.getScope())));
     }
 
     private static final String extractId(SearchResultsWrapperWithId searchResultsWrapperWithId) {
@@ -97,10 +96,11 @@ public class ScimServiceImpl implements ScimService {
                 .filter(Objects::nonNull)
                 .map(IdentifierDto::getId)
                 .filter(StringUtils::hasText)
-                .findAny().orElseThrow(() -> new IdCannotBeFoundException());
+                .findAny().orElseThrow(IdCannotBeFoundException::new);
     }
+
     @Override
-    public void updateUserWithNewGroup(UserCreation userCreation, Scope scope){
+    public void updateUserWithNewGroup(UserCreation userCreation, Scope scope) {
         ScimGroupMember scimGroupMember = new ScimGroupMember(userCreation.getUserId());
         String groupId = findGroupIdByDisplayName(scope.getScope());
         final ScimGroupMember scimGroupMemberResponse = restTemplate.postForObject(groupsEndpoint + "/{groupId}/members", scimGroupMember, ScimGroupMember.class, groupId);

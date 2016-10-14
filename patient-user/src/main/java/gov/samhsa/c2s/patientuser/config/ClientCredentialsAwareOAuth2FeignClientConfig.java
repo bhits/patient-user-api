@@ -6,7 +6,7 @@ import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
 
-// TODO: remove this configuration when PHR API is refactored to a service that can be called by this API without OAuth2 token
+//TODO: remove this configuration when PHR API is refactored to a service that can be called by this API without OAuth2 token
 public class ClientCredentialsAwareOAuth2FeignClientConfig {
 
     @Bean

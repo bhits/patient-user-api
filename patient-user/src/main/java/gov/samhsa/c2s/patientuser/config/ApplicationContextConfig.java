@@ -42,4 +42,3 @@ public class ApplicationContextConfig {
         return clientCredentialsResourceDetails;
     }
 }
-

@@ -6,9 +6,6 @@ import org.hibernate.envers.RevisionEntity;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-/**
- * Created by tomson.ngassa on 3/22/2016.
- */
 @Entity
 @Table(name = "REVINFO")
 @RevisionEntity(RevisionListenerImpl.class)

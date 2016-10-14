@@ -5,10 +5,9 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-/**
- * Created by tomson.ngassa on 3/22/2016.
- */
 public class RevisionListenerImpl implements RevisionListener {
+
+    private static final String DEFAULT_CURRENT_USER_NAME = "ANONYMOUS";
 
     @Override
     public void newRevision(Object revisionEntity) {
@@ -17,7 +16,7 @@ public class RevisionListenerImpl implements RevisionListener {
     }
 
     private String getCurrentUserName(){
-        String currentUserName = "ANONYMOUS";
+        String currentUserName = DEFAULT_CURRENT_USER_NAME;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (!(authentication instanceof AnonymousAuthenticationToken)) {

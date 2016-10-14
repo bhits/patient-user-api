@@ -10,8 +10,7 @@ public class TokenGeneratorImpl implements TokenGenerator {
     @Override
     public String generateToken() {
         SecureRandom random = new SecureRandom();
-        final String token = new BigInteger(130, random).toString(32);
-        return token;
+        return new BigInteger(130, random).toString(32);
     }
 
     @Override
