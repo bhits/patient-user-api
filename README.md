@@ -1,6 +1,6 @@
 # Patient User API
 
-The Patient User API is responsible for managing the patient user account, including user creation and activation, user scope management, email token generation, and extracting existing user profile from the patient health record API (PHR) in the Consent2Share (C2S) application.
+The Patient User API is responsible for managing the patient user creation process, including user creation and activation, user scope management, email token generation, and extracting existing user profile from the Patient Health Record API (PHR) in the Consent2Share (C2S) application.
 
 ## Build
 
