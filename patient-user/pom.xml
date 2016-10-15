@@ -43,6 +43,8 @@
         <developerConnection>scm:git:${project.scm.url}.git</developerConnection>
     </scm>
 
+    <!-- Comment out the below distributionManagement if you couldn't connect to FEi Nexus repository manager to upload dependencies when you run 'mvn deploy' command -->
+
     <distributionManagement>
         <repository>
             <id>deployment</id>
@@ -79,6 +81,14 @@
         <jsonpath.version>2.2.0</jsonpath.version>
         <docker.maven.version>0.4.3</docker.maven.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>repo.spring.io</id>
+            <name>Spring Milestone Repository</name>
+            <url>https://repo.spring.io/libs-milestone-local</url>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
