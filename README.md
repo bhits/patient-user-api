@@ -38,7 +38,7 @@ This is a [Spring Boot](https://projects.spring.io/spring-boot/) project and ser
 
 ## Configure
 
-This API runs witha default configuration that is primarily targeted for the development environment. However, [Spring Boot](https://projects.spring.io/spring-boot/) supports several methods to override the default configuration to configure the API for a certain deployment environment.
+This API runs with a default configuration that is primarily targeted for the development environment. However, [Spring Boot](https://projects.spring.io/spring-boot/) supports several methods to override the default configuration to configure the API for a certain deployment environment.
 
 Please see the [default configuration](patient-user/src/main/resources/application.yml) for this API as a guidance and override the specific configuration per the environment as needed. Also, please refer to [Spring Boot Externalized Configuration](http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html) documentation to see how Spring Boot applies the order to load the properties and [Spring Boot Common Properties](http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html) documentation to see the common properties used by Spring Boot.
 
@@ -106,7 +106,7 @@ Java has a default CA Certificates Store that allows it to trust well-known cert
 
 ## Contact
 
-If you have any questions, comments, or concerns please see [Consent2Share]() project site.
+If you have any questions, comments, or concerns please see [Consent2Share](https://bhits.github.io/consent2share/) project site.
 
 ## Report Issues
 
