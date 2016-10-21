@@ -119,7 +119,7 @@ security:
       user-info-uri: http://uaa.c2s.com:8080/uaa/userinfo
 c2s:
   apis:
-    pp-ui: http://dockerhost/pp-ui
+    pp-ui: http://${C2S_APP_HOST:dockerhost}/pp-ui
     scim: http://uaa.c2s.com:8080/uaa
 eureka:
   client:
