@@ -58,18 +58,18 @@ spring:
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     show-sql: true
   mail:
-    host: mail.feisystems.com
+  # Patient User will use the e-mail server configured in this section to send e-mails
+    # Please configure valid e-mail server below to connect to SMTP server
+    # Configure host, port, username and password per environment
+    host: mail_host
     port: 25
     protocol: smtp
-    username: bhits.mail
-    password: M@il4Bhit$
+    username: mail_username
+    password: mail_password
     properties:
-      smtp:
-       auth: true
-       starttls:
-        enable: true
-       ssl:
-        trust: mail.feisystems.com
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.ssl.trust: mail_host
   messages:
     basename: i18n/messages
 c2s:
