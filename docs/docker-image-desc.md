@@ -5,7 +5,7 @@ The Patient User API is responsible for managing the patient user account.
 
 # Supported Tags and Respective `Dockerfile` Links
 
-[`1.16.0`](https://github.com/bhits/patient-user-api/blob/master/patient-user/src/main/docker/Dockerfile),[`latest`](https://github.com/bhits/patient-user-api/blob/master/patient-user/src/main/docker/Dockerfile)[(1.16.0/Dockerfile)](https://github.com/bhits/patient-user-api/blob/master/patient-user/src/main/docker/Dockerfile)
+[`0.12.0`](https://github.com/bhits/patient-user-api/blob/master/patient-user/src/main/docker/Dockerfile),[`latest`](https://github.com/bhits/patient-user-api/blob/master/patient-user/src/main/docker/Dockerfile)[(0.12.0/Dockerfile)](https://github.com/bhits/patient-user-api/blob/master/patient-user/src/main/docker/Dockerfile)
 
 For more information about this image, the source code, and its history, please see the [GitHub repository](https://github.com/bhits/patient-user-api).
 
