@@ -72,7 +72,6 @@
         <c2s-common-libraries.version>1.7.0</c2s-common-libraries.version>
         <modelmapper.version>0.7.5</modelmapper.version>
         <cloudfoundry-identity-model.version>3.2.1</cloudfoundry-identity-model.version>
-        <hibernate.envers.version>4.3.11.Final</hibernate.envers.version>
         <lombok.version>1.16.8</lombok.version>
 
         <!-- Test -->
@@ -147,21 +146,45 @@
             <groupId>gov.samhsa.c2s</groupId>
             <artifactId>common-util</artifactId>
             <version>${c2s-common-libraries.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>gov.samhsa.c2s</groupId>
             <artifactId>oauth2</artifactId>
             <version>${c2s-common-libraries.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>gov.samhsa.c2s</groupId>
             <artifactId>validator-extension</artifactId>
             <version>${c2s-common-libraries.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>gov.samhsa.c2s</groupId>
             <artifactId>logger-wrapper</artifactId>
             <version>${c2s-common-libraries.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -188,7 +211,6 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-envers</artifactId>
-            <version>${hibernate.envers.version}</version>
         </dependency>
 
         <dependency>
@@ -225,6 +247,12 @@
             <artifactId>common-unit</artifactId>
             <version>${c2s-common-libraries.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
