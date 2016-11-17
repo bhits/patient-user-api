@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"user_creation", "scope"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"user_creation_id", "scope_id"}))
 @Audited
 public class UserScopeAssignment {
     @Id

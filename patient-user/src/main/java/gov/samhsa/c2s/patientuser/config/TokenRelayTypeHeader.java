@@ -1,7 +1,7 @@
 package gov.samhsa.c2s.patientuser.config;
 
 public final class TokenRelayTypeHeader {
-    private static final String VALUE_SEPARATOR = ": ";
+    private static final String VALUE_SEPARATOR = "= ";
     public static final String HEADER_KEY = "TOKEN_RELAY_TYPE";
     public static final String DEFAULT = "DEFAULT";
     public static final String CLIENT_CREDENTIALS = "CLIENT_CREDENTIALS";
