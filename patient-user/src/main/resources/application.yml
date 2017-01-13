@@ -46,11 +46,12 @@ spring:
 c2s:
   apis:
     # Patient portal UI endpoint
-    pp-ui: http://localhost/pp-ui
     scim: http://localhost:8080/uaa
   patient-user:
     config:
-      pp-ui-verification-relative-path: "/fe/account/verification#emailToken="
+      pp-ui-route: /pp-ui
+      pp-ui-verification-relative-path: "/fe/account/verification"
+      pp-ui-verification-email-token-arg-name: "emailToken"
       email-token-expiration-in-days: 7
   brand: Consent2Share
 security:

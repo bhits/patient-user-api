@@ -19,17 +19,21 @@ import java.util.Locale;
 
 import static org.mockito.Mockito.*;
 
-//@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(TemplateEngine.class)
 public class EmailSenderImplTest {
 
-    private static final String ppUIBaseUri = "ppUIBaseUri";
-    private static final String ppUIVerificationRelativePath = "ppUIVerificationRelativePath";
+    private static final String ppUIRoute = "/pp-ui";
+    private static final String ppUIVerificationRelativePath = "/fe/account/verification";
+    private static final String ppUIVerificationEmailTokenArgName = "emailToken";
     private static final String subject = "subject";
     private static final String htmlContent = "htmlContent";
     private static final String fromAddress = "fromAddress";
     private static final String fromPersonal = "fromPersonal";
+    private final String xForwardedProto = "https";
+    private final String xForwardedHost = "xforwardedhost";
+    private final int xForwardedPort = 443;
+
     @Mock
     private JavaMailSender javaMailSenderMock;
     private TemplateEngine templateEngineMock;
@@ -43,8 +47,9 @@ public class EmailSenderImplTest {
         templateEngineMock = PowerMockito.mock(TemplateEngine.class);
         PowerMockito.doReturn(htmlContent).when(templateEngineMock).process(anyString(), any(Context.class));
         ReflectionTestUtils.setField(sut, "templateEngine", templateEngineMock);
-        ReflectionTestUtils.setField(sut, ppUIBaseUri, ppUIBaseUri);
-        ReflectionTestUtils.setField(sut, ppUIVerificationRelativePath, ppUIVerificationRelativePath);
+        ReflectionTestUtils.setField(sut, "ppUIRoute", ppUIRoute);
+        ReflectionTestUtils.setField(sut, "ppUIVerificationRelativePath", ppUIVerificationRelativePath);
+        ReflectionTestUtils.setField(sut, "ppUIVerificationEmailTokenArgName", ppUIVerificationEmailTokenArgName);
         MimeMessage mimeMessageMock = mock(MimeMessage.class);
         when(javaMailSenderMock.createMimeMessage()).thenReturn(mimeMessageMock);
         when(messageSourceMock.getMessage(eq(ReflectionTestUtils.getField(sut, "PROP_EMAIL_VERIFICATION_LINK_SUBJECT").toString()), eq(null), any(Locale.class))).thenReturn(subject);
@@ -61,7 +66,7 @@ public class EmailSenderImplTest {
         final String recipientFullName = "recipientFullName";
 
         // Act
-        sut.sendEmailWithVerificationLink(email, emailToken, recipientFullName);
+        sut.sendEmailWithVerificationLink(xForwardedProto, xForwardedHost, xForwardedPort, email, emailToken, recipientFullName);
 
         // Assert
         verify(templateEngineMock, times(1)).process(anyString(), any(Context.class));
@@ -75,7 +80,7 @@ public class EmailSenderImplTest {
         final String recipientFullName = "recipientFullName";
 
         // Act
-        sut.sendEmailToConfirmVerification(email, recipientFullName);
+        sut.sendEmailToConfirmVerification(xForwardedProto, xForwardedHost, xForwardedPort, email, recipientFullName);
 
         // Assert
         verify(templateEngineMock, times(1)).process(anyString(), any(Context.class));

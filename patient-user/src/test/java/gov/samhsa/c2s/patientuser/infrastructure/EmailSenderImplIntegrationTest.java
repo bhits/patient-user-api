@@ -26,6 +26,10 @@ public class EmailSenderImplIntegrationTest {
     public static final String MOCK_TOKEN = "sampleToken";
     public static final String MOCK_RECIPIENT_FULL_NAME = "Firstname Lastname";
 
+    private final String xForwardedProto = "https";
+    private final String xForwardedHost = "localhost";
+    @Value("${server.port}")
+    private int port;
     @Value("${test.emails}")
     private String emailAddressesString;
     private List<String> emailAddresses;
@@ -43,11 +47,11 @@ public class EmailSenderImplIntegrationTest {
 
     @Test
     public void testSendEmailWithVerificationLink() throws Exception {
-        emailAddresses.forEach(address -> emailSender.sendEmailWithVerificationLink(address, MOCK_TOKEN, MOCK_RECIPIENT_FULL_NAME));
+        emailAddresses.forEach(address -> emailSender.sendEmailWithVerificationLink(xForwardedProto, xForwardedHost, port, address, MOCK_TOKEN, MOCK_RECIPIENT_FULL_NAME));
     }
 
     @Test
     public void testSendEmailToConfirmVerification() throws Exception {
-        emailAddresses.forEach(address -> emailSender.sendEmailToConfirmVerification(address, MOCK_RECIPIENT_FULL_NAME));
+        emailAddresses.forEach(address -> emailSender.sendEmailToConfirmVerification(xForwardedProto, xForwardedHost, port, address, MOCK_RECIPIENT_FULL_NAME));
     }
 }

@@ -1,6 +1,7 @@
 package gov.samhsa.c2s.patientuser.infrastructure;
 
 import gov.samhsa.c2s.patientuser.infrastructure.exception.EmailSenderException;
+import org.apache.http.client.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -14,6 +15,7 @@ import org.thymeleaf.context.Context;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
@@ -40,11 +42,14 @@ public class EmailSenderImpl implements EmailSender {
     @Value("${c2s.brand}")
     private String brand;
 
-    @Value("${c2s.apis.pp-ui}")
-    private String ppUIBaseUri;
+    @Value("${c2s.patient-user.config.pp-ui-route}")
+    private String ppUIRoute;
 
     @Value("${c2s.patient-user.config.pp-ui-verification-relative-path}")
     private String ppUIVerificationRelativePath;
+
+    @Value("${c2s.patient-user.config.pp-ui-verification-email-token-arg-name}")
+    private String ppUIVerificationEmailTokenArgName;
 
     @Autowired
     private JavaMailSender javaMailSender;
@@ -56,12 +61,13 @@ public class EmailSenderImpl implements EmailSender {
     private MessageSource messageSource;
 
     @Override
-    public void sendEmailWithVerificationLink(String email, String emailToken, String recipientFullName) {
+    public void sendEmailWithVerificationLink(String xForwardedProto, String xForwardedHost, int xForwardedPort, String email, String emailToken, String recipientFullName) {
         Assert.hasText(emailToken, "emailToken must have text");
         Assert.hasText(email, "email must have text");
         Assert.hasText(recipientFullName, "recipientFullName must have text");
+        final String fragment = ppUIVerificationEmailTokenArgName + "=" + emailToken;
 
-        final String verificationUrl = ppUIBaseUri + ppUIVerificationRelativePath + emailToken;
+        final String verificationUrl = toPPUIVerificationUri(xForwardedProto, xForwardedHost, xForwardedPort, fragment);
         final Context ctx = new Context();
         ctx.setVariable(PARAM_RECIPIENT_NAME, recipientFullName);
         ctx.setVariable(PARAM_LINK_URL, verificationUrl);
@@ -75,13 +81,13 @@ public class EmailSenderImpl implements EmailSender {
     }
 
     @Override
-    public void sendEmailToConfirmVerification(String email, String recipientFullName) {
+    public void sendEmailToConfirmVerification(String xForwardedProto, String xForwardedHost, int xForwardedPort, String email, String recipientFullName) {
         Assert.hasText(email, "email must have text");
         Assert.hasText(recipientFullName, "recipientFullName must have text");
 
         final Context ctx = new Context();
         ctx.setVariable(PARAM_RECIPIENT_NAME, recipientFullName);
-        ctx.setVariable(PARAM_LINK_URL, ppUIBaseUri);
+        ctx.setVariable(PARAM_LINK_URL, toPPUIBaseUri(xForwardedProto, xForwardedHost, xForwardedPort));
         ctx.setVariable(PARAM_BRAND, brand);
         sendEmail(ctx, email,
                 PROP_EMAIL_CONFIRM_VERIFICATION_SUBJECT,
@@ -104,5 +110,38 @@ public class EmailSenderImpl implements EmailSender {
         } catch (MessagingException | UnsupportedEncodingException e) {
             throw new EmailSenderException(e);
         }
+    }
+
+    private String toPPUIBaseUri(String xForwardedProto, String xForwardedHost, int xForwardedPort) {
+        try {
+            return createURIBuilder(xForwardedProto, xForwardedHost, xForwardedPort)
+                    .setPath(ppUIRoute)
+                    .build().toString();
+        } catch (URISyntaxException e) {
+            throw new EmailSenderException(e);
+        }
+    }
+
+    private String toPPUIVerificationUri(String xForwardedProto, String xForwardedHost, int xForwardedPort, String fragment) {
+        try {
+            return createURIBuilder(xForwardedProto, xForwardedHost, xForwardedPort)
+                    .setPath(ppUIRoute + ppUIVerificationRelativePath)
+                    .setFragment(fragment)
+                    .build()
+                    .toString();
+        } catch (URISyntaxException e) {
+            throw new EmailSenderException(e);
+        }
+    }
+
+    private URIBuilder createURIBuilder(String xForwardedProto, String xForwardedHost, int xForwardedPort) {
+        final URIBuilder uriBuilder = new URIBuilder()
+                .setScheme(xForwardedProto)
+                .setHost(xForwardedHost);
+        if (("http".equalsIgnoreCase(xForwardedProto) && xForwardedPort != 80) ||
+                "https".equalsIgnoreCase(xForwardedProto) && xForwardedPort != 443) {
+            uriBuilder.setPort(xForwardedPort);
+        }
+        return uriBuilder;
     }
 }

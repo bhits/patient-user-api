@@ -37,6 +37,10 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class UserCreationServiceImplTest {
 
+    private final String xForwardedProto = "https";
+    private final String xForwardedHost = "xforwardedhost";
+    private final int xForwardedPort = 443;
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -111,7 +115,7 @@ public class UserCreationServiceImplTest {
         when(userCreationRepository.save(any(UserCreation.class))).thenReturn(savedUserCreation);
 
         // Act
-        final UserCreationResponseDto response = sut.initiateUserCreation(userCreationRequestDto);
+        final UserCreationResponseDto response = sut.initiateUserCreation(userCreationRequestDto, xForwardedProto, xForwardedHost, xForwardedPort);
 
         // Assert
         assertEquals(userCreationResponseDto, response);
@@ -126,6 +130,7 @@ public class UserCreationServiceImplTest {
         verify(userCreationResponseDto, times(1)).setVerificationCode(verificationCode);
         verify(userCreationResponseDto, times(1)).setEmailTokenExpiration(emailTokenExpiration);
         verify(emailSender, times(1)).sendEmailWithVerificationLink(
+                eq(xForwardedProto), eq(xForwardedHost), eq(xForwardedPort),
                 eq(email),
                 eq(emailToken),
                 argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
@@ -157,7 +162,7 @@ public class UserCreationServiceImplTest {
         when(userCreationRepository.findOneByPatientId(patientId)).thenReturn(Optional.of(existingUserCreation));
 
         // Act
-        final UserCreationResponseDto response = sut.initiateUserCreation(userCreationRequestDto);
+        final UserCreationResponseDto response = sut.initiateUserCreation(userCreationRequestDto, xForwardedProto, xForwardedHost, xForwardedPort);
 
         // Assert
         verify(userCreationRepository, times(1)).findOneByPatientId(patientId);
@@ -203,7 +208,7 @@ public class UserCreationServiceImplTest {
         when(userCreationRepository.save(any(UserCreation.class))).thenReturn(savedUserCreation);
 
         // Act
-        final UserCreationResponseDto response = sut.initiateUserCreation(userCreationRequestDto);
+        final UserCreationResponseDto response = sut.initiateUserCreation(userCreationRequestDto, xForwardedProto, xForwardedHost, xForwardedPort);
 
         // Assert
         assertEquals(userCreationResponseDto, response);
@@ -211,6 +216,7 @@ public class UserCreationServiceImplTest {
         verify(userCreationResponseDto, times(1)).setVerificationCode(verificationCode);
         verify(userCreationResponseDto, times(1)).setEmailTokenExpiration(emailTokenExpiration);
         verify(emailSender, times(1)).sendEmailWithVerificationLink(
+                eq(xForwardedProto), eq(xForwardedHost), eq(xForwardedPort),
                 eq(email),
                 eq(emailToken),
                 argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
@@ -316,7 +322,7 @@ public class UserCreationServiceImplTest {
         )))).thenReturn(savedScimUser);
 
         // Act
-        final UserActivationResponseDto response = sut.activateUser(userActivationRequest);
+        final UserActivationResponseDto response = sut.activateUser(userActivationRequest, xForwardedProto, xForwardedHost, xForwardedPort);
 
         // Assert
         assertEquals(userActivationResponse, response);
@@ -332,7 +338,9 @@ public class UserCreationServiceImplTest {
                         user.getGivenName().equals(firstName)
         )));
         verify(scimService, times(1)).addUserToGroups(userCreation);
-        verify(emailSender, times(1)).sendEmailToConfirmVerification(eq(email), argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
+        verify(emailSender, times(1)).sendEmailToConfirmVerification(
+                eq(xForwardedProto), eq(xForwardedHost), eq(xForwardedPort),
+                eq(email), argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
     }
 
     @Test
@@ -385,7 +393,7 @@ public class UserCreationServiceImplTest {
         )))).thenReturn(savedScimUser);
 
         // Act
-        final UserActivationResponseDto response = sut.activateUser(userActivationRequest);
+        final UserActivationResponseDto response = sut.activateUser(userActivationRequest, xForwardedProto, xForwardedHost, xForwardedPort);
 
         // Assert
         assertEquals(userActivationResponse, response);
@@ -401,7 +409,9 @@ public class UserCreationServiceImplTest {
                         user.getGivenName().equals(firstName)
         )));
         verify(scimService, times(1)).addUserToGroups(userCreation);
-        verify(emailSender, times(1)).sendEmailToConfirmVerification(eq(email), argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
+        verify(emailSender, times(1)).sendEmailToConfirmVerification(
+                eq(xForwardedProto), eq(xForwardedHost), eq(xForwardedPort),
+                eq(email), argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
     }
 
     @Test
@@ -452,7 +462,7 @@ public class UserCreationServiceImplTest {
         )))).thenReturn(savedScimUser);
 
         // Act
-        final UserActivationResponseDto response = sut.activateUser(userActivationRequest);
+        final UserActivationResponseDto response = sut.activateUser(userActivationRequest, xForwardedProto, xForwardedHost, xForwardedPort);
 
         // Assert
         assertEquals(userActivationResponse, response);
@@ -468,7 +478,9 @@ public class UserCreationServiceImplTest {
                         user.getGivenName().equals(firstName)
         )));
         verify(scimService, times(1)).addUserToGroups(userCreation);
-        verify(emailSender, times(1)).sendEmailToConfirmVerification(eq(email), argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
+        verify(emailSender, times(1)).sendEmailToConfirmVerification(
+                eq(xForwardedProto), eq(xForwardedHost), eq(xForwardedPort),
+                eq(email), argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
     }
 
     @Test
@@ -519,7 +531,7 @@ public class UserCreationServiceImplTest {
         )))).thenReturn(savedScimUser);
 
         // Act
-        final UserActivationResponseDto response = sut.activateUser(userActivationRequest);
+        final UserActivationResponseDto response = sut.activateUser(userActivationRequest, xForwardedProto, xForwardedHost, xForwardedPort);
 
         // Assert
         assertEquals(userActivationResponse, response);
@@ -535,7 +547,9 @@ public class UserCreationServiceImplTest {
                         user.getGivenName().equals(firstName)
         )));
         verify(scimService, times(1)).addUserToGroups(userCreation);
-        verify(emailSender, times(1)).sendEmailToConfirmVerification(eq(email), argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
+        verify(emailSender, times(1)).sendEmailToConfirmVerification(
+                eq(xForwardedProto), eq(xForwardedHost), eq(xForwardedPort),
+                eq(email), argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
     }
 
     @Test
@@ -586,7 +600,7 @@ public class UserCreationServiceImplTest {
         )))).thenReturn(savedScimUser);
 
         // Act
-        final UserActivationResponseDto response = sut.activateUser(userActivationRequest);
+        final UserActivationResponseDto response = sut.activateUser(userActivationRequest, xForwardedProto, xForwardedHost, xForwardedPort);
 
         // Assert
         assertEquals(userActivationResponse, response);
@@ -602,7 +616,9 @@ public class UserCreationServiceImplTest {
                         user.getGivenName().equals(firstName)
         )));
         verify(scimService, times(1)).addUserToGroups(userCreation);
-        verify(emailSender, times(1)).sendEmailToConfirmVerification(eq(email), argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
+        verify(emailSender, times(1)).sendEmailToConfirmVerification(
+                eq(xForwardedProto), eq(xForwardedHost), eq(xForwardedPort),
+                eq(email), argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
     }
 
     @Test
@@ -653,7 +669,7 @@ public class UserCreationServiceImplTest {
         )))).thenReturn(savedScimUser);
 
         // Act
-        final UserActivationResponseDto response = sut.activateUser(userActivationRequest);
+        final UserActivationResponseDto response = sut.activateUser(userActivationRequest, xForwardedProto, xForwardedHost, xForwardedPort);
 
         // Assert
         assertEquals(userActivationResponse, response);
@@ -669,7 +685,9 @@ public class UserCreationServiceImplTest {
                         user.getGivenName().equals(firstName)
         )));
         verify(scimService, times(1)).addUserToGroups(userCreation);
-        verify(emailSender, times(1)).sendEmailToConfirmVerification(eq(email), argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
+        verify(emailSender, times(1)).sendEmailToConfirmVerification(
+                eq(xForwardedProto), eq(xForwardedHost), eq(xForwardedPort),
+                eq(email), argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
     }
 
     @Test
@@ -720,7 +738,7 @@ public class UserCreationServiceImplTest {
         )))).thenReturn(savedScimUser);
 
         // Act
-        final UserActivationResponseDto response = sut.activateUser(userActivationRequest);
+        final UserActivationResponseDto response = sut.activateUser(userActivationRequest, xForwardedProto, xForwardedHost, xForwardedPort);
 
         // Assert
         assertEquals(userActivationResponse, response);
@@ -736,6 +754,8 @@ public class UserCreationServiceImplTest {
                         user.getGivenName().equals(firstName)
         )));
         verify(scimService, times(1)).addUserToGroups(userCreation);
-        verify(emailSender, times(1)).sendEmailToConfirmVerification(eq(email), argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
+        verify(emailSender, times(1)).sendEmailToConfirmVerification(
+                eq(xForwardedProto), eq(xForwardedHost), eq(xForwardedPort),
+                eq(email), argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
     }
 }

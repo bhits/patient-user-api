@@ -1,13 +1,13 @@
 package gov.samhsa.c2s.patientuser.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.samhsa.c2s.patientuser.service.UserCreationService;
-import gov.samhsa.c2s.patientuser.service.exception.*;
 import gov.samhsa.c2s.patientuser.infrastructure.exception.EmailSenderException;
 import gov.samhsa.c2s.patientuser.infrastructure.exception.PhrPatientNotFoundException;
+import gov.samhsa.c2s.patientuser.service.UserCreationService;
 import gov.samhsa.c2s.patientuser.service.dto.UserActivationResponseDto;
 import gov.samhsa.c2s.patientuser.service.dto.UserCreationRequestDto;
 import gov.samhsa.c2s.patientuser.service.dto.UserCreationResponseDto;
+import gov.samhsa.c2s.patientuser.service.exception.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -40,6 +40,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Ignore
 @RunWith(MockitoJUnitRunner.class)
 public class UserCreationControllerTest {
+
+    private final String xForwardedProto = "https";
+    private final String xForwardedHost = "xforwardedhost";
+    private final int xForwardedPort = 443;
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
     private ObjectMapper objectMapper;
@@ -82,12 +87,15 @@ public class UserCreationControllerTest {
         request.setPatientId(patientId);
         when(userCreationService.initiateUserCreation(argThat(matching(
                 req -> req.getPatientId().equals(patientId)
-        )))).thenReturn(response);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenReturn(response);
 
         // Act and Assert
         mvc.perform(post("/creations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(patientId.intValue())))
                 .andExpect(jsonPath("$.lastName", is(lastName)))
@@ -128,12 +136,15 @@ public class UserCreationControllerTest {
         request.setPatientId(patientId);
         when(userCreationService.initiateUserCreation(argThat(matching(
                 req -> req.getPatientId().equals(patientId)
-        )))).thenThrow(UserIsAlreadyVerifiedException.class);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenThrow(UserIsAlreadyVerifiedException.class);
 
         // Act and Assert
         mvc.perform(post("/creations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isPreconditionFailed());
     }
 
@@ -164,12 +175,15 @@ public class UserCreationControllerTest {
         request.setPatientId(patientId);
         when(userCreationService.initiateUserCreation(argThat(matching(
                 req -> req.getPatientId().equals(patientId)
-        )))).thenThrow(PhrPatientNotFoundException.class);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenThrow(PhrPatientNotFoundException.class);
 
         // Act and Assert
         mvc.perform(post("/creations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isNotFound());
     }
 
@@ -201,12 +215,15 @@ public class UserCreationControllerTest {
         request.setPatientId(patientId);
         when(userCreationService.initiateUserCreation(argThat(matching(
                 req -> req.getPatientId().equals(patientId)
-        )))).thenThrow(HttpClientErrorException.class);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenThrow(HttpClientErrorException.class);
 
         // Act and Assert
         mvc.perform(post("/creations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isInternalServerError());
     }
 
@@ -237,12 +254,15 @@ public class UserCreationControllerTest {
         request.setPatientId(patientId);
         when(userCreationService.initiateUserCreation(argThat(matching(
                 req -> req.getPatientId().equals(patientId)
-        )))).thenThrow(UserActivationCannotBeVerifiedException.class);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenThrow(UserActivationCannotBeVerifiedException.class);
 
         // Act and Assert
         mvc.perform(post("/creations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isPreconditionFailed());
     }
 
@@ -274,12 +294,15 @@ public class UserCreationControllerTest {
         request.setPatientId(patientId);
         when(userCreationService.initiateUserCreation(argThat(matching(
                 req -> req.getPatientId().equals(patientId)
-        )))).thenThrow(EmailSenderException.class);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenThrow(EmailSenderException.class);
 
         // Act and Assert
         mvc.perform(post("/creations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isInternalServerError());
     }
 
@@ -311,12 +334,15 @@ public class UserCreationControllerTest {
         request.setPatientId(patientId);
         when(userCreationService.initiateUserCreation(argThat(matching(
                 req -> req.getPatientId().equals(patientId)
-        )))).thenThrow(RuntimeException.class);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenThrow(RuntimeException.class);
 
         // Act and Assert
         mvc.perform(post("/creations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isInternalServerError());
     }
 
@@ -491,12 +517,15 @@ public class UserCreationControllerTest {
                         req.getVerificationCode().equals(verificationCode) &&
                         req.getEmailToken().equals(emailToken) &&
                         req.getPassword().equals(password)
-        )))).thenReturn(response);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenReturn(response);
 
         // Act and Assert
         mvc.perform(post("/activations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(patientId.intValue())))
                 .andExpect(jsonPath("$.lastName", is(lastName)))
@@ -549,12 +578,15 @@ public class UserCreationControllerTest {
                         req.getVerificationCode().equals(verificationCode) &&
                         req.getEmailToken().equals(emailToken) &&
                         req.getPassword().equals(password)
-        )))).thenReturn(response);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenReturn(response);
 
         // Act and Assert
         mvc.perform(post("/activations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(patientId.intValue())))
                 .andExpect(jsonPath("$.lastName", is(lastName)))
@@ -608,12 +640,15 @@ public class UserCreationControllerTest {
                         req.getEmailToken().equals(emailToken) &&
                         req.getPassword().equals(password) &&
                         req.getConfirmPassword().equals(confirmPassword)
-        )))).thenThrow(PasswordConfirmationFailedException.class);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenThrow(PasswordConfirmationFailedException.class);
 
         // Act and Assert
         mvc.perform(post("/activations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isPreconditionFailed());
     }
 
@@ -653,12 +688,15 @@ public class UserCreationControllerTest {
                         req.getVerificationCode().equals(verificationCode) &&
                         req.getEmailToken().equals(emailToken) &&
                         req.getPassword().equals(password)
-        )))).thenReturn(response);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenReturn(response);
 
         // Act and Assert
         mvc.perform(post("/activations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isBadRequest());
     }
 
@@ -698,12 +736,15 @@ public class UserCreationControllerTest {
                         req.getVerificationCode().equals(verificationCode) &&
                         req.getEmailToken().equals(emailToken) &&
                         req.getPassword().equals(password)
-        )))).thenReturn(response);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenReturn(response);
 
         // Act and Assert
         mvc.perform(post("/activations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isBadRequest());
     }
 
@@ -743,12 +784,15 @@ public class UserCreationControllerTest {
                         req.getVerificationCode().equals(verificationCode) &&
                         req.getEmailToken().equals(emailToken) &&
                         req.getPassword().equals(password)
-        )))).thenReturn(response);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenReturn(response);
 
         // Act and Assert
         mvc.perform(post("/activations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isBadRequest());
     }
 
@@ -788,12 +832,15 @@ public class UserCreationControllerTest {
                         req.getVerificationCode().equals(verificationCode) &&
                         req.getEmailToken().equals(emailToken) &&
                         req.getPassword().equals(password)
-        )))).thenReturn(response);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenReturn(response);
 
         // Act and Assert
         mvc.perform(post("/activations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isBadRequest());
     }
 
@@ -833,12 +880,15 @@ public class UserCreationControllerTest {
                         req.getVerificationCode().equals(verificationCode) &&
                         req.getEmailToken().equals(emailToken) &&
                         req.getPassword().equals(password)
-        )))).thenReturn(response);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenReturn(response);
 
         // Act and Assert
         mvc.perform(post("/activations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isBadRequest());
     }
 
@@ -882,12 +932,15 @@ public class UserCreationControllerTest {
                         req.getVerificationCode().equals(verificationCode) &&
                         req.getEmailToken().equals(emailToken) &&
                         req.getPassword().equals(password)
-        )))).thenThrow(UserActivationCannotBeVerifiedException.class);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenThrow(UserActivationCannotBeVerifiedException.class);
 
         // Act and Assert
         mvc.perform(post("/activations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isPreconditionFailed());
     }
 
@@ -931,12 +984,15 @@ public class UserCreationControllerTest {
                         req.getVerificationCode().equals(verificationCode) &&
                         req.getEmailToken().equals(emailToken) &&
                         req.getPassword().equals(password)
-        )))).thenThrow(UserIsAlreadyVerifiedException.class);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenThrow(UserIsAlreadyVerifiedException.class);
 
         // Act and Assert
         mvc.perform(post("/activations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isPreconditionFailed());
     }
 
@@ -980,12 +1036,15 @@ public class UserCreationControllerTest {
                         req.getVerificationCode().equals(verificationCode) &&
                         req.getEmailToken().equals(emailToken) &&
                         req.getPassword().equals(password)
-        )))).thenThrow(EmailTokenExpiredException.class);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenThrow(EmailTokenExpiredException.class);
 
         // Act and Assert
         mvc.perform(post("/activations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isPreconditionFailed());
     }
 
@@ -1029,12 +1088,15 @@ public class UserCreationControllerTest {
                         req.getVerificationCode().equals(verificationCode) &&
                         req.getEmailToken().equals(emailToken) &&
                         req.getPassword().equals(password)
-        )))).thenThrow(PhrPatientNotFoundException.class);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenThrow(PhrPatientNotFoundException.class);
 
         // Act and Assert
         mvc.perform(post("/activations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isNotFound());
     }
 
@@ -1079,12 +1141,15 @@ public class UserCreationControllerTest {
                         req.getVerificationCode().equals(verificationCode) &&
                         req.getEmailToken().equals(emailToken) &&
                         req.getPassword().equals(password)
-        )))).thenThrow(HttpClientErrorException.class);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenThrow(HttpClientErrorException.class);
 
         // Act and Assert
         mvc.perform(post("/activations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isInternalServerError());
     }
 
@@ -1129,12 +1194,15 @@ public class UserCreationControllerTest {
                         req.getVerificationCode().equals(verificationCode) &&
                         req.getEmailToken().equals(emailToken) &&
                         req.getPassword().equals(password)
-        )))).thenThrow(EmailSenderException.class);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenThrow(EmailSenderException.class);
 
         // Act and Assert
         mvc.perform(post("/activations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isInternalServerError());
     }
 
@@ -1146,7 +1214,7 @@ public class UserCreationControllerTest {
         final UserActivationRequestDtoForTest request = new UserActivationRequestDtoForTest();
         final UserActivationResponseDto response = new UserActivationResponseDto();
         final String email = "email";
-        final String username  = "email";
+        final String username = "email";
         final String verificationCode = "verificationCode";
         final int year = 2010;
         final int month = 2;
@@ -1179,12 +1247,15 @@ public class UserCreationControllerTest {
                         req.getVerificationCode().equals(verificationCode) &&
                         req.getEmailToken().equals(emailToken) &&
                         req.getPassword().equals(password)
-        )))).thenThrow(RuntimeException.class);
+        )), xForwardedProto, xForwardedHost, xForwardedPort)).thenThrow(RuntimeException.class);
 
         // Act and Assert
         mvc.perform(post("/activations")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .header(UserCreationController.X_FORWARDED_PROTO, xForwardedProto)
+                .header(UserCreationController.X_FORWARDED_HOST, xForwardedHost)
+                .header(UserCreationController.X_FORWARDED_PORT, xForwardedPort))
                 .andExpect(status().isInternalServerError());
     }
 }
