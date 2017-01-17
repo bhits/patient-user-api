@@ -1,7 +1,7 @@
 package gov.samhsa.c2s.patientuser.service;
 
+import gov.samhsa.c2s.patientuser.config.EmailSenderProperties;
 import gov.samhsa.c2s.patientuser.domain.*;
-import gov.samhsa.c2s.patientuser.service.exception.*;
 import gov.samhsa.c2s.patientuser.infrastructure.EmailSender;
 import gov.samhsa.c2s.patientuser.infrastructure.PhrService;
 import gov.samhsa.c2s.patientuser.infrastructure.ScimService;
@@ -10,6 +10,7 @@ import gov.samhsa.c2s.patientuser.service.dto.UserActivationRequestDto;
 import gov.samhsa.c2s.patientuser.service.dto.UserActivationResponseDto;
 import gov.samhsa.c2s.patientuser.service.dto.UserCreationRequestDto;
 import gov.samhsa.c2s.patientuser.service.dto.UserCreationResponseDto;
+import gov.samhsa.c2s.patientuser.service.exception.*;
 import org.cloudfoundry.identity.uaa.scim.ScimUser;
 import org.junit.Before;
 import org.junit.Rule;
@@ -20,7 +21,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -68,6 +68,9 @@ public class UserCreationServiceImplTest {
     @Mock
     private ScimService scimService;
 
+    @Mock
+    private EmailSenderProperties emailSenderPropertiesMock;
+
     private int emailTokenExpirationInDays = 7;
 
     @InjectMocks
@@ -75,7 +78,7 @@ public class UserCreationServiceImplTest {
 
     @Before
     public void setup() {
-        ReflectionTestUtils.setField(sut, "emailTokenExpirationInDays", emailTokenExpirationInDays);
+        when(emailSenderPropertiesMock.getEmailTokenExpirationInDays()).thenReturn(emailTokenExpirationInDays);
     }
 
     @Test

@@ -2,6 +2,7 @@ package gov.samhsa.c2s.patientuser.service;
 
 import gov.samhsa.c2s.common.log.Logger;
 import gov.samhsa.c2s.common.log.LoggerFactory;
+import gov.samhsa.c2s.patientuser.config.EmailSenderProperties;
 import gov.samhsa.c2s.patientuser.domain.*;
 import gov.samhsa.c2s.patientuser.infrastructure.EmailSender;
 import gov.samhsa.c2s.patientuser.infrastructure.PhrService;
@@ -12,7 +13,6 @@ import gov.samhsa.c2s.patientuser.service.exception.*;
 import org.cloudfoundry.identity.uaa.scim.ScimUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -56,8 +56,8 @@ public class UserCreationServiceImpl implements UserCreationService {
     @Autowired
     private ScopeRepository scopeRepository;
 
-    @Value("${c2s.patient-user.config.email-token-expiration-in-days}")
-    private int emailTokenExpirationInDays;
+    @Autowired
+    private EmailSenderProperties emailSenderProperties;
 
     @Autowired
     private UserScopeAssignmentRepository userScopeAssignmentRepository;
@@ -70,7 +70,7 @@ public class UserCreationServiceImpl implements UserCreationService {
         // Create/Update record for patient user creation
         final UserType userType = userTypeRepository.findOneByType(UserTypeEnum.SELF).get();
         String emailToken = emailTokenGenerator.generateEmailToken();
-        final Instant emailTokenExpirationDate = Instant.now().plus(Period.ofDays(emailTokenExpirationInDays));
+        final Instant emailTokenExpirationDate = Instant.now().plus(Period.ofDays(emailSenderProperties.getEmailTokenExpirationInDays()));
         final UserCreation userCreation = userCreationRepository.findOneByPatientId(patientDto.getId())
                 .orElseGet(UserCreation::new);
         assertNotAlreadyVerified(userCreation);

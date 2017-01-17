@@ -1,5 +1,6 @@
 package gov.samhsa.c2s.patientuser.infrastructure;
 
+import gov.samhsa.c2s.patientuser.config.EmailSenderProperties;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,11 +35,17 @@ public class EmailSenderImplTest {
     private final String xForwardedHost = "xforwardedhost";
     private final int xForwardedPort = 443;
 
+    private TemplateEngine templateEngineMock;
+
     @Mock
     private JavaMailSender javaMailSenderMock;
-    private TemplateEngine templateEngineMock;
+
     @Mock
     private MessageSource messageSourceMock;
+
+    @Mock
+    private EmailSenderProperties emailSenderPropertiesMock;
+
     @InjectMocks
     private EmailSenderImpl sut;
 
@@ -47,11 +54,11 @@ public class EmailSenderImplTest {
         templateEngineMock = PowerMockito.mock(TemplateEngine.class);
         PowerMockito.doReturn(htmlContent).when(templateEngineMock).process(anyString(), any(Context.class));
         ReflectionTestUtils.setField(sut, "templateEngine", templateEngineMock);
-        ReflectionTestUtils.setField(sut, "ppUIRoute", ppUIRoute);
-        ReflectionTestUtils.setField(sut, "ppUIVerificationRelativePath", ppUIVerificationRelativePath);
-        ReflectionTestUtils.setField(sut, "ppUIVerificationEmailTokenArgName", ppUIVerificationEmailTokenArgName);
         MimeMessage mimeMessageMock = mock(MimeMessage.class);
         when(javaMailSenderMock.createMimeMessage()).thenReturn(mimeMessageMock);
+        when(emailSenderPropertiesMock.getPpUiRoute()).thenReturn(ppUIRoute);
+        when(emailSenderPropertiesMock.getPpUiVerificationRelativePath()).thenReturn(ppUIVerificationRelativePath);
+        when(emailSenderPropertiesMock.getPpUiVerificationEmailTokenArgName()).thenReturn(ppUIVerificationEmailTokenArgName);
         when(messageSourceMock.getMessage(eq(ReflectionTestUtils.getField(sut, "PROP_EMAIL_VERIFICATION_LINK_SUBJECT").toString()), eq(null), any(Locale.class))).thenReturn(subject);
         when(messageSourceMock.getMessage(eq(ReflectionTestUtils.getField(sut, "PROP_EMAIL_CONFIRM_VERIFICATION_SUBJECT").toString()), eq(null), any(Locale.class))).thenReturn(subject);
         when(messageSourceMock.getMessage(eq(ReflectionTestUtils.getField(sut, "PROP_EMAIL_FROM_ADDRESS").toString()), eq(null), any(Locale.class))).thenReturn(fromAddress);

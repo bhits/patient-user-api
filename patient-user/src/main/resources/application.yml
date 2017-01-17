@@ -44,16 +44,16 @@ spring:
   messages:
     basename: i18n/messages
 c2s:
-  apis:
-    # Patient portal UI endpoint
-    scim: http://localhost:8080/uaa
   patient-user:
-    config:
+    scim:
+      url: http://localhost:8080/uaa
+    email-sender:
+      # Patient portal UI endpoint
       pp-ui-route: /pp-ui
       pp-ui-verification-relative-path: "/fe/account/verification"
       pp-ui-verification-email-token-arg-name: "emailToken"
+      brand: Consent2Share
       email-token-expiration-in-days: 7
-  brand: Consent2Share
 security:
   oauth2:
     client:
@@ -73,9 +73,9 @@ security:
     resource:
       user-info-uri: http://uaa.c2s.com:8080/uaa/userinfo
 c2s:
-  apis:
-    pp-ui: http://${C2S_APP_HOST:dockerhost}/pp-ui
-    scim: http://uaa.c2s.com:8080/uaa
+  patient-user:
+    scim:
+      url: http://uaa.c2s.com:8080/uaa
 logging:
   file: /java/C2S_LOGS/patient-user/patient-user.log
   path: /java/C2S_LOGS/patient-user

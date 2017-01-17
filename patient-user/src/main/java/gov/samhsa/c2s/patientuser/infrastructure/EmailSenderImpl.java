@@ -1,9 +1,9 @@
 package gov.samhsa.c2s.patientuser.infrastructure;
 
+import gov.samhsa.c2s.patientuser.config.EmailSenderProperties;
 import gov.samhsa.c2s.patientuser.infrastructure.exception.EmailSenderException;
 import org.apache.http.client.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -39,17 +39,8 @@ public class EmailSenderImpl implements EmailSender {
 
     private static final String PARAM_BRAND = "brand";
 
-    @Value("${c2s.brand}")
-    private String brand;
-
-    @Value("${c2s.patient-user.config.pp-ui-route}")
-    private String ppUIRoute;
-
-    @Value("${c2s.patient-user.config.pp-ui-verification-relative-path}")
-    private String ppUIVerificationRelativePath;
-
-    @Value("${c2s.patient-user.config.pp-ui-verification-email-token-arg-name}")
-    private String ppUIVerificationEmailTokenArgName;
+    @Autowired
+    private EmailSenderProperties emailSenderProperties;
 
     @Autowired
     private JavaMailSender javaMailSender;
@@ -65,13 +56,13 @@ public class EmailSenderImpl implements EmailSender {
         Assert.hasText(emailToken, "emailToken must have text");
         Assert.hasText(email, "email must have text");
         Assert.hasText(recipientFullName, "recipientFullName must have text");
-        final String fragment = ppUIVerificationEmailTokenArgName + "=" + emailToken;
+        final String fragment = emailSenderProperties.getPpUiVerificationEmailTokenArgName() + "=" + emailToken;
 
         final String verificationUrl = toPPUIVerificationUri(xForwardedProto, xForwardedHost, xForwardedPort, fragment);
         final Context ctx = new Context();
         ctx.setVariable(PARAM_RECIPIENT_NAME, recipientFullName);
         ctx.setVariable(PARAM_LINK_URL, verificationUrl);
-        ctx.setVariable(PARAM_BRAND, brand);
+        ctx.setVariable(PARAM_BRAND, emailSenderProperties.getBrand());
         sendEmail(ctx, email,
                 PROP_EMAIL_VERIFICATION_LINK_SUBJECT,
                 TEMPLATE_VERIFICATION_LINK_EMAIL,
@@ -88,7 +79,7 @@ public class EmailSenderImpl implements EmailSender {
         final Context ctx = new Context();
         ctx.setVariable(PARAM_RECIPIENT_NAME, recipientFullName);
         ctx.setVariable(PARAM_LINK_URL, toPPUIBaseUri(xForwardedProto, xForwardedHost, xForwardedPort));
-        ctx.setVariable(PARAM_BRAND, brand);
+        ctx.setVariable(PARAM_BRAND, emailSenderProperties.getBrand());
         sendEmail(ctx, email,
                 PROP_EMAIL_CONFIRM_VERIFICATION_SUBJECT,
                 TEMPLATE_CONFIRM_VERIFICATION_EMAIL,
@@ -115,7 +106,7 @@ public class EmailSenderImpl implements EmailSender {
     private String toPPUIBaseUri(String xForwardedProto, String xForwardedHost, int xForwardedPort) {
         try {
             return createURIBuilder(xForwardedProto, xForwardedHost, xForwardedPort)
-                    .setPath(ppUIRoute)
+                    .setPath(emailSenderProperties.getPpUiRoute())
                     .build().toString();
         } catch (URISyntaxException e) {
             throw new EmailSenderException(e);
@@ -125,7 +116,7 @@ public class EmailSenderImpl implements EmailSender {
     private String toPPUIVerificationUri(String xForwardedProto, String xForwardedHost, int xForwardedPort, String fragment) {
         try {
             return createURIBuilder(xForwardedProto, xForwardedHost, xForwardedPort)
-                    .setPath(ppUIRoute + ppUIVerificationRelativePath)
+                    .setPath(emailSenderProperties.getPpUiRoute() + emailSenderProperties.getPpUiVerificationRelativePath())
                     .setFragment(fragment)
                     .build()
                     .toString();
