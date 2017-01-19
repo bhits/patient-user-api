@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 
+import static gov.samhsa.c2s.common.oauth2.OAuth2ScopeUtils.hasScope;
 import static gov.samhsa.c2s.common.oauth2.OAuth2ScopeUtils.hasScopes;
 
 @Configuration
@@ -30,6 +31,8 @@ public class SecurityConfig {
                     http.requiresChannel().anyRequest().requiresSecure();
                 }
                 http.authorizeRequests()
+                        .antMatchers(HttpMethod.GET, "/management/**").access(hasScope("patientUser.management"))
+                        .antMatchers(HttpMethod.POST, "/management/**").access(hasScope("patientUser.management"))
                         .antMatchers(HttpMethod.GET, "/creations/**").access(hasScopes("patientUser.read", "phr.allPatientProfiles_read", "scim.read"))
                         .antMatchers(HttpMethod.POST, "/creations/**").access(hasScopes("patientUser.write", "phr.allPatientProfiles_read", "scim.write"))
                         .antMatchers(HttpMethod.POST, "/scopeAssignments").access(hasScopes("patientUser.scope_assign"))

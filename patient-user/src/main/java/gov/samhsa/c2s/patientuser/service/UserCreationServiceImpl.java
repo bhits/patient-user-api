@@ -1,21 +1,18 @@
 package gov.samhsa.c2s.patientuser.service;
 
-import gov.samhsa.c2s.patientuser.domain.*;
-import gov.samhsa.c2s.patientuser.infrastructure.EmailSender;
-import gov.samhsa.c2s.patientuser.service.dto.*;
-import gov.samhsa.c2s.patientuser.service.exception.*;
 import gov.samhsa.c2s.common.log.Logger;
 import gov.samhsa.c2s.common.log.LoggerFactory;
+import gov.samhsa.c2s.patientuser.config.EmailSenderProperties;
+import gov.samhsa.c2s.patientuser.domain.*;
+import gov.samhsa.c2s.patientuser.infrastructure.EmailSender;
 import gov.samhsa.c2s.patientuser.infrastructure.PhrService;
 import gov.samhsa.c2s.patientuser.infrastructure.ScimService;
 import gov.samhsa.c2s.patientuser.infrastructure.dto.PatientDto;
-import gov.samhsa.c2s.patientuser.service.dto.ScopeAssignmentRequestDto;
-import gov.samhsa.c2s.patientuser.service.dto.ScopeAssignmentResponseDto;
-import gov.samhsa.c2s.patientuser.service.exception.ScopeDoesNotExistInDBException;
+import gov.samhsa.c2s.patientuser.service.dto.*;
+import gov.samhsa.c2s.patientuser.service.exception.*;
 import org.cloudfoundry.identity.uaa.scim.ScimUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -59,21 +56,21 @@ public class UserCreationServiceImpl implements UserCreationService {
     @Autowired
     private ScopeRepository scopeRepository;
 
-    @Value("${c2s.patient-user.config.email-token-expiration-in-days}")
-    private int emailTokenExpirationInDays;
+    @Autowired
+    private EmailSenderProperties emailSenderProperties;
 
     @Autowired
     private UserScopeAssignmentRepository userScopeAssignmentRepository;
 
     @Override
     @Transactional
-    public UserCreationResponseDto initiateUserCreation(UserCreationRequestDto userCreationRequest) {
+    public UserCreationResponseDto initiateUserCreation(UserCreationRequestDto userCreationRequest, String xForwardedProto, String xForwardedHost, int xForwardedPort) {
         // Find patient on PHR
         final PatientDto patientDto = phrService.findPatientProfileById(userCreationRequest.getPatientId());
         // Create/Update record for patient user creation
         final UserType userType = userTypeRepository.findOneByType(UserTypeEnum.SELF).get();
         String emailToken = emailTokenGenerator.generateEmailToken();
-        final Instant emailTokenExpirationDate = Instant.now().plus(Period.ofDays(emailTokenExpirationInDays));
+        final Instant emailTokenExpirationDate = Instant.now().plus(Period.ofDays(emailSenderProperties.getEmailTokenExpirationInDays()));
         final UserCreation userCreation = userCreationRepository.findOneByPatientId(patientDto.getId())
                 .orElseGet(UserCreation::new);
         assertNotAlreadyVerified(userCreation);
@@ -93,6 +90,7 @@ public class UserCreationServiceImpl implements UserCreationService {
         response.setVerified(saved.isVerified());
         // Send email with verification link
         emailSender.sendEmailWithVerificationLink(
+                xForwardedProto, xForwardedHost, xForwardedPort,
                 patientDto.getEmail(),
                 saved.getEmailToken(),
                 getRecipientFullName(patientDto));
@@ -113,7 +111,7 @@ public class UserCreationServiceImpl implements UserCreationService {
     }
 
     @Override
-    public UserActivationResponseDto activateUser(UserActivationRequestDto userActivationRequest) {
+    public UserActivationResponseDto activateUser(UserActivationRequestDto userActivationRequest, String xForwardedProto, String xForwardedHost, int xForwardedPort) {
         // Verify password
         assertPasswordAndConfirmPassword(userActivationRequest);
         // Find user creation process with emailToken and verificationCode
@@ -154,10 +152,10 @@ public class UserCreationServiceImpl implements UserCreationService {
         // Add user to groups
         scimService.addUserToGroups(userCreation);
         emailSender.sendEmailToConfirmVerification(
+                xForwardedProto, xForwardedHost, xForwardedPort,
                 patientProfile.getEmail(),
                 getRecipientFullName(patientProfile));
         return response;
-
     }
 
     @Override
@@ -252,8 +250,8 @@ public class UserCreationServiceImpl implements UserCreationService {
         }
     }
 
-    public ScopeAssignmentResponseDto assignScopeToUser(ScopeAssignmentRequestDto scopeAssignmentRequestDto){
-            scopeAssignmentRequestDto.getScopes().stream()
+    public ScopeAssignmentResponseDto assignScopeToUser(ScopeAssignmentRequestDto scopeAssignmentRequestDto) {
+        scopeAssignmentRequestDto.getScopes().stream()
                 .forEach(scope -> {
                     Scope foundScope = Optional.ofNullable(scopeRepository.findByScope(scope)).orElseThrow(ScopeDoesNotExistInDBException::new);
                     assignNewScopesToUsers(foundScope);
@@ -261,17 +259,17 @@ public class UserCreationServiceImpl implements UserCreationService {
         return null;
     }
 
-    private void assignNewScopesToUsers(Scope scope){
+    private void assignNewScopesToUsers(Scope scope) {
         userCreationRepository.findAll().stream()
                 .forEach(userCreation -> {
-                    UserScopeAssignment userScopeAssignment =  new UserScopeAssignment();
+                    UserScopeAssignment userScopeAssignment = new UserScopeAssignment();
                     userScopeAssignment.setScope(scope);
                     userScopeAssignment.setUserCreation(userCreation);
                     try {
                         userScopeAssignment.setAssigned(true);
                         userScopeAssignmentRepository.save(userScopeAssignment);
                         scimService.updateUserWithNewGroup(userCreation, scope);
-                    }catch(Exception e){
+                    } catch (Exception e) {
                         logger.error("Error in assigning scope to user in UAA.");
                         userScopeAssignment.setAssigned(false);
                         userScopeAssignmentRepository.save(userScopeAssignment);

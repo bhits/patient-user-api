@@ -40,7 +40,7 @@ public class ScimServiceImpl implements ScimService {
     private RestOperations restTemplate;
 
     @Autowired
-    public ScimServiceImpl(@Value("${c2s.apis.scim}") String uaaBaseUrl) {
+    public ScimServiceImpl(@Value("${c2s.patient-user.scim.url}") String uaaBaseUrl) {
         Assert.hasText(uaaBaseUrl, "Missing SCIM endpoint");
         this.scimBaseUrl = uaaBaseUrl;
         this.usersEndpoint = this.scimBaseUrl + "/Users";

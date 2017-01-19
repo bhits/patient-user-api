@@ -20,17 +20,6 @@ logging:
   file: /java/C2S_LOGS/patient-user/patient-user.log
 info:
   component: Patient User API
-eureka:
-  instance:
-    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
-    secure-port-enabled: false
-    non-secure-port-enabled: true
-  client:
-    healthcheck:
-      enabled: true
-    service-url:
-      # endpoint for discovery-server, pass '--eureka.client.protocol=https' if discovery-server is running on https
-      defaultZone: ${eureka.client.protocol:http}://localhost:8761/eureka/
 # TODO: enable feign hystrix back when PHR API is refactored to a service that can be called by this API without OAuth2 token
 feign.hystrix.enabled: false
 spring:
@@ -39,24 +28,6 @@ spring:
     url: jdbc:mysql://localhost:3306/patient-user?autoReconnect=true
     username: root
     password: admin
-    driver-class-name: com.mysql.jdbc.Driver
-    validation-query: select 1
-    test-on-borrow: true
-    test-on-return: true
-    test-while-idle: true
-    time-between-eviction-runs-millis: 1800000
-    num-tests-per-eviction-run: 3
-    min-evictable-idle-time-millis: 1800000
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-        hbm2ddl:
-          auto: validate
-    hibernate:
-      ddl-auto: none
-      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
-    show-sql: true
   mail:
   # Patient User will use the e-mail server configured in this section to send e-mails
     # Please configure valid e-mail server below to connect to SMTP server
@@ -73,38 +44,22 @@ spring:
   messages:
     basename: i18n/messages
 c2s:
-  apis:
-    # Patient portal UI endpoint
-    pp-ui: http://localhost/pp-ui
-    scim: http://localhost:8080/uaa
   patient-user:
-    config:
-      pp-ui-verification-relative-path: "/fe/account/verification#emailToken="
+    scim:
+      url: http://localhost:8080/uaa
+    email-sender:
+      # Patient portal UI endpoint
+      pp-ui-route: /pp-ui
+      pp-ui-verification-relative-path: "/fe/account/verification"
+      pp-ui-verification-email-token-arg-name: "emailToken"
+      brand: Consent2Share
       email-token-expiration-in-days: 7
-  brand: Consent2Share
 security:
-  basic:
-    enabled: false
   oauth2:
     client:
       client-id: patient-user
       client-secret: changeit
       access-token-uri: http://localhost:8080/uaa/oauth/token
-    resource:
-      jwt:
-        # public key to validate the token signed by authorization server
-        # Default token signing key. You MUST provide a unique key IN AN ACTUAL DEPLOYMENT ENVIRONMENT!
-        keyValue:
-                         -----BEGIN PUBLIC KEY-----
-                         MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0m59l2u9iDnMbrXHfqkO
-                         rn2dVQ3vfBJqcDuFUK03d+1PZGbVlNCqnkpIJ8syFppW8ljnWweP7+LiWpRoz0I7
-                         fYb3d8TjhV86Y997Fl4DBrxgM6KTJOuE/uxnoDhZQ14LgOU2ckXjOzOdTsnGMKQB
-                         LCl0vpcXBtFLMaSbpv1ozi8h7DJyVZ6EnFQZUWGdgTMhDrmqevfx95U/16c5WBDO
-                         kqwIn7Glry9n9Suxygbf8g5AzpWcusZgDLIIZ7JTUldBb8qU2a0Dl4mvLZOn4wPo
-                         jfj9Cw2QICsc5+Pwf21fP+hzf+1WSRHbnYv8uanRO0gZ8ekGaghM/2H6gqJbo2nI
-                         JwIDAQAB
-                         -----END PUBLIC KEY-----
-      user-info-uri: http://localhost:8080/uaa/userinfo
 ---
 # updates configuration for docker environment
 spring:
@@ -118,39 +73,16 @@ security:
     resource:
       user-info-uri: http://uaa.c2s.com:8080/uaa/userinfo
 c2s:
-  apis:
-    pp-ui: http://${C2S_APP_HOST:dockerhost}/pp-ui
-    scim: http://uaa.c2s.com:8080/uaa
-eureka:
-  client:
-    service-url:
-      defaultZone: ${eureka.client.protocol:http}://discovery-server.c2s.com:8761/eureka/
-  instance:
-    prefer-ip-address: true
+  patient-user:
+    scim:
+      url: http://uaa.c2s.com:8080/uaa
 logging:
   file: /java/C2S_LOGS/patient-user/patient-user.log
   path: /java/C2S_LOGS/patient-user
-
----
-# If the ssl spring profile below is enabled, you must follow the instructions at
-# the top of this file to set your environemtn key-store and key-store-password properties as well.
-spring.profiles: ssl
-server:
-  port: 8452
-  # configure keystore and keystore password for ssl per environment
-  ssl:
-    # Default key-store and key-store-password
-    key-store: /ssl_keystore.keystore
-    key-store-password: changeit
-eureka:
-  instance:
-    secure-port: ${server.port}
-    secure-port-enabled: true
-    non-secure-port-enabled: false
 ---
 spring.profiles: standalone-ssl
 spring:
   profiles:
-    include: ssl
+    include: ssl-default
 server:
   context-path: /patientUser

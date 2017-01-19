@@ -2,8 +2,6 @@ package gov.samhsa.c2s.patientuser.web;
 
 import gov.samhsa.c2s.patientuser.service.UserCreationService;
 import gov.samhsa.c2s.patientuser.service.dto.*;
-import gov.samhsa.c2s.patientuser.service.dto.ScopeAssignmentRequestDto;
-import gov.samhsa.c2s.patientuser.service.dto.ScopeAssignmentResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +13,19 @@ import java.util.Optional;
 @RestController
 public class UserCreationController {
 
+    public static final String X_FORWARDED_PROTO = "X-Forwarded-Proto";
+    public static final String X_FORWARDED_HOST = "X-Forwarded-Host";
+    public static final String X_FORWARDED_PORT = "X-Forwarded-Port";
+
     @Autowired
     private UserCreationService userCreationService;
 
     @RequestMapping(value = "/creations", method = RequestMethod.POST)
-    public UserCreationResponseDto initiateUserCreation(@Valid @RequestBody UserCreationRequestDto userCreationRequest) {
-        final UserCreationResponseDto userCreationResponseDto = userCreationService.initiateUserCreation(userCreationRequest);
+    public UserCreationResponseDto initiateUserCreation(@Valid @RequestBody UserCreationRequestDto userCreationRequest,
+                                                        @RequestHeader(X_FORWARDED_PROTO) String xForwardedProto,
+                                                        @RequestHeader(X_FORWARDED_HOST) String xForwardedHost,
+                                                        @RequestHeader(X_FORWARDED_PORT) int xForwardedPort) {
+        final UserCreationResponseDto userCreationResponseDto = userCreationService.initiateUserCreation(userCreationRequest, xForwardedProto, xForwardedHost, xForwardedPort);
         return userCreationResponseDto;
     }
 
@@ -30,8 +35,11 @@ public class UserCreationController {
     }
 
     @RequestMapping(value = "/activations", method = RequestMethod.POST)
-    public UserActivationResponseDto activateUser(@Valid @RequestBody UserActivationRequestDto userActivationRequest) {
-        return userCreationService.activateUser(userActivationRequest);
+    public UserActivationResponseDto activateUser(@Valid @RequestBody UserActivationRequestDto userActivationRequest,
+                                                  @RequestHeader(X_FORWARDED_PROTO) String xForwardedProto,
+                                                  @RequestHeader(X_FORWARDED_HOST) String xForwardedHost,
+                                                  @RequestHeader(X_FORWARDED_PORT) int xForwardedPort) {
+        return userCreationService.activateUser(userActivationRequest, xForwardedProto, xForwardedHost, xForwardedPort);
     }
 
     @RequestMapping(value = "/verifications", method = RequestMethod.GET)
