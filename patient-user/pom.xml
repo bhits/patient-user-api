@@ -69,7 +69,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <spring.cloud.version>Brixton.M4</spring.cloud.version>
-        <c2s-common-libraries.version>1.7.0</c2s-common-libraries.version>
+        <c2s-common-libraries.version>1.8.0-SNAPSHOT</c2s-common-libraries.version>
         <modelmapper.version>0.7.5</modelmapper.version>
         <cloudfoundry-identity-model.version>3.2.1</cloudfoundry-identity-model.version>
         <hibernate.envers.version>4.3.11.Final</hibernate.envers.version>

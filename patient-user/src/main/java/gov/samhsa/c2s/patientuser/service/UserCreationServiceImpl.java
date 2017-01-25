@@ -2,6 +2,7 @@ package gov.samhsa.c2s.patientuser.service;
 
 import gov.samhsa.c2s.patientuser.domain.*;
 import gov.samhsa.c2s.patientuser.infrastructure.EmailSender;
+import gov.samhsa.c2s.patientuser.infrastructure.EmailSenderImpl;
 import gov.samhsa.c2s.patientuser.service.dto.*;
 import gov.samhsa.c2s.patientuser.service.exception.*;
 import gov.samhsa.c2s.common.log.Logger;
@@ -16,6 +17,7 @@ import org.cloudfoundry.identity.uaa.scim.ScimUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -92,10 +94,10 @@ public class UserCreationServiceImpl implements UserCreationService {
         response.setEmailTokenExpiration(saved.getEmailTokenExpirationAsInstant());
         response.setVerified(saved.isVerified());
         // Send email with verification link
-        emailSender.sendEmailWithVerificationLink(
+        emailSender.sendEmailWithVerificationLinkAndLang(
                 patientDto.getEmail(),
                 saved.getEmailToken(),
-                getRecipientFullName(patientDto));
+                getRecipientFullName(patientDto), userCreationRequest.getRequestLanguage());
         return response;
     }
 
