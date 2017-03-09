@@ -10,4 +10,5 @@ public class UserCreationRequestDto {
     @NotNull
     @Min(1)
     private Long patientId;
+    private String requestLanguage;
 }

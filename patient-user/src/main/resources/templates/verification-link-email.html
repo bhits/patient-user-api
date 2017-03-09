@@ -13,7 +13,7 @@
 
                     <table cellpadding="10px" cellspacing="0" border="0" align="center" width="65%" style="padding-top: 10px; font-family:Helvetica, Arial, sans-serif;">
                         <tr>
-                            <td style="font-family:Helvetica, Arial, sans-serif; font-size: 17px; font-weight: 600; color: #777777; padding:10px; border-bottom: 1px; border-bottom-color: #777777; border-bottom-style: solid;">Create your account.</td>
+                            <td style="font-family:Helvetica, Arial, sans-serif; font-size: 17px; font-weight: 600; color: #777777; padding:10px; border-bottom: 1px; border-bottom-color: #777777; border-bottom-style: solid;"><label th:text="#{VERIFICATION.EMAIL.CONTENTS_8}"></label></td>
                             <td style="font-family:Helvetica, Arial, sans-serif; font-size: 17px; font-weight: 600; color: #0A77BB; padding:10px; text-align: right; border-bottom: 1px; border-bottom-color: #777777; border-bottom-style: solid;"><span th:text="${brand}">Brand</span></td>
                         </tr>
                     </table>
@@ -23,21 +23,21 @@
                             <td>
                                 <table>
                                     <tr>
-                                        <td style="color:#777777; font-family:Helvetica, Arial, sans-serif; font-size: 14px; padding-top: 10px;">Dear <span th:text="${recipientName}">Asample Patientone</span>,</td>
+                                        <td style="color:#777777; font-family:Helvetica, Arial, sans-serif; font-size: 14px; padding-top: 10px;"><label th:text="#{VERIFICATION.EMAIL.CONTENTS_1}"></label> <span th:text="${recipientName}">Asample Patientone</span>,</td>
                                     </tr>
 
                                     <tr>
-                                        <td style="color:#777777; font-size: 14px; font-family:Helvetica, Arial, sans-serif; line-height: 20px; padding-top: 20px;">Before you get started, be sure to have your <strong>Verification ID</strong> provided to you by your health care provider. If you do not have a verification ID, please contact your provider to obtain one. Next, simply click on the "Create Login" link below and follow the instructions carefully.
+                                        <td style="color:#777777; font-size: 14px; font-family:Helvetica, Arial, sans-serif; line-height: 20px; padding-top: 20px;"><label th:text="#{VERIFICATION.EMAIL.CONTENTS_2}"></label> <strong><label th:text="#{VERIFICATION.EMAIL.CONTENTS_3}"></label></strong> <label th:text="#{VERIFICATION.EMAIL.CONTENTS_4}"></label>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style="padding-top: 20px;"><a href="../../../webapp/WEB-INF/views/index.html" style="color: #3498db; font-size: 18px; font-family:Helvetica, Arial, sans-serif; font-weight: 600; text-decoration: none;" th:href="${linkUrl}">Create My Login</a> </td>
+                                        <td style="padding-top: 20px;"><a href="../../../webapp/WEB-INF/views/index.html" style="color: #3498db; font-size: 18px; font-family:Helvetica, Arial, sans-serif; font-weight: 600; text-decoration: none;" th:href="${linkUrl}"><label th:text="#{VERIFICATION.EMAIL.CONTENTS_5}"></label></a> </td>
                                     </tr>
                                     <tr>
-                                        <td style="color:#777777; font-family:Helvetica, Arial, sans-serif; font-size: 14px; padding-top: 20px;">Sincerely,</td>
+                                        <td style="color:#777777; font-family:Helvetica, Arial, sans-serif; font-size: 14px; padding-top: 20px;"><label th:text="#{VERIFICATION.EMAIL.CONTENTS_6}"></label></td>
                                     </tr>
                                     <tr>
-                                        <td style="color:#777777; font-family:Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 500; padding-top: 5px;"><span th:text="${brand}">Brand</span></td>
+                                        <td style="color:#777777; font-family:Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 500; padding-top: 5px;"><span th:text="${brand}"><label th:text="#{VERIFICATION.EMAIL.CONTENTS_7}"></label></span></td>
                                     </tr>
                             </table></td>
                         </tr>
