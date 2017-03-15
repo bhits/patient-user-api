@@ -93,8 +93,8 @@ public class EmailSenderImpl implements EmailSender {
 
     /*
     * used to send email with language requested from front-end
-    * author: Wentao
-    * */
+    *
+    */
     @Override
     public void sendEmailWithVerificationLinkAndLang(String xForwardedProto, String xForwardedHost, int xForwardedPort, String email, String emailToken, String recipientFullName, String language) {
         Assert.hasText(emailToken, "emailToken must have text");
