@@ -5,7 +5,7 @@ The Patient User API is responsible for managing the patient user account.
 
 # Supported Source Code Tags and Current `Dockerfile` Link
 
-[`0.15.0 (latest)`](https://github.com/bhits/patient-user-api/releases/tag/0.15.0), [`0.12.0`](https://github.com/bhits/patient-user-api/releases/tag/0.12.0)
+[`0.16.0 (latest)`](https://github.com/bhits/patient-user-api/releases/tag/0.16.0), [`0.15.0`](https://github.com/bhits/patient-user-api/releases/tag/0.15.0), [`0.12.0`](https://github.com/bhits/patient-user-api/releases/tag/0.12.0)
 
 [`Current Dockerfile`](https://github.com/bhits/patient-user-api/blob/master/patient-user/src/main/docker/Dockerfile)
 

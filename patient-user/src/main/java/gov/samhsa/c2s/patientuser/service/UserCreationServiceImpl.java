@@ -3,13 +3,33 @@ package gov.samhsa.c2s.patientuser.service;
 import gov.samhsa.c2s.common.log.Logger;
 import gov.samhsa.c2s.common.log.LoggerFactory;
 import gov.samhsa.c2s.patientuser.config.EmailSenderProperties;
-import gov.samhsa.c2s.patientuser.domain.*;
+import gov.samhsa.c2s.patientuser.domain.Scope;
+import gov.samhsa.c2s.patientuser.domain.ScopeRepository;
+import gov.samhsa.c2s.patientuser.domain.UserCreation;
+import gov.samhsa.c2s.patientuser.domain.UserCreationRepository;
+import gov.samhsa.c2s.patientuser.domain.UserScopeAssignment;
+import gov.samhsa.c2s.patientuser.domain.UserScopeAssignmentRepository;
+import gov.samhsa.c2s.patientuser.domain.UserType;
+import gov.samhsa.c2s.patientuser.domain.UserTypeEnum;
+import gov.samhsa.c2s.patientuser.domain.UserTypeRepository;
 import gov.samhsa.c2s.patientuser.infrastructure.EmailSender;
 import gov.samhsa.c2s.patientuser.infrastructure.PhrService;
 import gov.samhsa.c2s.patientuser.infrastructure.ScimService;
 import gov.samhsa.c2s.patientuser.infrastructure.dto.PatientDto;
-import gov.samhsa.c2s.patientuser.service.dto.*;
-import gov.samhsa.c2s.patientuser.service.exception.*;
+import gov.samhsa.c2s.patientuser.service.dto.ScopeAssignmentRequestDto;
+import gov.samhsa.c2s.patientuser.service.dto.ScopeAssignmentResponseDto;
+import gov.samhsa.c2s.patientuser.service.dto.UserActivationRequestDto;
+import gov.samhsa.c2s.patientuser.service.dto.UserActivationResponseDto;
+import gov.samhsa.c2s.patientuser.service.dto.UserCreationRequestDto;
+import gov.samhsa.c2s.patientuser.service.dto.UserCreationResponseDto;
+import gov.samhsa.c2s.patientuser.service.dto.VerificationResponseDto;
+import gov.samhsa.c2s.patientuser.service.exception.EmailTokenExpiredException;
+import gov.samhsa.c2s.patientuser.service.exception.PasswordConfirmationFailedException;
+import gov.samhsa.c2s.patientuser.service.exception.ScopeDoesNotExistInDBException;
+import gov.samhsa.c2s.patientuser.service.exception.UserActivationCannotBeVerifiedException;
+import gov.samhsa.c2s.patientuser.service.exception.UserCreationNotFoundException;
+import gov.samhsa.c2s.patientuser.service.exception.UserIsAlreadyVerifiedException;
+import gov.samhsa.c2s.patientuser.service.exception.VerificationFailedException;
 import org.cloudfoundry.identity.uaa.scim.ScimUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +38,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
@@ -89,11 +113,11 @@ public class UserCreationServiceImpl implements UserCreationService {
         response.setEmailTokenExpiration(saved.getEmailTokenExpirationAsInstant());
         response.setVerified(saved.isVerified());
         // Send email with verification link
-        emailSender.sendEmailWithVerificationLink(
+        emailSender.sendEmailWithVerificationLinkAndLang(
                 xForwardedProto, xForwardedHost, xForwardedPort,
                 patientDto.getEmail(),
                 saved.getEmailToken(),
-                getRecipientFullName(patientDto));
+                getRecipientFullName(patientDto), userCreationRequest.getRequestLanguage());
         return response;
     }
 

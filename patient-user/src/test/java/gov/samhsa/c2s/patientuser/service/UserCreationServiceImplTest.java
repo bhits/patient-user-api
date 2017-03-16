@@ -90,12 +90,14 @@ public class UserCreationServiceImplTest {
         final String lastName = "lastName";
         final String emailToken = "emailToken";
         final String verificationCode = "verificationCode";
+        final String requestLanguage = "en";
         final int year = 2010;
         final int month = 2;
         final int day = 3;
         final Date birthDate = new Date(year, month, day);
         final UserCreationRequestDto userCreationRequestDto = mock(UserCreationRequestDto.class);
         when(userCreationRequestDto.getPatientId()).thenReturn(patientId);
+        when(userCreationRequestDto.getRequestLanguage()).thenReturn(requestLanguage);
         final PatientDto patientDto = mock(PatientDto.class);
         when(phrService.findPatientProfileById(patientId)).thenReturn(patientDto);
         when(patientDto.getEmail()).thenReturn(email);
@@ -132,11 +134,12 @@ public class UserCreationServiceImplTest {
         ));
         verify(userCreationResponseDto, times(1)).setVerificationCode(verificationCode);
         verify(userCreationResponseDto, times(1)).setEmailTokenExpiration(emailTokenExpiration);
-        verify(emailSender, times(1)).sendEmailWithVerificationLink(
+        verify(emailSender, times(1)).sendEmailWithVerificationLinkAndLang(
                 eq(xForwardedProto), eq(xForwardedHost), eq(xForwardedPort),
                 eq(email),
                 eq(emailToken),
-                argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
+                argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))),
+                eq(requestLanguage));
     }
 
     @Test
@@ -181,12 +184,14 @@ public class UserCreationServiceImplTest {
         final String lastName = "lastName";
         final String emailToken = "emailToken";
         final String verificationCode = "verificationCode";
+        final String requestLanguage = "en";
         final int year = 2010;
         final int month = 2;
         final int day = 3;
         final Date birthDate = new Date(year, month, day);
         final UserCreationRequestDto userCreationRequestDto = mock(UserCreationRequestDto.class);
         when(userCreationRequestDto.getPatientId()).thenReturn(patientId);
+        when(userCreationRequestDto.getRequestLanguage()).thenReturn(requestLanguage);
         final PatientDto patientDto = mock(PatientDto.class);
         when(phrService.findPatientProfileById(patientId)).thenReturn(patientDto);
         when(patientDto.getEmail()).thenReturn(email);
@@ -218,11 +223,12 @@ public class UserCreationServiceImplTest {
         verify(userCreationRepository, times(1)).save(existingUserCreation);
         verify(userCreationResponseDto, times(1)).setVerificationCode(verificationCode);
         verify(userCreationResponseDto, times(1)).setEmailTokenExpiration(emailTokenExpiration);
-        verify(emailSender, times(1)).sendEmailWithVerificationLink(
+        verify(emailSender, times(1)).sendEmailWithVerificationLinkAndLang(
                 eq(xForwardedProto), eq(xForwardedHost), eq(xForwardedPort),
                 eq(email),
                 eq(emailToken),
-                argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))));
+                argThat(matching(fn -> fn.contains(firstName) && fn.contains(lastName))),
+                eq(requestLanguage));
         verify(existingUserCreation, times(1)).setEmailTokenExpirationAsInstant(argThat(matching(instant -> instant.isAfter(Instant.now()))));
         verify(existingUserCreation, times(1)).setEmailToken(emailToken);
         verify(existingUserCreation, times(1)).setPatientId(patientId);

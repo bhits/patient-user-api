@@ -5,6 +5,7 @@ import gov.samhsa.c2s.patientuser.infrastructure.exception.EmailSenderException;
 import org.apache.http.client.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -63,12 +64,13 @@ public class EmailSenderImpl implements EmailSender {
         ctx.setVariable(PARAM_RECIPIENT_NAME, recipientFullName);
         ctx.setVariable(PARAM_LINK_URL, verificationUrl);
         ctx.setVariable(PARAM_BRAND, emailSenderProperties.getBrand());
+        ctx.setLocale(LocaleContextHolder.getLocale());// set locale to support multi-language
         sendEmail(ctx, email,
                 PROP_EMAIL_VERIFICATION_LINK_SUBJECT,
                 TEMPLATE_VERIFICATION_LINK_EMAIL,
                 PROP_EMAIL_FROM_ADDRESS,
                 PROP_EMAIL_FROM_PERSONAL,
-                Locale.getDefault());
+                LocaleContextHolder.getLocale());
     }
 
     @Override
@@ -80,12 +82,40 @@ public class EmailSenderImpl implements EmailSender {
         ctx.setVariable(PARAM_RECIPIENT_NAME, recipientFullName);
         ctx.setVariable(PARAM_LINK_URL, toPPUIBaseUri(xForwardedProto, xForwardedHost, xForwardedPort));
         ctx.setVariable(PARAM_BRAND, emailSenderProperties.getBrand());
+        ctx.setLocale(LocaleContextHolder.getLocale());//should set Locale to support Multi-Language
         sendEmail(ctx, email,
                 PROP_EMAIL_CONFIRM_VERIFICATION_SUBJECT,
                 TEMPLATE_CONFIRM_VERIFICATION_EMAIL,
                 PROP_EMAIL_FROM_ADDRESS,
                 PROP_EMAIL_FROM_PERSONAL,
-                Locale.getDefault());
+                LocaleContextHolder.getLocale());//
+    }
+
+    /*
+    * used to send email with language requested from front-end
+    *
+    */
+    @Override
+    public void sendEmailWithVerificationLinkAndLang(String xForwardedProto, String xForwardedHost, int xForwardedPort, String email, String emailToken, String recipientFullName, String language) {
+        Assert.hasText(emailToken, "emailToken must have text");
+        Assert.hasText(email, "email must have text");
+        Assert.hasText(recipientFullName, "recipientFullName must have text");
+
+        final Context ctx = new Context();
+        ctx.setVariable(PARAM_RECIPIENT_NAME, recipientFullName);
+        ctx.setVariable(PARAM_LINK_URL, toPPUIBaseUri(xForwardedProto, xForwardedHost, xForwardedPort));
+        ctx.setVariable(PARAM_BRAND, emailSenderProperties.getBrand());
+        if (language == null || language.trim().isEmpty()) {
+            language = "en";
+        }
+        Locale locale = new Locale(language);
+        ctx.setLocale(locale);// set locale to support multi-language
+        sendEmail(ctx, email,
+                PROP_EMAIL_VERIFICATION_LINK_SUBJECT,
+                TEMPLATE_VERIFICATION_LINK_EMAIL,
+                PROP_EMAIL_FROM_ADDRESS,
+                PROP_EMAIL_FROM_PERSONAL,
+                locale);
     }
 
     private void sendEmail(Context ctx, String email, String subjectPropKey, String templateName, String fromAddressPropKey, String fromPersonalPropKey, Locale locale) {
@@ -94,7 +124,8 @@ public class EmailSenderImpl implements EmailSender {
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage, ENCODING);
             message.setSubject(messageSource.getMessage(subjectPropKey, null, locale));
             message.setTo(email);
-            message.setFrom(messageSource.getMessage(fromAddressPropKey, null, locale), messageSource.getMessage(fromPersonalPropKey, null, locale));
+            message.setFrom(messageSource.getMessage(fromAddressPropKey, null, locale),
+                    messageSource.getMessage(fromPersonalPropKey, null, locale));
             final String htmlContent = templateEngine.process(templateName, ctx);
             message.setText(htmlContent, true);
             javaMailSender.send(mimeMessage);
