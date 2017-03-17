@@ -100,10 +100,12 @@ public class EmailSenderImpl implements EmailSender {
         Assert.hasText(emailToken, "emailToken must have text");
         Assert.hasText(email, "email must have text");
         Assert.hasText(recipientFullName, "recipientFullName must have text");
+        final String fragment = emailSenderProperties.getPpUiVerificationEmailTokenArgName() + "=" + emailToken;
 
+        final String verificationUrl = toPPUIVerificationUri(xForwardedProto, xForwardedHost, xForwardedPort, fragment);
         final Context ctx = new Context();
         ctx.setVariable(PARAM_RECIPIENT_NAME, recipientFullName);
-        ctx.setVariable(PARAM_LINK_URL, toPPUIBaseUri(xForwardedProto, xForwardedHost, xForwardedPort));
+        ctx.setVariable(PARAM_LINK_URL, verificationUrl);
         ctx.setVariable(PARAM_BRAND, emailSenderProperties.getBrand());
         if (language == null || language.trim().isEmpty()) {
             language = "en";
